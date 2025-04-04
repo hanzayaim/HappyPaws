@@ -70,7 +70,7 @@ router.post("/insertAdopterData", async (req, res) => {
   }
 });
 
-router.put("/updateAdopterData", async (req, res) => {
+router.post("/updateAdopterData", async (req, res) => {
   const {
     id_shelter,
     id_adopter,
@@ -112,17 +112,14 @@ router.put("/updateAdopterData", async (req, res) => {
   }
 });
 
-router.delete(
-  "/deleteAdopterData/:id_shelter/:id_adopter",
-  async (req, res) => {
-    const { id_shelter, id_adopter } = req.params;
-    try {
-      const result = await deleteAdopterData(id_shelter, id_adopter);
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json({ error: true, message: "failed to delete data" });
-    }
+router.post("/deleteAdopterData/:id_shelter/:id_adopter", async (req, res) => {
+  const { id_shelter, id_adopter } = req.body;
+  try {
+    const result = await deleteAdopterData(id_shelter, id_adopter);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to delete data" });
   }
-);
+});
 
 module.exports = router;
