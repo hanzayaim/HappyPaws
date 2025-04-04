@@ -6,7 +6,7 @@ const {
   insertAdopterData,
   updateAdopterData,
   deleteAdopterData,
-} = require("../controllers/adopter_controller");
+} = require("../models/adopter_model");
 
 router.get("/getAdopterData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
