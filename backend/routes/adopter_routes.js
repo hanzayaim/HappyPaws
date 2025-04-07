@@ -112,7 +112,7 @@ router.post("/updateAdopterData", async (req, res) => {
   }
 });
 
-router.post("/deleteAdopterData/:id_shelter/:id_adopter", async (req, res) => {
+router.post("/deleteAdopterData", async (req, res) => {
   const { id_shelter, id_adopter } = req.body;
   try {
     const result = await deleteAdopterData(id_shelter, id_adopter);
