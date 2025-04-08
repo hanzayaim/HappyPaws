@@ -7,7 +7,7 @@ const {
   updateAnimalMedicalId,
   updateAnimalData,
   deleteAnimalData,
-} = require("../models/animal");
+} = require("../models/animal_models");
 
 router.get("/getAnimalData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
