@@ -176,9 +176,9 @@ router.post("/updateMedicalData", async (req, res) => {
 });
 
 router.post("/deleteMedicalData", async (req, res) => {
-    const { id_shelter, id_animal, id_medical } = req.body;
+    const { id_shelter, id_medical } = req.body;
 
-    if (id_shelter == null || id_animal == null || id_medical == null) {
+    if (id_shelter == null || id_medical == null) {
         return res.status(400).send({
             error: true,
             message: "Please provide all required data."
