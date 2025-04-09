@@ -5,7 +5,7 @@ async function getShelterDataById(id_shelter) {
   try {
     const [rows] = await pool.query(
       "SELECT * FROM shelter where id_shelter = ?",
-      [id_shelter]
+      [id_shelter]  
     );
     if (rows.length > 0) {
       return {

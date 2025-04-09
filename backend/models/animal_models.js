@@ -1,4 +1,4 @@
-const pool = require("../config/database");
+const pool = require("../config/db.js");
 
 // get data
 async function getAnimalDataById(id_shelter, id_animal) {
