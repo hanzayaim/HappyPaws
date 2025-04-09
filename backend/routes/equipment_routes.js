@@ -6,7 +6,7 @@ const {
     insertEquipmentData,
     updateEquipmentData,
     deleteEquipmentData
-} = require("../models/equipment_model")
+} = require("../models/equipment_models")
 
 router.get("/getEquipmentData/:id_shelter", async (req, res) => {
     const { id_shelter } = req.params;

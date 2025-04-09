@@ -186,15 +186,14 @@ async function updateMedicalData(
     }
 }
 
-async function deleteMedicalData(id_shelter, id_animal, id_medical) {
+async function deleteMedicalData(id_shelter, id_medical) {
     try {
         const result = await pool.query(
             `delete from medical
             where id_shelter = ?
-            and id_animal = ?
             and id_medical = ?`,
             [
-                id_shelter, id_animal, id_medical
+                id_shelter, id_medical
             ]
         );
         return {

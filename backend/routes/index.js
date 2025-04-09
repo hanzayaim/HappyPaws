@@ -9,7 +9,6 @@ const equipmentRoutes = require("./equipment_routes");
 const medicalRoutes = require("./medical_routes");
 const shelterRoutes = require("./shelter_routes");
 
-// Gabungkan semua route
 router.use("/adopters", adopterRoutes);
 router.use("/animals", animalRoutes);
 router.use("/employees", employeeRoutes);

@@ -169,6 +169,7 @@ async function deleteEquipmentData(id_shelter, id_equipment) {
             `delete from equipment 
             where id_shelter = ? 
             and id_equipment = ?`,
+            [id_shelter, id_equipment]
         );
         return {
             error: false,

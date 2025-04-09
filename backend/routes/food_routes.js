@@ -6,7 +6,7 @@ const {
     insertFoodData,
     updateFoodData,
     deleteFoodData
-} = require("../models/food_model");
+} = require("../models/food_models");
 
 router.get("/getFoodData/:id_shelter", async (req, res) => {
     const { id_shelter } = req.params;
