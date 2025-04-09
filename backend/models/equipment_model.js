@@ -38,7 +38,7 @@ async function getEquipmentDataById(id_shelter, id_equipment) {
             `select * 
             from equipment e 
             where e.id_shelter = ?
-            and e.id_equipment
+            and e.id_equipment = ?
             order by e.created_at desc`,
             [id_shelter, id_equipment]
         );
