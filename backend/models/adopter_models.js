@@ -32,14 +32,14 @@ async function getAdopterDataById(id_shelter, id_adopter) {
 async function getAdopterData(id_shelter) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM adopter_profile where id_shelter = ?",
+      "SELECT * FROM adopter_profile where id_shelter = ? order by created_at desc",
       [id_shelter]
     );
     if (rows.length > 0) {
       return {
         error: false,
         message: "data fetched successfully",
-        data: rows[0],
+        data: rows,
       };
     } else {
       return {
