@@ -5,7 +5,7 @@ async function getFoodData(id_shelter) {
         const { rows } = pool.query(
             `select * 
             from food f 
-            where f.id_shelter = ?
+            where f.id_shelter = $1
             order by f.created_at desc`
         );
         if (rows.length > 0) {
@@ -35,8 +35,8 @@ async function getFoodDataById(id_shelter, id_food) {
         const { rows } = await pool.query(
             `select * 
             from food f 
-            where f.id_shelter = ?
-            and f.id_food = ?
+            where f.id_shelter = $1
+            and f.id_food = $2
             order by f.created_at desc`
         );
         if (rows > 0) {
@@ -88,7 +88,7 @@ async function insertFoodData(
             , created_by 
         )
         values (
-            ?,?,?,?,?,?,?,?,?,?
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
         )`,
         [
             name 
@@ -131,21 +131,21 @@ async function updateFoodData(
 ) {
     try {
         const result = await pool.query(
-            `update food 
-            set (
-                name = ?
-                , quantity = ?
-                , category = ?
-                , type = ?
-                , exp_date = ?
-                , cost = ?
-                , date = ?
-                , note = ?
-                , updated_at = ?
-                , updated_by = ?
-            )
-            where id_equipment = ?
-            and id_shelter = ?`,
+            `UPDATE food 
+            SET 
+                name = $1,
+                quantity = $2,
+                category = $3,
+                type = $4,
+                exp_date = $5,
+                cost = $6,
+                date = $7,
+                note = $8,
+                updated_at = $9,
+                updated_by = $10
+            WHERE 
+                id_equipment = $11 AND 
+                id_shelter = $12`,
             [
             name
             , quantity
@@ -177,8 +177,8 @@ async function deleteFoodData(id_shelter, id_food) {
     try {
         const result = await pool.query(
             `delete from food 
-            where id_shelter = ?
-            and id_food = ?`,
+            where id_shelter = $1
+            and id_food = $2`,
             [id_shelter, id_food]
         );
         return {

@@ -3,8 +3,8 @@ const pool = require("../config/db.js");
 // get data
 async function getEmployeeDataById(id_shelter, id_employee) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM employee_shelter where id_shelter = ? and id_employee = ?",
+    const { rows } = await pool.query(
+      "SELECT * FROM employee_shelter where id_shelter = $1 and id_employee = $2",
       [id_shelter, id_employee]
     );
     if (rows.length > 0) {
@@ -32,7 +32,7 @@ async function getEmployeeDataById(id_shelter, id_employee) {
 async function getEmployeeData(id_shelter) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM employee_shelter where id_shelter = ?",
+      "SELECT * FROM employee_shelter where id_shelter = $1",
       [id_shelter]
     );
 
@@ -73,9 +73,8 @@ async function insertEmployeeData(
   status
 ) {
   try {
-    const result = await pool.query(
-      "INSERT INTO employee_shelter (id_shelter, id_employee, name, email, password, role, gender, shelter_name, phone_number, address, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [
+    const query = `
+    INSERT INTO employee_shelter (
         id_shelter,
         id_employee,
         name,
@@ -86,9 +85,12 @@ async function insertEmployeeData(
         shelter_name,
         phone_number,
         address,
-        status,
-      ]
-    );
+        status
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+      )
+    `;
+
     return {
       error: false,
       message: "employee shelter created successfully",
@@ -106,7 +108,7 @@ async function insertEmployeeData(
 async function updateEmployeeStatus(status, id_shelter, id_employee) {
   try {
     const result = await pool.query(
-      "UPDATE employee_shelter SET status= ? WHERE id_shelter = ? and id_employee = ?",
+      "UPDATE employee_shelter SET status= $1 WHERE id_shelter = $2 and id_employee = $3",
       [status, id_shelter, id_employee]
     );
     return {
@@ -126,7 +128,7 @@ async function updateEmployeeStatus(status, id_shelter, id_employee) {
 async function deleteEmployeeData(id_shelter, id_employee) {
   try {
     const result = await pool.query(
-      "DELETE FROM employee_shelter WHERE id_shelter = ?",
+      "DELETE FROM employee_shelter WHERE id_shelter = $1 and id_employee = $2",
       [id_shelter, id_employee]
     );
     return {

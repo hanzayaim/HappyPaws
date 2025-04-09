@@ -6,7 +6,7 @@ async function getMedicalData(id_shelter) {
             `select *
             from medical m 
             left join animal a ON a.id_animal = m.id_animal 
-            where m.id_shelter = ?
+            where m.id_shelter = $1
             order by m.created_at desc`, 
         [id_shelter]
         );
@@ -39,9 +39,9 @@ async function getMedicalDataById(id_shelter, id_animal, id_medical) {
             `select *
             from medical m
             left join animal a on a.id_animal = m.id_animal
-            where m.id_shelter = ?
-            and a.id_animal = ?
-            and m.id_medical = ?
+            where m.id_shelter = $1
+            and a.id_animal = $2
+            and m.id_medical = $3
             order by m.created_at desc`,
             [id_shelter, id_animal, id_medical]
         );
@@ -95,7 +95,7 @@ async function insertMedicalData(
             , id_animal 
             )
             values (
-                ?,?,?,?,?,?,?,?,?,?
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
             )
             `,
             [
@@ -142,21 +142,22 @@ async function updateMedicalData(
 ) {
     try {
         const result = await pool.query(
-            `update medical
-            set (
-                medical_process = ?
-                , medical_status = ?
-                , vaccin_status = ?
-                , medical_date_in = ?
-                , medical_date_out = ?
-                , medical_cost = ?
-                , note = ?
-                , updated_at = ?
-                , updated_by = ?
-            )
-            where id_shelter = @id_shelter 
-            and id_animal = @id_animal
-            and id_medical = @id_medical`,
+            `UPDATE medical
+            SET 
+                medical_process = $1,
+                medical_status = $2,
+                vaccin_status = $3,
+                medical_date_in = $4,
+                medical_date_out = $5,
+                medical_cost = $6,
+                note = $7,
+                updated_at = $8,
+                updated_by = $9
+            WHERE 
+                id_shelter = $10 AND 
+                id_animal = $11 AND 
+                id_medical = $12
+            `,
             [
                 medical_process,
                 medical_status,
@@ -190,8 +191,8 @@ async function deleteMedicalData(id_shelter, id_medical) {
     try {
         const result = await pool.query(
             `delete from medical
-            where id_shelter = ?
-            and id_medical = ?`,
+            where id_shelter = $1
+            and id_medical = $2`,
             [
                 id_shelter, id_medical
             ]

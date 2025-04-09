@@ -5,7 +5,7 @@ async function getEquipmentData(id_shelter) {
         const { rows } = await pool.query(
             `select * 
             from equipment e 
-            where e.id_shelter = ?
+            where e.id_shelter = $1
             order by e.created_at desc`,
             [id_shelter]
         );
@@ -37,8 +37,8 @@ async function getEquipmentDataById(id_shelter, id_equipment) {
         const { rows } = await pool.query(
             `select * 
             from equipment e 
-            where e.id_shelter = ?
-            and e.id_equipment = ?
+            where e.id_shelter = $1
+            and e.id_equipment = $2
             order by e.created_at desc`,
             [id_shelter, id_equipment]
         );
@@ -84,7 +84,7 @@ async function insertEquipmentData(
             , created_by 
             , id_shelter 
             )
-            values (?,?,?,?,?,?,?)`,
+            values ($1,$2,$3,$4,$5,$6,$7)`,
             [
                 name,
                 type,
@@ -125,18 +125,19 @@ async function updateEquipmentData(
 ) {
     try {
         const result = await pool.query(
-            `update equipment 
-            set (
-                name = ?
-                , type = ?
-                , date = ?
-                , cost = ?
-                , note = ?
-                , updated_at = ?
-                , updated_by = ?
-            )
-            where id_shelter = ? 
-            and id_equipment = ?`,
+            `UPDATE equipment 
+            SET 
+                name = $1,
+                type = $2,
+                date = $3,
+                cost = $4,
+                note = $5,
+                updated_at = $6,
+                updated_by = $7
+            WHERE 
+                id_shelter = $8 AND 
+                id_equipment = $9
+            `,
             [
                 name,
                 type,
@@ -167,8 +168,8 @@ async function deleteEquipmentData(id_shelter, id_equipment) {
     try {
         const result = await pool.query(
             `delete from equipment 
-            where id_shelter = ? 
-            and id_equipment = ?`,
+            where id_shelter = $1 
+            and id_equipment = $2`,
             [id_shelter, id_equipment]
         );
         return {

@@ -3,8 +3,8 @@ const pool = require("../config/db.js");
 // get data
 async function getShelterDataById(id_shelter) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM shelter where id_shelter = ?",
+    const { rows } = await pool.query(
+      "SELECT * FROM shelter where id_shelter = $1",
       [id_shelter]
     );
     if (rows.length > 0) {
@@ -31,7 +31,7 @@ async function getShelterDataById(id_shelter) {
 
 async function getShelterData() {
   try {
-    const [rows] = await pool.query("SELECT * FROM shelter");
+    const { rows } = await pool.query("SELECT * FROM shelter");
     if (rows.length > 0) {
       return {
         error: false,
@@ -67,7 +67,7 @@ async function insertShelterData(
 ) {
   try {
     const result = await pool.query(
-      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
       [
         id_shelter,
         owner_name,
@@ -96,7 +96,7 @@ async function insertShelterData(
 async function updateShelterStatus(status, id_shelter) {
   try {
     const result = await pool.query(
-      "UPDATE shelter SET status= ? WHERE id_shelter = ?",
+      "UPDATE shelter SET status= ? WHERE id_shelter = $1",
       [status, id_shelter]
     );
     return {
@@ -116,7 +116,7 @@ async function updateShelterStatus(status, id_shelter) {
 async function deleteShelterData(id_shelter) {
   try {
     const result = await pool.query(
-      "DELETE FROM shelter WHERE id_shelter = ?",
+      "DELETE FROM shelter WHERE id_shelter = $1",
       [id_shelter]
     );
     return {

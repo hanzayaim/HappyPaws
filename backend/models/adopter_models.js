@@ -3,8 +3,8 @@ const pool = require("../config/db.js");
 // get data
 async function getAdopterDataById(id_shelter, id_adopter) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM adopter_profile where id_shelter = ? and id_adopter = ?",
+    const { rows } = await pool.query(
+      "SELECT * FROM adopter_profile where id_shelter = $1 and id_adopter = $2",
       [id_shelter, id_adopter]
     );
     if (rows.length > 0) {
@@ -31,8 +31,8 @@ async function getAdopterDataById(id_shelter, id_adopter) {
 
 async function getAdopterData(id_shelter) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM adopter_profile where id_shelter = ? order by created_at desc",
+    const { rows } = await pool.query(
+      "SELECT * FROM adopter_profile where id_shelter = $1 order by created_at desc",
       [id_shelter]
     );
     if (rows.length > 0) {
@@ -70,7 +70,7 @@ async function insertAdopterData(
 ) {
   try {
     const result = await pool.query(
-      "INSERT INTO adopter_profile (id_shelter, id_adopter,name, profile_img, gender, phone_number, address, created_by) VALUES (?,?,?,?,?,?,?)",
+      "INSERT INTO adopter_profile (id_shelter, id_adopter,name, profile_img, gender, phone_number, address, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
       [
         id_shelter,
         id_adopter,
@@ -109,7 +109,7 @@ async function updateAdopterData(
 ) {
   try {
     const result = await pool.query(
-      "UPDATE adopter_profile SET name=?, profile_img=?, gender=?, phone_number=?, address=?, updated_by=?, updated_at=? WHERE id_shelter = ? and id_adopter = ?",
+      "UPDATE adopter_profile SET name=$1, profile_img=$2, gender=$3, phone_number=$4, address=$5, updated_by=$6, updated_at=$7 WHERE id_shelter = $8 and id_adopter = $9",
       [
         adopter_name,
         profile_img,
@@ -139,7 +139,7 @@ async function updateAdopterData(
 async function deleteAdopterData(id_shelter, id_adopter) {
   try {
     const result = await pool.query(
-      "DELETE FROM adopter_profile WHERE id_shelter = ? and id_adopter = ?",
+      "DELETE FROM adopter_profile WHERE id_shelter = $1 and id_adopter = $2",
       [id_shelter, id_adopter]
     );
     return {

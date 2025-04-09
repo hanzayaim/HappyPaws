@@ -3,8 +3,8 @@ const pool = require("../config/db");
 // get data
 async function getAnimalDataById(id_shelter, id_animal) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM animal where id_shelter = ? and id_animal = ?",
+    const { rows } = await pool.query(
+      "SELECT * FROM animal where id_shelter = $1 and id_animal = $2",
       [id_shelter, id_animal]
     );
     if (rows.length > 0) {
@@ -31,8 +31,8 @@ async function getAnimalDataById(id_shelter, id_animal) {
 
 async function getAnimalData(id_shelter) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM animal where id_shelter = ? order by created_at desc",
+    const { rows } = await pool.query(
+      "SELECT * FROM animal where id_shelter = $1 order by created_at desc",
       [id_shelter]
     );
     if (rows.length > 0) {
@@ -75,7 +75,7 @@ async function insertAnimalData(
 ) {
   try {
     const result = await pool.query(
-      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
       [
         id_shelter,
         id_animal,
@@ -125,7 +125,21 @@ async function updateAnimalData(
 ) {
   try {
     const result = await pool.query(
-      "UPDATE animal SET id_adopter = ?, animal_name = ?, animal_img = ?, animal_gender = ?, animal_type = ?, animal_age = ?, animal_status = ?, rescue_location = ?, date = ?, note = ?, updated_by = ?, updated_at = ?, status = ? WHERE id_shelter = ? and id_animal = ?",
+      `UPDATE animal SET 
+        id_adopter = $1,
+        animal_name = $2,
+        animal_img = $3,
+        animal_gender = $4,
+        animal_type = $5,
+        animal_age = $6,
+        animal_status = $7,
+        rescue_location = $8,
+        date = $9,
+        note = $10,
+        updated_by = $11,
+        updated_at = $12,
+        status = $13
+      WHERE id_shelter = $14 AND id_animal = $15`,
       [
         animal_name,
         animal_img,
@@ -161,7 +175,7 @@ async function updateAnimalData(
 async function updateAnimalMedicalId(id_medical, id_shelter, id_animal) {
   try {
     const result = await pool.query(
-      "UPDATE animal SET id_medical = ? WHERE id_shelter = ? and id_animal = ?",
+      "UPDATE animal SET id_medical = $1 WHERE id_shelter = $2 and id_animal = $3",
       [id_medical, id_shelter, id_animal]
     );
     return {
@@ -181,7 +195,7 @@ async function updateAnimalMedicalId(id_medical, id_shelter, id_animal) {
 async function deleteAnimalData(id_shelter, id_animal) {
   try {
     const result = await pool.query(
-      "DELETE FROM animal WHERE id_shelter = ? and id_animal = ?",
+      "DELETE FROM animal WHERE id_shelter = $1 and id_animal = $2",
       [id_shelter, id_animal]
     );
     return {
