@@ -2,6 +2,20 @@ const pool = require("../config/db.js");
 const {
 insertFinanceData
 } = require("../models/finance_model.js");
+const {
+deleteFoodData
+} = require("../models/food_model.js");
+const {
+deleteMedicalData
+} = require("../models/medical_model.js");
+const {
+deleteEquipmentData
+} = require("../models/equipment_model.js");
+const {
+deleteSalary
+} = require("../models/salary_model.js");
+
+
 
 /*
     id_expenses ,
@@ -19,6 +33,7 @@ insertFinanceData
 	updated_at,
 	updated_by
 */
+
 async function getExpenses(id_shelter) {
     try {
       const [rows] = await pool.query(
@@ -37,6 +52,7 @@ async function getExpenses(id_shelter) {
           WHEN ex.id_salary IS NOT NULL THEN s.name
           ELSE NULL
         END AS name,
+        
         CASE 
           WHEN ex.id_food IS NOT NULL THEN f.cost
           WHEN ex.id_medical IS NOT NULL THEN m.medical_cost
@@ -44,6 +60,7 @@ async function getExpenses(id_shelter) {
           WHEN ex.id_salary IS NOT NULL THEN s.cost
           ELSE NULL
         END AS cost,
+
         CASE 
           WHEN ex.id_food IS NOT NULL THEN f.date
           WHEN ex.id_medical IS NOT NULL THEN m.medical_date_out
@@ -51,13 +68,14 @@ async function getExpenses(id_shelter) {
           WHEN ex.id_salary IS NOT NULL THEN s.date
           ELSE NULL
         END AS date,
+
         CASE 
           WHEN ex.id_food IS NOT NULL THEN f.note
           WHEN ex.id_medical IS NOT NULL THEN m.note
           WHEN ex.id_equipment IS NOT NULL THEN e.note
           WHEN ex.id_salary IS NOT NULL THEN s.note
           ELSE NULL
-        END AS Note,
+        END AS note,
         FROM expenses ex
         WHERE ex.id_shelter = ?
         LEFT JOIN food f ON f.id_food = e.id_food
@@ -89,7 +107,6 @@ async function getExpenses(id_shelter) {
       };
     }
 }
-
 async function insertExpensesData(
   id_expenses ,
 	id_shelter,
@@ -97,6 +114,7 @@ async function insertExpensesData(
 	id_medical  = null,
 	id_equipment  = null,
 	id_salary  = null,
+  amount,
   created_by,
 ) {
     try {
@@ -112,6 +130,14 @@ async function insertExpensesData(
             created_by,
         ]
       );
+        await insertFinanceData({
+          id_finance,
+          id_shelter,
+          id_expenses,
+          amount,
+          note,
+          created_by,
+        }); 
       return {
         error: false,
         message: "Expenses data created successfully",
@@ -124,9 +150,8 @@ async function insertExpensesData(
         data: null,
       };
     }
-  }
-
-  async function deleteExpensesData(id_shelter,id_expenses){
+}
+async function deleteExpensesData(id_shelter,id_expenses){
     try {
       const ExpensesRes = await pool.query(
         `
@@ -145,17 +170,18 @@ async function insertExpensesData(
         id_equipment,
         id_salary
       } = ExpensesRes.rows[0];
+
       if (id_food) {
-        //function delete food
+        await deleteFoodData(id_shelter, id_food)
       }
       if (id_medical) {
-        //function delete medical
+        await deleteMedicalData(id_shelter, id_medical)
       }
       if (id_equipment) {
-        //function delete equipment
+        await deleteEquipmentData(id_shelter, id_equipment)
       }
       if (id_salary) {
-        //function delete salary
+        await deleteSalary(id_shelter,id_salary)
       }
         const result = await pool.query(
           "DELETE FROM expenses WHERE id_expenses = ? AND id_shelter = ?", 
@@ -182,8 +208,8 @@ async function insertExpensesData(
           data: null,
         };
       }
-  }
+}
 
   
 
-  module.exports = { deleteExpensesData, insertExpensesData};
+  module.exports = { deleteExpensesData, insertExpensesData,getExpenses};

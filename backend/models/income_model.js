@@ -57,7 +57,7 @@ async function getIncome(id_shelter) {
       );
 
       //insert to finance
-      const id_finance = uuid()
+      // const id_finance = uuid()
       await insertFinanceData({
         id_finance,
         id_shelter,
@@ -65,7 +65,6 @@ async function getIncome(id_shelter) {
         amount,
         note,
         created_by,
-        updated_by
       }); 
       
       return {
