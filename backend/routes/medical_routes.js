@@ -6,7 +6,7 @@ const {
     insertMedicalData,
     updateMedicalData,
     deleteMedicalData
-} = require("../models/medical_model");
+} = require("../models/medical_models");
 
 router.get("/getMedicalData/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
