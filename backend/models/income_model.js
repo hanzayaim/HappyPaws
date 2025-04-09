@@ -6,7 +6,7 @@ insertFinanceData
 async function getIncome(id_shelter) {
     try {
       const [rows] = await pool.query(
-        "SELECT * FROM income WHERE id_shelter = ?",
+        "SELECT * FROM income WHERE id_shelter = $1",
         [id_shelter]
       );
       if (rows.length > 0) {
@@ -43,7 +43,7 @@ async function getIncome(id_shelter) {
   ) {
     try {
         const result = await pool.query(
-        "INSERT INTO income (id_income, id_shelter, name, amount, date, type,  note, created_by) VALUES (?,?,?,?,?,?,?,?)",
+        "INSERT INTO income (id_income, id_shelter, name, amount, date, type,  note, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
         [
             id_income,
             id_shelter,
@@ -83,7 +83,7 @@ async function getIncome(id_shelter) {
   async function deleteIncomeData(id_shelter,id_income){
     try {
         const result = await pool.query(
-          "DELETE FROM income WHERE id_income = ? AND id_shelter = ?", 
+          "DELETE FROM income WHERE id_income = $1 AND id_shelter = $2", 
           [id_income,id_shelter]
         );
       
@@ -121,7 +121,7 @@ async function getIncome(id_shelter) {
     try {
       const updated_at = new Date();
       const result = await pool.query(
-        "UPDATE income SET name=?, amount=?, date=?, type=?, note=?, update_by =? WHERE id_shelter = ? AND id_income=?",
+        "UPDATE income SET name=$1, amount=$2, date=$3, type=$4, note=$5, updated_at=$6, update_by=$7 WHERE id_shelter=$8 AND id_income=$9",
         [
             name,
             amount,

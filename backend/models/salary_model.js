@@ -2,7 +2,7 @@ const pool = require("../config/db.js");
 async function getSalary(id_shelter) {
     try {
       const [rows] = await pool.query(
-        "SELECT * FROM salary WHERE id_shelter = ?",
+        "SELECT * FROM salary WHERE id_shelter = $1",
         [id_shelter]
       );
       if (rows.length > 0) {
@@ -40,7 +40,7 @@ async function getSalary(id_shelter) {
   ) {
     try {
       const result = await pool.query(
-        "INSERT INTO salary (id_salary, id_shelter, id_employee, name, cost, date,  note, created_by, updated_by) VALUES (?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO salary (id_salary, id_shelter, id_employee, name, cost, date, note, created_by, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
         [
             id_salary,
             id_shelter,
@@ -70,7 +70,7 @@ async function getSalary(id_shelter) {
   async function deleteSalary(id_shelter,id_salary){
     try {
         const result = await pool.query(
-          "DELETE FROM salary WHERE id_salary = ? AND id_shelter = ?", 
+          "DELETE FROM salary WHERE id_salary = $1 AND id_shelter = $2", 
           [id_salary,id_shelter]
         );
       

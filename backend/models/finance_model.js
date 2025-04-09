@@ -35,7 +35,7 @@ async function getFinanceLog(id_shelter) {
         f.total_balance AS current_balance,
         f.created_at AS last_updated
         FROM finance f
-        WHERE f.id_shelter = ?
+        WHERE f.id_shelter = $1
         LEFT JOIN income i ON f.id_income = i.id_income
         LEFT JOIN expenses e ON f.id_expenses = e.id_expenses
         ORDER BY f.created_at DESC;
@@ -85,7 +85,7 @@ async function getFinanceLog(id_shelter) {
 
       
       const result = await pool.query(
-        "INSERT INTO finance (id_finance, id_shelter, id_income, id_expenses, total_balance, note, created_by) VALUES (?,?,?,?,?,?,?)",
+        "INSERT INTO finance (id_finance, id_shelter, id_income, id_expenses, total_balance, note, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7)",
         [
           id_finance,
           id_shelter,
@@ -133,7 +133,7 @@ async function getFinanceLog(id_shelter) {
         }
       }
       const result = await pool.query(
-        "DELETE FROM finance WHERE id_finance = ? AND id_shelter = ? RETURNING *",
+        "DELETE FROM finance WHERE id_finance = $1 AND id_shelter = $2",
         [id_finance, id_shelter]
       );
 
@@ -172,7 +172,7 @@ async function getFinanceLog(id_shelter) {
   ) {
     try {
       const financeRes = await pool.query(
-        'SELECT id_income, id_expenses FROM finance WHERE id_finance = ?',
+        'SELECT id_income, id_expenses FROM finance WHERE id_finance = $1',
         [id_finance]
       );
       const { id_income, id_expenses } = financeRes.rows[0];
@@ -210,7 +210,7 @@ async function getFinanceLog(id_shelter) {
       const lastBalance = res.rows[0]?.total_balance || 0;
       const newBalance = id_income? lastBalance - parseFloat(oldAmount) + parseFloat(amount) : lastBalance + parseFloat(oldAmount) - parseFloat(amount) 
       const result = await pool.query(
-        "UPDATE finance SET total_balance = ?, note = ?, updated_by = ? WHERE id_finance = ?",
+        "UPDATE finance SET total_balance = $1, note = $2, updated_by = $3 WHERE id_finance = $4",
         [
           newBalance,
           note,

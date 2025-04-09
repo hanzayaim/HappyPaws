@@ -3,8 +3,8 @@ const pool = require("../config/db.js");
 // get data
 async function getShelterDataById(id_shelter) {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM shelter where id_shelter = ?",
+    const {rows} = await pool.query(
+      "SELECT * FROM shelter where id_shelter = $1",
       [id_shelter]  
     );
     if (rows.length > 0) {
@@ -67,7 +67,7 @@ async function insertShelterData(
 ) {
   try {
     const result = await pool.query(
-      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
       [
         id_shelter,
         owner_name,

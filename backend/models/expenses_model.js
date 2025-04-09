@@ -77,7 +77,7 @@ async function getExpenses(id_shelter) {
           ELSE NULL
         END AS note,
         FROM expenses ex
-        WHERE ex.id_shelter = ?
+        WHERE ex.id_shelter = $1
         LEFT JOIN food f ON f.id_food = e.id_food
         LEFT JOIN medical m ON f.id_expenses = e.id_expenses
         LEFT JOIN equipment e ON f.id_expenses = e.id_expenses
@@ -119,7 +119,7 @@ async function insertExpensesData(
 ) {
     try {
       const result = await pool.query(
-        "INSERT INTO expenses (id_expenses, id_shelter, id_food, id_medical, id_equipment,created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO expenses (id_expenses, id_shelter, id_food, id_medical, id_equipment,created_by) VALUES ($1,$2,$3,$4,$5,$6,$7)",
         [
             id_expenses ,
             id_shelter,
@@ -160,7 +160,7 @@ async function deleteExpensesData(id_shelter,id_expenses){
         id_medical,
         id_equipment,
         id_salary 
-        FROM expenses WHERE id_expenses = ? AND id_shelter = ?
+        FROM expenses WHERE id_expenses = $1 AND id_shelter = $2
         `,
         [id_expenses,id_shelter]
       );
