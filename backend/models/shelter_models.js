@@ -31,7 +31,7 @@ async function getShelterDataById(id_shelter) {
 
 async function getShelterData() {
   try {
-    const [rows] = await pool.query("SELECT * FROM shelter");
+    const {rows} = await pool.query("SELECT * FROM shelter");
     if (rows.length > 0) {
       return {
         error: false,

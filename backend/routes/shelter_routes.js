@@ -10,7 +10,7 @@ const {
 
 router.get("/getShelterData", async (req, res) => {
   try {
-    const result = await getShelterData(id_shelter);
+    const result = await getShelterData();
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: true, message: "failed to get data" });

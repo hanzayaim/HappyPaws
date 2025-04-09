@@ -70,4 +70,14 @@ router.post("/insertExpensesData", async (req, res) =>{
 
 });
 
+router.post("/deleteExpensesData", async (req, res) => {
+    const { id_shelter, id_expenses } = req.body;
+    try {
+      const result = await deleteExpensesData(id_shelter, id_expenses);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ error: true, message: "failed to delete data" });
+    }
+});
 
+  module.exports = router;

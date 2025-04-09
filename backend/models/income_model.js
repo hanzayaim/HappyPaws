@@ -29,7 +29,7 @@ async function getIncome(id_shelter) {
         data: null,
       };
     }
-  }
+}
 
   async function insertIncomeData(
     id_income,
@@ -80,7 +80,6 @@ async function getIncome(id_shelter) {
       };
     }
   }
-
   async function deleteIncomeData(id_shelter,id_income){
     try {
         const result = await pool.query(
@@ -109,7 +108,6 @@ async function getIncome(id_shelter) {
         };
       }
   }
-  
   async function updateIncomeData(
     id_income,
     id_shelter,
@@ -149,7 +147,4 @@ async function getIncome(id_shelter) {
       };
     }
   }
-
-
-  
   module.exports = { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome };
