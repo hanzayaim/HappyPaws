@@ -72,23 +72,24 @@ router.post("/insertAdopterData", async (req, res) => {
 
 router.post("/updateAdopterData", async (req, res) => {
   const {
-    id_shelter,
-    id_adopter,
     adopter_name,
     profile_img,
     gender,
     phone_number,
     address,
-    createdby,
+    updated_by,
+    id_shelter,
+    id_adopter,
   } = req.body;
   if (
-    id_shelter == null ||
-    id_adopter == null ||
     adopter_name == null ||
+    profile_img == null ||
     gender == null ||
     phone_number == null ||
     address == null ||
-    createdby == null
+    updated_by == null ||
+    id_shelter == null ||
+    id_adopter == null
   ) {
     return res.status(400).send({
       error: true,
@@ -97,14 +98,14 @@ router.post("/updateAdopterData", async (req, res) => {
   }
   try {
     const result = await updateAdopterData(
-      id_shelter,
-      id_adopter,
       adopter_name,
       profile_img,
       gender,
       phone_number,
       address,
-      createdby
+      updated_by,
+      id_shelter,
+      id_adopter
     );
     res.status(200).json(result);
   } catch {
