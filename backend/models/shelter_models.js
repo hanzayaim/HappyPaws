@@ -115,14 +115,20 @@ async function updateShelterStatus(status, id_shelter) {
 
 async function deleteShelterData(id_shelter) {
   try {
-    const result = await pool.query(
-      "DELETE FROM shelter WHERE id_shelter = $1",
+    const { rows } = await pool.query(
+      "DELETE FROM shelter WHERE id_shelter = $1 RETURNING *",
       [id_shelter]
     );
+    if (rows.length === 0)
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
     return {
       error: false,
       message: "shelter deleted successfully",
-      shelter: result.rows[0],
+      shelter: rows[0],
     };
   } catch (error) {
     return {
