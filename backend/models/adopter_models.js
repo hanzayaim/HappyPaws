@@ -88,7 +88,6 @@ async function insertAdopterData(
       adopter: rows[0],
     };
   } catch (error) {
-    console.error("Insert Adopter Error:", error); // log error
     return {
       error: true,
       message: "error creating adopter",
