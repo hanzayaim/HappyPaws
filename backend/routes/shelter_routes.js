@@ -1,5 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const app = express();
+
+app.use(express.json());
+
 const {
   getShelterDataById,
   getShelterData,
@@ -79,7 +83,7 @@ router.post("/updateShelterStatus", async (req, res) => {
     });
   }
   try {
-    const result = await updateShelterStatus(id_shelter, status);
+    const result = await updateShelterStatus(status, id_shelter);
     res.status(200).json(result);
   } catch {
     res.status(500).json({ error: true, message: "failed to update data" });
@@ -88,6 +92,11 @@ router.post("/updateShelterStatus", async (req, res) => {
 
 router.post("/deleteShelterData", async (req, res) => {
   const { id_shelter } = req.body;
+  if (!id_shelter) {
+    return res
+      .status(400)
+      .json({ error: true, message: "id_shelter is required" });
+  }
   try {
     const result = await deleteShelterData(id_shelter);
     res.status(200).json(result);

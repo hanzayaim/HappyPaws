@@ -66,8 +66,8 @@ async function insertShelterData(
   status
 ) {
   try {
-    const result = await pool.query(
-      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+    const { rows } = await pool.query(
+      "INSERT INTO shelter (id_shelter, owner_name, email, password, shelter_name, phone_number, address, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *",
       [
         id_shelter,
         owner_name,
@@ -82,7 +82,7 @@ async function insertShelterData(
     return {
       error: false,
       message: "shelter created successfully",
-      shelter: result.rows[0],
+      shelter: rows[0],
     };
   } catch (error) {
     return {
@@ -95,14 +95,21 @@ async function insertShelterData(
 
 async function updateShelterStatus(status, id_shelter) {
   try {
-    const result = await pool.query(
-      "UPDATE shelter SET status= ? WHERE id_shelter = $1",
+    const { rows } = await pool.query(
+      "UPDATE shelter SET status= $1 WHERE id_shelter = $2 returning *",
       [status, id_shelter]
     );
+    if (rows.length === 0) {
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
+    }
     return {
       error: false,
       message: "shelter status updated successfully",
-      shelter: result.rows[0],
+      shelter: rows[0],
     };
   } catch (error) {
     return {
@@ -115,14 +122,20 @@ async function updateShelterStatus(status, id_shelter) {
 
 async function deleteShelterData(id_shelter) {
   try {
-    const result = await pool.query(
-      "DELETE FROM shelter WHERE id_shelter = $1",
+    const { rows } = await pool.query(
+      "DELETE FROM shelter WHERE id_shelter = $1 RETURNING *",
       [id_shelter]
     );
+    if (rows.length === 0)
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
     return {
       error: false,
       message: "shelter deleted successfully",
-      shelter: result.rows[0],
+      shelter: rows[0],
     };
   } catch (error) {
     return {

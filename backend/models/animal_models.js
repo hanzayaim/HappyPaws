@@ -70,12 +70,11 @@ async function insertAnimalData(
   rescue_location,
   date,
   note,
-  created_by,
-  status
+  created_by
 ) {
   try {
     const result = await pool.query(
-      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
       [
         id_shelter,
         id_animal,
@@ -89,7 +88,6 @@ async function insertAnimalData(
         date,
         note,
         created_by,
-        status,
       ]
     );
     return {
@@ -119,7 +117,6 @@ async function updateAnimalData(
   note,
   updated_by,
   updated_at,
-  status,
   id_shelter,
   id_animal
 ) {
@@ -137,8 +134,7 @@ async function updateAnimalData(
         date = $9,
         note = $10,
         updated_by = $11,
-        updated_at = $12,
-        status = $13
+        updated_at = $12
       WHERE id_shelter = $14 AND id_animal = $15`,
       [
         animal_name,
@@ -153,7 +149,6 @@ async function updateAnimalData(
         note,
         updated_by,
         updated_at,
-        status,
         id_shelter,
         id_animal,
       ]
