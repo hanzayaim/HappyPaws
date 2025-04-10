@@ -83,7 +83,7 @@ router.post("/updateShelterStatus", async (req, res) => {
     });
   }
   try {
-    const result = await updateShelterStatus(id_shelter, status);
+    const result = await updateShelterStatus(status, id_shelter);
     res.status(200).json(result);
   } catch {
     res.status(500).json({ error: true, message: "failed to update data" });
@@ -98,7 +98,7 @@ router.post("/deleteShelterData", async (req, res) => {
       .json({ error: true, message: "id_shelter is required" });
   }
   try {
-    const result = await deleteShelterData();
+    const result = await deleteShelterData(id_shelter);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: true, message: "failed to delete data" });
