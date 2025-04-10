@@ -53,6 +53,7 @@ router.get("/getMedicalDataById/:id_shelter/:id_animal/:id_medical", async (req,
 
 router.post("/insertMedicalData", async (req, res) =>  {
     const { 
+        id_medical,
         medical_process,
         medical_status,
         vaccin_status,
@@ -66,6 +67,7 @@ router.post("/insertMedicalData", async (req, res) =>  {
     } = req.body;
 
     if (
+        id_medical == null ||
         medical_process == null ||
         medical_status == null ||
         vaccin_status == null ||
@@ -85,6 +87,7 @@ router.post("/insertMedicalData", async (req, res) =>  {
 
     try {
         const result = await insertMedicalData(
+            id_medical,
             medical_process,
             medical_status,
             vaccin_status,
@@ -119,7 +122,6 @@ router.post("/updateMedicalData", async (req, res) => {
         medical_date_out,
         medical_cost,
         note,
-        updated_at,
         updated_by,
         id_shelter,
         id_animal,
@@ -134,7 +136,6 @@ router.post("/updateMedicalData", async (req, res) => {
         medical_date_out == null ||
         medical_cost == null ||
         note == null ||
-        updated_at == null ||
         updated_by == null ||
         id_shelter == null ||
         id_animal == null ||
@@ -155,7 +156,6 @@ router.post("/updateMedicalData", async (req, res) => {
             medical_date_out,
             medical_cost,
             note,
-            updated_at,
             updated_by,
             id_shelter,
             id_animal,
@@ -186,7 +186,7 @@ router.post("/deleteMedicalData", async (req, res) => {
     }
 
     try {
-        const result = await deleteMedicalData(id_shelter, id_animal, id_medical);
+        const result = await deleteMedicalData(id_shelter, id_medical);
 
         if (result.error) {
             return res.status(400).json(result);
