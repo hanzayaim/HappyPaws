@@ -43,7 +43,6 @@ router.post("/insertAnimalData", async (req, res) => {
     date,
     note,
     created_by,
-    status,
   } = req.body;
   if (
     id_shelter == null ||
@@ -52,8 +51,7 @@ router.post("/insertAnimalData", async (req, res) => {
     animal_gender == null ||
     animal_status == null ||
     date == null ||
-    created_by == null ||
-    status == null
+    created_by == null
   ) {
     return res.status(400).send({
       error: true,
@@ -73,8 +71,7 @@ router.post("/insertAnimalData", async (req, res) => {
       rescue_location,
       date,
       note,
-      created_by,
-      status
+      created_by
     );
     res.status(200).json(result);
   } catch {
@@ -96,7 +93,6 @@ router.post("/updateAnimalData", async (req, res) => {
     note,
     updated_by,
     updated_at,
-    status,
     id_shelter,
     id_animal,
   } = req.body;
@@ -109,8 +105,7 @@ router.post("/updateAnimalData", async (req, res) => {
     animal_status == null ||
     date == null ||
     updated_by == null ||
-    updated_at == null ||
-    status == null
+    updated_at == null
   ) {
     return res.status(400).send({
       error: true,
@@ -134,7 +129,6 @@ router.post("/updateAnimalData", async (req, res) => {
       note,
       updated_by,
       updated_at,
-      status,
       id_shelter,
       id_animal
     );
