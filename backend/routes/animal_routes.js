@@ -43,7 +43,6 @@ router.post("/insertAnimalData", async (req, res) => {
     date,
     note,
     created_by,
-    status,
   } = req.body;
   if (
     id_shelter == null ||
@@ -52,8 +51,7 @@ router.post("/insertAnimalData", async (req, res) => {
     animal_gender == null ||
     animal_status == null ||
     date == null ||
-    created_by == null ||
-    status == null
+    created_by == null
   ) {
     return res.status(400).send({
       error: true,
@@ -73,8 +71,7 @@ router.post("/insertAnimalData", async (req, res) => {
       rescue_location,
       date,
       note,
-      created_by,
-      status
+      created_by
     );
     res.status(200).json(result);
   } catch {
@@ -84,6 +81,7 @@ router.post("/insertAnimalData", async (req, res) => {
 
 router.post("/updateAnimalData", async (req, res) => {
   const {
+    id_adopter,
     animal_name,
     animal_img,
     animal_gender,
@@ -91,12 +89,9 @@ router.post("/updateAnimalData", async (req, res) => {
     animal_age,
     animal_status,
     rescue_location,
-    id_adopter,
     date,
     note,
     updated_by,
-    updated_at,
-    status,
     id_shelter,
     id_animal,
   } = req.body;
@@ -108,9 +103,7 @@ router.post("/updateAnimalData", async (req, res) => {
     animal_gender == null ||
     animal_status == null ||
     date == null ||
-    updated_by == null ||
-    updated_at == null ||
-    status == null
+    updated_by == null
   ) {
     return res.status(400).send({
       error: true,
@@ -119,9 +112,7 @@ router.post("/updateAnimalData", async (req, res) => {
   }
   try {
     const result = await updateAnimalData(
-      id_shelter,
       id_adopter,
-      id_animal,
       animal_name,
       animal_img,
       animal_gender,
@@ -129,12 +120,9 @@ router.post("/updateAnimalData", async (req, res) => {
       animal_age,
       animal_status,
       rescue_location,
-      id_adopter,
       date,
       note,
       updated_by,
-      updated_at,
-      status,
       id_shelter,
       id_animal
     );
@@ -145,8 +133,13 @@ router.post("/updateAnimalData", async (req, res) => {
 });
 
 router.post("/updateAnimalMedicalId", async (req, res) => {
-  const { id_shelter, id_animal, id_medical_id } = req.body;
-  if (id_shelter == null || id_animal == null || id_medical_id == null) {
+  const { id_medical, animal_status, id_shelter, id_animal } = req.body;
+  if (
+    id_medical == null ||
+    animal_status == null ||
+    id_shelter == null ||
+    id_animal == null
+  ) {
     return res.status(400).send({
       error: true,
       message: "Please provide all required data.",
@@ -154,9 +147,10 @@ router.post("/updateAnimalMedicalId", async (req, res) => {
   }
   try {
     const result = await updateAnimalMedicalId(
+      id_medical,
+      animal_status,
       id_shelter,
-      id_animal,
-      id_medical_id
+      id_animal
     );
     res.status(200).json(result);
   } catch {
@@ -165,9 +159,9 @@ router.post("/updateAnimalMedicalId", async (req, res) => {
 });
 
 router.post("/deleteAnimalData", async (req, res) => {
-  const { id_shelter, id_adopter } = req.body;
+  const { id_shelter, id_animal } = req.body;
   try {
-    const result = await deleteAnimalData(id_shelter, id_adopter);
+    const result = await deleteAnimalData(id_shelter, id_animal);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: true, message: "failed to delete data" });

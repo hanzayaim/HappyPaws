@@ -92,7 +92,7 @@ router.post("/updateEmployeeStatus", async (req, res) => {
     });
   }
   try {
-    const result = await updateEmployeeStatus(id_shelter, status, id_employee);
+    const result = await updateEmployeeStatus(status, id_shelter, id_employee);
     res.status(200).json(result);
   } catch {
     res.status(500).json({ error: true, message: "failed to update data" });

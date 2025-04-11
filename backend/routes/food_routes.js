@@ -28,7 +28,7 @@ router.get("/getFoodData/:id_shelter", async (req, res) => {
     }
 });
 
-router.get("/getFoodDataById/:id_shelter/id_food", async (req, res) => {
+router.get("/getFoodDataById/:id_shelter/:id_food", async (req, res) => {
     const { id_shelter, id_food } = req.params;
 
     try {
@@ -50,7 +50,8 @@ router.get("/getFoodDataById/:id_shelter/id_food", async (req, res) => {
 
 router.post("/insertFoodData", async (req, res) => {
     const {
-        name 
+        id_food
+        , name 
         , quantity 
         , category 
         , type 
@@ -58,11 +59,12 @@ router.post("/insertFoodData", async (req, res) => {
         , cost 
         , date 
         , note 
-        , created_at 
         , created_by
+        , id_shelter
     } = req.body;
 
     if (
+        id_food == null ||
         name == null ||
         quantity == null ||
         category == null ||
@@ -71,8 +73,8 @@ router.post("/insertFoodData", async (req, res) => {
         cost == null ||
         date == null ||
         note == null ||
-        created_at == null ||
-        created_by == null
+        created_by == null ||
+        id_shelter == null
     ) {
         return res.status(400).send({
             error: true,
@@ -82,7 +84,8 @@ router.post("/insertFoodData", async (req, res) => {
 
     try {
         const result = await insertFoodData(
-            name 
+            id_food
+            , name 
             , quantity 
             , category 
             , type 
@@ -90,16 +93,17 @@ router.post("/insertFoodData", async (req, res) => {
             , cost 
             , date 
             , note 
-            , created_at 
             , created_by
+            , id_shelter
         );
 
         if (result.error) {
             return res.status(400).json(result);
         }
 
-        return res.status(200).json();
+        return res.status(200).json(result);
     } catch (error) {
+        console.error("Insert error:", error);
         return res.status(500).json({
             error: true,
             message: "Failed to insert data."
@@ -117,8 +121,9 @@ router.post("/updateFoodData", async (req, res) => {
         , cost
         , date
         , note
-        , created_at
-        , created_by
+        , updated_by
+        , id_shelter
+        , id_food
     } = req.body;
 
     if (
@@ -130,8 +135,9 @@ router.post("/updateFoodData", async (req, res) => {
         cost == null ||
         date == null ||
         note == null ||
-        created_at == null ||
-        created_by == null
+        updated_by == null ||
+        id_shelter == null ||
+        id_food == null
     ) {
         return res.status(400).send({
             error: true,
@@ -149,15 +155,16 @@ router.post("/updateFoodData", async (req, res) => {
             , cost
             , date
             , note
-            , created_at
-            , created_by
+            , updated_by
+            , id_shelter
+            , id_food
         );
 
         if (result.error) {
             return res.status(400).json(result);
         }
 
-        return result.status(200).json(result);
+        return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({
             error: true,
@@ -166,7 +173,7 @@ router.post("/updateFoodData", async (req, res) => {
     }
 });
 
-router.post("/deleteEquipmentData", async (req, res) => {
+router.post("/deleteFoodData", async (req, res) => {
     const { id_shelter, id_food } = req.body;
 
     if (id_shelter == null || id_food == null) {

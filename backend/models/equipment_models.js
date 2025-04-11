@@ -13,7 +13,7 @@ async function getEquipmentData(id_shelter) {
             return {
                 error: false,
                 message: "Data fetched successfully.",
-                data: rows[0]
+                data: rows
             }
         } else {
             return {
@@ -65,6 +65,7 @@ async function getEquipmentDataById(id_shelter, id_equipment) {
 }
 
 async function insertEquipmentData(
+    id_equipment,
     name,
     type,
     date,
@@ -76,7 +77,8 @@ async function insertEquipmentData(
     try {
         const result = await pool.query(
             `insert into equipment (
-            name 
+            id_equipment
+            , name 
             , type 
             , date 
             , cost 
@@ -84,17 +86,16 @@ async function insertEquipmentData(
             , created_by 
             , id_shelter 
             )
-            values ($1,$2,$3,$4,$5,$6,$7)`,
+            values ($1, $2, $3, $4, $5, $6, $7, $8)
+            returning *`,
             [
+                id_equipment,
                 name,
                 type,
                 date,
                 cost,
                 note,
-                created_at,
                 created_by,
-                updated_at,
-                updated_by,
                 id_shelter
             ]
         );
@@ -118,33 +119,28 @@ async function updateEquipmentData(
     date,
     cost,
     note,
-    updated_at,
     updated_by,
     id_shelter,
     id_equipment
 ) {
     try {
         const result = await pool.query(
-            `UPDATE equipment 
-            SET 
-                name = $1,
-                type = $2,
-                date = $3,
-                cost = $4,
-                note = $5,
-                updated_at = $6,
-                updated_by = $7
-            WHERE 
-                id_shelter = $8 AND 
-                id_equipment = $9
-            `,
+            `update equipment 
+            set name = $1
+                , type = $2
+                , date = $3
+                , cost = $4
+                , note = $5
+                , updated_by = $6
+            where id_shelter = $7 
+            and id_equipment = $8
+            returning *`,
             [
                 name,
                 type,
                 date,
                 cost,
                 note,
-                updated_at,
                 updated_by,
                 id_shelter,
                 id_equipment
@@ -169,7 +165,8 @@ async function deleteEquipmentData(id_shelter, id_equipment) {
         const result = await pool.query(
             `delete from equipment 
             where id_shelter = $1 
-            and id_equipment = $2`,
+            and id_equipment = $2
+            returning *`,
             [id_shelter, id_equipment]
         );
         return {

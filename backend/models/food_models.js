@@ -2,17 +2,18 @@ const pool = require("../config/db");
 
 async function getFoodData(id_shelter) {
     try {
-        const { rows } = pool.query(
+        const { rows } = await pool.query(
             `select * 
             from food f 
             where f.id_shelter = $1
-            order by f.created_at desc`
+            order by f.created_at desc`,
+            [id_shelter]
         );
         if (rows.length > 0) {
             return {
                 error: false,
-                message: "Data fetched successfully",
-                data: rows[0]
+                message: "Data fetched successfully.",
+                data: rows
             }
         } else {
             return {
@@ -21,6 +22,7 @@ async function getFoodData(id_shelter) {
                 data: null
             }
         }
+        
     } catch (error) {
         return {
             error: true,
@@ -37,9 +39,10 @@ async function getFoodDataById(id_shelter, id_food) {
             from food f 
             where f.id_shelter = $1
             and f.id_food = $2
-            order by f.created_at desc`
+            order by f.created_at desc`,
+            [id_shelter, id_food]
         );
-        if (rows > 0) {
+        if (rows.length > 0) {
             return {
                 error: false,
                 message: "Data fetched successfully.",
@@ -62,7 +65,8 @@ async function getFoodDataById(id_shelter, id_food) {
 }
 
 async function insertFoodData(
-    name 
+    id_food
+    , name 
 	, quantity 
 	, category 
 	, type 
@@ -70,13 +74,14 @@ async function insertFoodData(
 	, cost 
 	, date 
 	, note 
-	, created_at 
 	, created_by
+    , id_shelter
 ) {
     try {
         const result = await pool.query(
             `insert into food (
-            name 
+            id_food
+            , name 
             , quantity 
             , category 
             , type 
@@ -84,14 +89,14 @@ async function insertFoodData(
             , cost 
             , date 
             , note 
-            , created_at 
             , created_by 
+            , id_shelter
         )
-        values (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-        )`,
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        returning *`,
         [
-            name 
+            id_food
+            , name 
             , quantity 
             , category 
             , type 
@@ -99,8 +104,8 @@ async function insertFoodData(
             , cost 
             , date 
             , note 
-            , created_at 
             , created_by
+            , id_shelter
         ]
         );
         return {
@@ -126,26 +131,25 @@ async function updateFoodData(
 	, cost
 	, date
 	, note
-	, created_at
-	, created_by
+	, updated_by
+    , id_shelter
+    , id_food
 ) {
     try {
         const result = await pool.query(
-            `UPDATE food 
-            SET 
-                name = $1,
-                quantity = $2,
-                category = $3,
-                type = $4,
-                exp_date = $5,
-                cost = $6,
-                date = $7,
-                note = $8,
-                updated_at = $9,
-                updated_by = $10
-            WHERE 
-                id_equipment = $11 AND 
-                id_shelter = $12`,
+            `update food 
+            set name = $1
+                , quantity = $2
+                , category = $3
+                , type = $4
+                , exp_date = $5
+                , cost = $6
+                , date = $7
+                , note = $8
+                , updated_by = $9
+            where id_shelter = $10
+            and id_food = $11
+            returning *`,
             [
             name
             , quantity
@@ -155,19 +159,20 @@ async function updateFoodData(
             , cost
             , date
             , note
-            , created_at
-            , created_by
+            , updated_by
+            , id_shelter
+            , id_food
             ]
         );
         return {
-            error: true,
+            error: false,
             message: "Food updated successfully.",
             food: result.rows[0]
         }
     } catch (error) {
         return {
             error: true,
-            message: "Failed updating successfully.",
+            message: "Failed updating food.",
             data: null
         }
     }
@@ -178,12 +183,13 @@ async function deleteFoodData(id_shelter, id_food) {
         const result = await pool.query(
             `delete from food 
             where id_shelter = $1
-            and id_food = $2`,
+            and id_food = $2
+            returning *`,
             [id_shelter, id_food]
         );
         return {
             error: false,
-            message: "Food updated successfully.",
+            message: "Food deleted successfully.",
             food: result.rows[0]
         }
     } catch (error) {
