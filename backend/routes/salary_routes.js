@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { deleteSalary, insertSalary, getSalary } = require("../models/salary_model.js");
+const { deleteSalary, insertSalary, getSalary } = require("../models/salary_models.js");
 
 router.get("/getSalary/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
@@ -12,12 +12,12 @@ router.get("/getSalary/:id_shelter", async (req, res) =>  {
 });
 router.post("/insertSalaryData", async (req, res) => {
     try {
-        const { id_salary, id_shelter, id_employee, name, cost, date, note, created_by, updated_by } = req.body;
+        const { id_salary, id_shelter, id_employee, name, cost, date, note, created_by } = req.body;
 
         if (!id_salary || !id_shelter || !name || !cost || !date || !created_by) {
             return res.status(400).json({ error: true, message: "Please provide all required data." });
         }
-        const result = await insertSalary(id_salary, id_shelter, id_employee, name, cost, date, note, created_by, updated_by);
+        const result = await insertSalary(id_salary, id_shelter, id_employee, name, cost, date, note, created_by);
         if (result.error) {
             return res.status(500).json(result); 
         }

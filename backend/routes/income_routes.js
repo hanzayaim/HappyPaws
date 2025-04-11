@@ -1,10 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome } = require("../models/income_model.js");
+const { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome, getIncomeById } = require("../models/income_models.js");
 
 router.get("/getIncome/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
     const result = await getIncome(id_shelter);
+    if (result.error) {
+        return res.status(404).json(result);
+    }
+    res.json(result);
+});
+router.get("/getIncomebyId/:id_shelter/:id_income", async (req, res) =>  {
+    const { id_shelter,id_income } = req.params;
+    const result = await getIncomeById(id_shelter,id_income);
     if (result.error) {
         return res.status(404).json(result);
     }
@@ -49,9 +57,6 @@ router.post("/insertIncomeData", async (req, res) => {
 
 router.post("/deleteIncomeData", async (req, res) => { 
     const { id_shelter,id_income } = req.body;
-    if (!id_salary) {
-        return res.status(400).json({ error: true, message: "Please provide all required data." });
-    }
     try {
         const result = await deleteIncomeData(id_shelter,id_income );
         res.status(200).json(result);
@@ -98,4 +103,4 @@ router.post("/updateIncomeData", async (req, res) => {
     }
 });
 
-
+module.exports = router;

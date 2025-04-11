@@ -1,7 +1,7 @@
 const pool = require("../config/db.js");
 async function getSalary(id_shelter) {
     try {
-      const [rows] = await pool.query(
+      const {rows} = await pool.query(
         "SELECT * FROM salary WHERE id_shelter = $1",
         [id_shelter]
       );
@@ -9,7 +9,7 @@ async function getSalary(id_shelter) {
         return {
           error: false,
           message: "data fetched successfully",
-          data: rows[0],
+          data: rows,
         };
       } else {
         return {
@@ -35,12 +35,11 @@ async function getSalary(id_shelter) {
     cost,
     date,
     note,
-    created_by,
-    updated_by
+    created_by
   ) {
     try {
       const result = await pool.query(
-        "INSERT INTO salary (id_salary, id_shelter, id_employee, name, cost, date, note, created_by, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        "INSERT INTO salary (id_salary, id_shelter, id_employee, name, cost, date, note, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
         [
             id_salary,
             id_shelter,
@@ -49,19 +48,19 @@ async function getSalary(id_shelter) {
             cost,
             date,
             note,
-            created_by,
-            updated_by
+            created_by
         ]
       );
       return {
         error: false,
-        message: "adopter created successfully",
-        data: result.rows[0],
+        message: "Employee Salary created successfully",
+        data: result.rows[0]
       };
     } catch (error) {
+      console.log(error);
       return {
         error: true,
-        message: "error creating adopter",
+        message: "error creating Employee Salary",
         data: null,
       };
     }
@@ -70,11 +69,11 @@ async function getSalary(id_shelter) {
   async function deleteSalary(id_shelter,id_salary){
     try {
         const result = await pool.query(
-          "DELETE FROM salary WHERE id_salary = $1 AND id_shelter = $2", 
+          "DELETE FROM salary WHERE id_salary = $1 AND id_shelter = $2 RETURNING * ", 
           [id_salary,id_shelter]
         );
       
-        if (result.rowCount === 0) {
+        if (result.rowCount == 0) {
           return {
             error: true,
             message: "Salary not found",
@@ -87,7 +86,7 @@ async function getSalary(id_shelter) {
           data: result.rows[0],
         };
       } catch (error) {
-        console.error("Error deleting salary:", error);
+        
         return {
           error: true,
           message: "Error deleting salary",

@@ -1,13 +1,40 @@
 const pool = require("../config/db.js");
 const {
 insertFinanceData
-} = require("../models/finance_model.js");
+} = require("./finance_models.js");
 
 async function getIncome(id_shelter) {
     try {
-      const [rows] = await pool.query(
+      const {rows} = await pool.query(
         "SELECT * FROM income WHERE id_shelter = $1",
         [id_shelter]
+      );
+      if (rows.length > 0) {
+        return {
+          error: false,
+          message: "data fetched successfully",
+          data: rows,
+        };
+      } else {
+        return {
+          error: true,
+          message: "no data found",
+          data: null,
+        };
+      }
+    } catch (error) {
+      return {
+        error: true,
+        message: "error fetching data",
+        data: null,
+      };
+    }
+}
+async function getIncomeById(id_shelter,id_income) {
+    try {
+      const {rows} = await pool.query(
+        "SELECT * FROM income WHERE id_shelter = $1 AND id_income = $2 ",
+        [id_shelter,id_income]
       );
       if (rows.length > 0) {
         return {
@@ -23,6 +50,7 @@ async function getIncome(id_shelter) {
         };
       }
     } catch (error) {
+      
       return {
         error: true,
         message: "error fetching data",
@@ -55,27 +83,17 @@ async function getIncome(id_shelter) {
             created_by,
         ]
       );
-
-      //insert to finance
-      // const id_finance = uuid()
-      await insertFinanceData({
-        id_finance,
-        id_shelter,
-        id_income,
-        amount,
-        note,
-        created_by,
-      }); 
       
       return {
         error: false,
-        message: "adopter created successfully",
+        message: "Income data created successfully",
         data: result.rows[0],
       };
     } catch (error) {
+      console.log(error)
       return {
         error: true,
-        message: "error creating adopter",
+        message: "error creating Income data",
         data: null,
       };
     }
@@ -87,7 +105,7 @@ async function getIncome(id_shelter) {
           [id_income,id_shelter]
         );
       
-        if (result.rowCount === 0) {
+        if (result.rowCount == 0) {
           return {
             error: true,
             message: "Income data not found",
@@ -100,7 +118,7 @@ async function getIncome(id_shelter) {
           data: result.rows[0],
         };
       } catch (error) {
-        console.error("Error deleting salary:", error);
+        
         return {
           error: true,
           message: "Error deleting salary",
@@ -121,7 +139,7 @@ async function getIncome(id_shelter) {
     try {
       const updated_at = new Date();
       const result = await pool.query(
-        "UPDATE income SET name=$1, amount=$2, date=$3, type=$4, note=$5, updated_at=$6, update_by=$7 WHERE id_shelter=$8 AND id_income=$9",
+        "UPDATE income SET name=$1, amount=$2, date=$3, type=$4, note=$5, update_at=$6, update_by=$7 WHERE id_shelter=$8 AND id_income=$9 RETURNING *",
         [
             name,
             amount,
@@ -136,15 +154,16 @@ async function getIncome(id_shelter) {
       );
       return {
         error: false,
-        message: "adopter updated successfully",
+        message: "Income Data updated successfully",
         adopter: result.rows[0],
       };
     } catch (error) {
+      console.log(error)
       return {
         error: true,
-        message: "error updating adopter",
+        message: "error updating Income data",
         data: null,
       };
     }
   }
-  module.exports = { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome };
+  module.exports = { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome ,getIncomeById};

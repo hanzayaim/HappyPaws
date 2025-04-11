@@ -1,13 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const {
-    deleteExpensesData, insertExpensesData,getExpenses
-} = require("../models/expenses_model.js");
+    deleteExpensesData, insertExpensesData,getExpenses,getExpensesById
+} = require("../models/expenses_models.js");
 
 router.get("/getExpenses/:id_shelter", async (req, res) => {
     const { id_shelter } = req.params;
     try {
         const result = await getExpenses(id_shelter);
+        if (result.error) {
+            return res.status(400).json(result);
+        }
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Failed to get data.",
+            data: null
+        });
+    }
+});
+router.get("/getExpenses/:id_shelter/:id_expenses", async (req, res) => {
+    const { id_shelter,id_expenses} = req.params;
+    try {
+        const result = await getExpensesById(id_shelter,id_expenses);
 
         if (result.error) {
             return res.status(400).json(result);
@@ -31,7 +47,6 @@ router.post("/insertExpensesData", async (req, res) =>{
         id_medical,
         id_equipment,
         id_salary,
-        amount,
         created_by,
     } = req.body;
 
@@ -52,7 +67,6 @@ router.post("/insertExpensesData", async (req, res) =>{
             id_medical,
             id_equipment,
             id_salary,
-            amount,
             created_by,
         );
 
@@ -60,7 +74,7 @@ router.post("/insertExpensesData", async (req, res) =>{
             return res.status(400).json(result);
         }
 
-        return res.status(200).json();
+        return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({
             error: true,
@@ -80,4 +94,4 @@ router.post("/deleteExpensesData", async (req, res) => {
     }
 });
 
-  module.exports = router;
+module.exports = router;
