@@ -73,8 +73,8 @@ async function insertAnimalData(
   created_by
 ) {
   try {
-    const result = await pool.query(
-      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+    const { rows } = await pool.query(
+      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
       [
         id_shelter,
         id_animal,
@@ -93,7 +93,7 @@ async function insertAnimalData(
     return {
       error: false,
       message: "animal created successfully",
-      animal: result.rows[0],
+      animal: rows[0],
     };
   } catch (error) {
     return {
@@ -105,6 +105,7 @@ async function insertAnimalData(
 }
 
 async function updateAnimalData(
+  id_adopter,
   animal_name,
   animal_img,
   animal_gender,
@@ -112,16 +113,14 @@ async function updateAnimalData(
   animal_age,
   animal_status,
   rescue_location,
-  id_adopter,
   date,
   note,
   updated_by,
-  updated_at,
   id_shelter,
   id_animal
 ) {
   try {
-    const result = await pool.query(
+    const { rows } = await pool.query(
       `UPDATE animal SET 
         id_adopter = $1,
         animal_name = $2,
@@ -134,9 +133,10 @@ async function updateAnimalData(
         date = $9,
         note = $10,
         updated_by = $11,
-        updated_at = $12
-      WHERE id_shelter = $14 AND id_animal = $15`,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id_shelter = $12 AND id_animal = $13 RETURNING *`,
       [
+        id_adopter,
         animal_name,
         animal_img,
         animal_gender,
@@ -144,11 +144,9 @@ async function updateAnimalData(
         animal_age,
         animal_status,
         rescue_location,
-        id_adopter,
         date,
         note,
         updated_by,
-        updated_at,
         id_shelter,
         id_animal,
       ]
@@ -156,7 +154,7 @@ async function updateAnimalData(
     return {
       error: false,
       message: "animal updated successfully",
-      animal: result.rows[0],
+      animal: rows[0],
     };
   } catch (error) {
     return {
@@ -167,16 +165,21 @@ async function updateAnimalData(
   }
 }
 
-async function updateAnimalMedicalId(id_medical, id_shelter, id_animal) {
+async function updateAnimalMedicalId(
+  id_medical,
+  animal_status,
+  id_shelter,
+  id_animal
+) {
   try {
-    const result = await pool.query(
-      "UPDATE animal SET id_medical = $1 WHERE id_shelter = $2 and id_animal = $3",
-      [id_medical, id_shelter, id_animal]
+    const { rows } = await pool.query(
+      "UPDATE animal SET id_medical = $1, animal_status = $2 WHERE id_shelter = $3 and id_animal = $4 RETURNING *",
+      [id_medical, animal_status, id_shelter, id_animal]
     );
     return {
       error: false,
       message: "animal medical updated successfully",
-      animal: result.rows[0],
+      animal: rows[0],
     };
   } catch (error) {
     return {
@@ -189,14 +192,14 @@ async function updateAnimalMedicalId(id_medical, id_shelter, id_animal) {
 
 async function deleteAnimalData(id_shelter, id_animal) {
   try {
-    const result = await pool.query(
-      "DELETE FROM animal WHERE id_shelter = $1 and id_animal = $2",
+    const { rows } = await pool.query(
+      "DELETE FROM animal WHERE id_shelter = $1 and id_animal = $2 RETURNING *",
       [id_shelter, id_animal]
     );
     return {
       error: false,
       message: "animal deleted successfully",
-      animal: result.rows[0],
+      animal: rows[0],
     };
   } catch (error) {
     return {
