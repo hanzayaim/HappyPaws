@@ -138,20 +138,19 @@ async function updateFoodData(
 ) {
     try {
         const result = await pool.query(
-            `UPDATE food 
-            SET 
-                name = $1,
-                quantity = $2,
-                category = $3,
-                type = $4,
-                exp_date = $5,
-                cost = $6,
-                date = $7,
-                note = $8,
-                updated_by = $9
-            WHERE 
-                id_shelter = $10
-            AND id_food = $11`,
+            `update food 
+            set name = $1
+                , quantity = $2
+                , category = $3
+                , type = $4
+                , exp_date = $5
+                , cost = $6
+                , date = $7
+                , note = $8
+                , updated_by = $9
+            where id_shelter = $10
+            and id_food = $11
+            returning *`,
             [
             name
             , quantity
@@ -174,7 +173,7 @@ async function updateFoodData(
     } catch (error) {
         return {
             error: true,
-            message: "Failed updating successfully.",
+            message: "Failed updating food.",
             data: null
         }
     }
@@ -185,7 +184,8 @@ async function deleteFoodData(id_shelter, id_food) {
         const result = await pool.query(
             `delete from food 
             where id_shelter = $1
-            and id_food = $2`,
+            and id_food = $2
+            returning *`,
             [id_shelter, id_food]
         );
         return {

@@ -99,7 +99,7 @@ async function insertMedicalData(
             values (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
             )
-            `,
+            returning *`,
             [
                 id_medical,
                 medical_process,
@@ -144,21 +144,19 @@ async function updateMedicalData(
 ) {
     try {
         const result = await pool.query(
-            `UPDATE medical
-            SET 
-                medical_process = $1,
-                medical_status = $2,
-                vaccin_status = $3,
-                medical_date_in = $4,
-                medical_date_out = $5,
-                medical_cost = $6,
-                note = $7,
+            `update medical
+            set medical_process = $1
+                , medical_status = $2
+                , vaccin_status = $3
+                , medical_date_in = $4
+                , medical_date_out = $5
+                , medical_cost = $6
+                , note = $7
                 updated_by = $8
-            WHERE 
-                id_shelter = $9 AND 
-                id_animal = $10 AND 
-                id_medical = $11
-            `,
+            WHERE id_shelter = $9 
+            and id_animal = $10 
+            and id_medical = $11
+            returning *`,
             [
                 medical_process,
                 medical_status,

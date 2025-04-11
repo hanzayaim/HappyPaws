@@ -101,7 +101,7 @@ router.post("/insertFoodData", async (req, res) => {
             return res.status(400).json(result);
         }
 
-        return res.status(200).json();
+        return res.status(200).json(result);
     } catch (error) {
         console.error("Insert error:", error);
         return res.status(500).json({

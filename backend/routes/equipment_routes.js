@@ -92,7 +92,7 @@ router.post("/insertEquipmentData", async (req, res) => {
             return res.status(400).json(result);
         }
 
-        return res.status(200).json();
+        return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({
             error: true,
@@ -149,7 +149,7 @@ router.post("/updateEquipmentData", async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             error: true,
-            message: "Failed to update data"
+            message: "Failed to update data."
         });
     }
 });

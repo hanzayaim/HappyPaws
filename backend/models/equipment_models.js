@@ -86,7 +86,8 @@ async function insertEquipmentData(
             , created_by 
             , id_shelter 
             )
-            values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            values ($1, $2, $3, $4, $5, $6, $7, $8)
+            returning *`,
             [
                 id_equipment,
                 name,
@@ -124,18 +125,16 @@ async function updateEquipmentData(
 ) {
     try {
         const result = await pool.query(
-            `UPDATE equipment 
-            SET 
-                name = $1,
-                type = $2,
-                date = $3,
-                cost = $4,
-                note = $5,
-                updated_by = $6
-            WHERE 
-                id_shelter = $7 AND 
-                id_equipment = $8
-            `,
+            `update equipment 
+            set name = $1
+                , type = $2
+                , date = $3
+                , cost = $4
+                , note = $5
+                , updated_by = $6
+            where id_shelter = $7 
+            and id_equipment = $8
+            returning *`,
             [
                 name,
                 type,
@@ -166,7 +165,8 @@ async function deleteEquipmentData(id_shelter, id_equipment) {
         const result = await pool.query(
             `delete from equipment 
             where id_shelter = $1 
-            and id_equipment = $2`,
+            and id_equipment = $2
+            returning *`,
             [id_shelter, id_equipment]
         );
         return {
