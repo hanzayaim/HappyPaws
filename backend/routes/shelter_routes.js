@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
-const generateId = require("../config/generate_id");
-const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
