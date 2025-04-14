@@ -1,16 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
+const generateId = require("../config/generate_id");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 const {
   getShelterDataById,
   getShelterData,
-  insertShelterData,
   updateShelterStatus,
   deleteShelterData,
 } = require("../models/shelter_models");
+
+const { insertNewShelter } = require("../controllers/shelter_controller");
 
 router.get("/getShelterData", async (req, res) => {
   try {
@@ -31,26 +34,16 @@ router.get("/getShelterDataById/:id_shelter", async (req, res) => {
   }
 });
 
-router.post("/insertShelterData", async (req, res) => {
-  const {
-    id_shelter,
-    owner_name,
-    email,
-    password,
-    shelter_name,
-    phone_number,
-    address,
-    status,
-  } = req.body;
+router.post("/insertShelter", async (req, res) => {
+  const { owner_name, email, password, shelter_name, phone_number, address } =
+    req.body;
   if (
-    id_shelter == null ||
     owner_name == null ||
     email == null ||
     password == null ||
     shelter_name == null ||
     phone_number == null ||
-    address == null ||
-    status == null
+    address == null
   ) {
     return res.status(400).send({
       error: true,
@@ -58,15 +51,13 @@ router.post("/insertShelterData", async (req, res) => {
     });
   }
   try {
-    const result = await insertShelterData(
-      id_shelter,
+    const result = await insertNewShelter(
       owner_name,
       email,
       password,
       shelter_name,
       phone_number,
-      address,
-      status
+      address
     );
     res.status(200).json(result);
   } catch {
