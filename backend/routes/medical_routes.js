@@ -176,9 +176,9 @@ router.post("/updateMedicalData", async (req, res) => {
 });
 
 router.post("/deleteMedicalData", async (req, res) => {
-    const { id_shelter, id_medical } = req.body;
+    const { id_shelter, id_medical, id_animal } = req.body;
 
-    if (id_shelter == null || id_medical == null) {
+    if (id_shelter == null || id_medical == null || id_animal == null) {
         return res.status(400).send({
             error: true,
             message: "Please provide all required data."
@@ -186,7 +186,7 @@ router.post("/deleteMedicalData", async (req, res) => {
     }
 
     try {
-        const result = await deleteMedicalData(id_shelter, id_medical);
+        const result = await deleteMedicalData(id_shelter, id_medical, id_animal);
 
         if (result.error) {
             return res.status(400).json(result);

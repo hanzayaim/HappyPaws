@@ -1,4 +1,4 @@
-const pool = require("../config/db.js")
+const pool = require("../config/db.js");
 
 async function getMedicalData(id_shelter) {
     try {
@@ -114,6 +114,7 @@ async function insertMedicalData(
                 id_animal
             ]
         );
+
         return {
             error: false,
             message: "Medical created successfully.",
@@ -152,7 +153,7 @@ async function updateMedicalData(
                 , medical_date_out = $5
                 , medical_cost = $6
                 , note = $7
-                updated_by = $8
+                , updated_by = $8
             WHERE id_shelter = $9 
             and id_animal = $10 
             and id_medical = $11
@@ -185,15 +186,16 @@ async function updateMedicalData(
     }
 }
 
-async function deleteMedicalData(id_shelter, id_medical) {
+async function deleteMedicalData(id_shelter, id_medical, id_animal) {
     try {
         const result = await pool.query(
             `delete from medical
             where id_shelter = $1
             and id_medical = $2
+            and id_animal = $3
             returning *`,
             [
-                id_shelter, id_medical
+                id_shelter, id_medical, id_animal
             ]
         );
         return {
@@ -202,7 +204,7 @@ async function deleteMedicalData(id_shelter, id_medical) {
             medical: result.rows[0]
         }
     } catch (error) {
-        console.error("Error deleting medical:", error)
+        console.error(error);
         return {
             error: true,
             message: "Error deleting medical.",
