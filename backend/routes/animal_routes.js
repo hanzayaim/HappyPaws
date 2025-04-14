@@ -4,7 +4,6 @@ const {
   getAnimalDataById,
   getAnimalData,
   insertAnimalData,
-  updateAnimalMedicalId,
   updateAnimalData,
   deleteAnimalData,
 } = require("../models/animal_models");
@@ -123,32 +122,6 @@ router.post("/updateAnimalData", async (req, res) => {
       date,
       note,
       updated_by,
-      id_shelter,
-      id_animal
-    );
-    res.status(200).json(result);
-  } catch {
-    res.status(500).json({ error: true, message: "failed to update data" });
-  }
-});
-
-router.post("/updateAnimalMedicalId", async (req, res) => {
-  const { id_medical, animal_status, id_shelter, id_animal } = req.body;
-  if (
-    id_medical == null ||
-    animal_status == null ||
-    id_shelter == null ||
-    id_animal == null
-  ) {
-    return res.status(400).send({
-      error: true,
-      message: "Please provide all required data.",
-    });
-  }
-  try {
-    const result = await updateAnimalMedicalId(
-      id_medical,
-      animal_status,
       id_shelter,
       id_animal
     );

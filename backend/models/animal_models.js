@@ -165,31 +165,6 @@ async function updateAnimalData(
   }
 }
 
-async function updateAnimalMedicalId(
-  id_medical,
-  animal_status,
-  id_shelter,
-  id_animal
-) {
-  try {
-    const { rows } = await pool.query(
-      "UPDATE animal SET id_medical = $1, animal_status = $2 WHERE id_shelter = $3 and id_animal = $4 RETURNING *",
-      [id_medical, animal_status, id_shelter, id_animal]
-    );
-    return {
-      error: false,
-      message: "animal medical updated successfully",
-      animal: rows[0],
-    };
-  } catch (error) {
-    return {
-      error: true,
-      message: "error updating animal medical",
-      data: null,
-    };
-  }
-}
-
 async function deleteAnimalData(id_shelter, id_animal) {
   try {
     const { rows } = await pool.query(
@@ -214,7 +189,6 @@ module.exports = {
   getAnimalDataById,
   getAnimalData,
   insertAnimalData,
-  updateAnimalMedicalId,
   updateAnimalData,
   deleteAnimalData,
 };
