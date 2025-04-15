@@ -3,10 +3,10 @@ const router = express.Router();
 const {
   getAnimalDataById,
   getAnimalData,
-  insertAnimalData,
   updateAnimalData,
   deleteAnimalData,
 } = require("../models/animal_models");
+const { insertNewAnimal } = require("../controllers/animal_controller");
 
 router.get("/getAnimalData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
@@ -31,13 +31,11 @@ router.get("/getAnimalDataById/:id_shelter/:id_animal", async (req, res) => {
 router.post("/insertAnimalData", async (req, res) => {
   const {
     id_shelter,
-    id_animal,
     animal_name,
     animal_img,
     animal_gender,
     animal_type,
     animal_age,
-    animal_status,
     rescue_location,
     date,
     note,
@@ -45,10 +43,8 @@ router.post("/insertAnimalData", async (req, res) => {
   } = req.body;
   if (
     id_shelter == null ||
-    id_animal == null ||
     animal_name == null ||
     animal_gender == null ||
-    animal_status == null ||
     date == null ||
     created_by == null
   ) {
@@ -58,15 +54,13 @@ router.post("/insertAnimalData", async (req, res) => {
     });
   }
   try {
-    const result = await insertAnimalData(
+    const result = await insertNewAnimal(
       id_shelter,
-      id_animal,
       animal_name,
       animal_img,
       animal_gender,
       animal_type,
       animal_age,
-      animal_status,
       rescue_location,
       date,
       note,
