@@ -7,8 +7,10 @@ app.use(express.json());
 const {
   getShelterDataById,
   getShelterData,
+  getShelterIdByEmail,
   updateShelterStatus,
   deleteShelterData,
+  getShelterPassByEmail,
 } = require("../models/shelter_models");
 
 const { insertNewShelter } = require("../controllers/shelter_controller");
@@ -16,6 +18,26 @@ const { insertNewShelter } = require("../controllers/shelter_controller");
 router.get("/getShelterData", async (req, res) => {
   try {
     const result = await getShelterData();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
+
+router.post("/getShelterIdByEmail", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getShelterIdByEmail(email);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
+
+router.post("/getShelterPassByEmail", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getShelterPassByEmail(email);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: true, message: "failed to get data" });

@@ -29,6 +29,62 @@ async function getShelterDataById(id_shelter) {
   }
 }
 
+async function getShelterIdByEmail(email) {
+  try {
+    const { rows } = await pool.query(
+      "SELECT id_shelter FROM shelter where email = $1",
+      [email]
+    );
+    if (rows.length > 0) {
+      return {
+        error: false,
+        message: "data fetched successfully",
+        data: rows[0],
+      };
+    } else {
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
+    }
+  } catch (error) {
+    return {
+      error: true,
+      message: "error fetching data",
+      data: null,
+    };
+  }
+}
+
+async function getShelterPassByEmail(email) {
+  try {
+    const { rows } = await pool.query(
+      "SELECT password FROM shelter where email = $1",
+      [email]
+    );
+    if (rows.length > 0) {
+      return {
+        error: false,
+        message: "data fetched successfully",
+        data: rows[0],
+      };
+    } else {
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
+    }
+  } catch (error) {
+    return {
+      error: true,
+      message: "error fetching data",
+      data: null,
+    };
+  }
+}
+
 async function getShelterData() {
   try {
     const { rows } = await pool.query("SELECT * FROM shelter");
@@ -176,6 +232,8 @@ async function deleteShelterData(id_shelter) {
 module.exports = {
   getShelterDataById,
   getShelterData,
+  getShelterIdByEmail,
+  getShelterPassByEmail,
   insertShelterData,
   updateShelterStatus,
   deleteShelterData,
