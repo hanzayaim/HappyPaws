@@ -29,6 +29,62 @@ async function getEmployeeDataById(id_shelter, id_employee) {
   }
 }
 
+async function getShelterIdByEmployee(email) {
+  try {
+    const { rows } = await pool.query(
+      "SELECT id_shelter FROM employee_shelter where email = $1",
+      [email]
+    );
+    if (rows.length > 0) {
+      return {
+        error: false,
+        message: "data fetched successfully",
+        data: rows[0],
+      };
+    } else {
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
+    }
+  } catch (error) {
+    return {
+      error: true,
+      message: "error fetching data",
+      data: null,
+    };
+  }
+}
+
+async function getEmployeePassByEmail(email) {
+  try {
+    const { rows } = await pool.query(
+      "SELECT password FROM employee_shelter where email = $1",
+      [email]
+    );
+    if (rows.length > 0) {
+      return {
+        error: false,
+        message: "data fetched successfully",
+        data: rows[0],
+      };
+    } else {
+      return {
+        error: true,
+        message: "no data found",
+        data: null,
+      };
+    }
+  } catch (error) {
+    return {
+      error: true,
+      message: "error fetching data",
+      data: null,
+    };
+  }
+}
+
 async function getEmployeeData(id_shelter) {
   try {
     const { rows } = await pool.query(
@@ -154,6 +210,8 @@ async function deleteEmployeeData(id_shelter, id_employee) {
 module.exports = {
   getEmployeeDataById,
   getEmployeeData,
+  getEmployeePassByEmail,
+  getShelterIdByEmployee,
   insertEmployeeData,
   updateEmployeeStatus,
   deleteEmployeeData,

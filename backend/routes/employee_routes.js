@@ -5,6 +5,8 @@ const {
   getEmployeeData,
   updateEmployeeStatus,
   deleteEmployeeData,
+  getShelterIdByEmployee,
+  getEmployeePassByEmail,
 } = require("../models/employee_models");
 const { insertNewEmployee } = require("../controllers/employee_controller");
 
@@ -30,6 +32,26 @@ router.get(
     }
   }
 );
+
+router.post("/getShelterIdByEmployee", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getShelterIdByEmployee(email);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
+
+router.post("/getEmployeePassByEmail", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getEmployeePassByEmail(email);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
 
 router.post("/insertEmployee", async (req, res) => {
   const {
