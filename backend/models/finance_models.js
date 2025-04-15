@@ -108,7 +108,11 @@ const pool = require("../config/db.js");
         `SELECT total_balance FROM finance WHERE id_shelter = $1 AND id_finance = $2`,
         [id_shelter,id_finance]
       );
-      const lastBalance = res.rows[0]?.total_balance;
+      const lastBalance = res.rows[0]?.total_balance??0;
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount)) {
+        throw new Error("Amount is not a valid number");
+      }
       const newBalance = lastBalance - parseFloat(amount);
       const updated_at = new Date();
       const result = await pool.query(
@@ -135,7 +139,6 @@ const pool = require("../config/db.js");
       };
     }
   }
-  
   async function updateFinanceBalanceIncomeData(
     id_finance,
     id_shelter,
@@ -148,7 +151,11 @@ const pool = require("../config/db.js");
         `SELECT total_balance FROM finance WHERE id_shelter = $1 AND id_finance = $2`,
         [id_shelter,id_finance]
       );
-      const lastBalance = res.rows[0]?.total_balance;
+      const lastBalance = res.rows[0]?.total_balance??0;
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount)) {
+        throw new Error("Amount is not a valid number");
+      }
       const newBalance = lastBalance + parseFloat(amount);
       const updated_at = new Date();
       const result = await pool.query(
