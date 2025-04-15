@@ -27,7 +27,11 @@ const insertNewShelter = async (
     );
     return result;
   } catch (error) {
-    console.log(error);
+    return {
+      error: true,
+      message: "Failed to insert new shelter.",
+      result: null,
+    };
   }
 };
 
