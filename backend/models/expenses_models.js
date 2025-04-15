@@ -9,7 +9,7 @@ async function getExpenses(id_shelter){
       return {
         error: false,
         message: "data fetched successfully",
-        data: rows[0],
+        data: rows,
       };
     } else {
       return {
@@ -27,7 +27,6 @@ async function getExpenses(id_shelter){
   }
 }
 async function getExpensesById(id_shelter,id_expenses){
-  
   try {
     const {rows} = await pool.query(
       `SELECT * from expenses WHERE id_shelter = $1 AND id_expenses = $2`,[id_shelter,id_expenses]
@@ -109,7 +108,6 @@ async function deleteExpensesData(id_shelter,id_expenses){
           data: result.rows[0],
         };
       } catch (error) {
-        console.error("Error deleting Expenses:", error);
         return {
           error: true,
           message: "Error deleting Expenses",

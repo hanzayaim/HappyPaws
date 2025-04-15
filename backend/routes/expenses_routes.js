@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     deleteExpensesData, insertExpensesData,getExpenses,getExpensesById
 } = require("../models/expenses_models.js");
-
+const { insertExpenses, deleteExpenses } = require("../controllers/expenses_controller");
 router.get("/getExpenses/:id_shelter", async (req, res) => {
     const { id_shelter } = req.params;
     try {
@@ -38,10 +38,8 @@ router.get("/getExpenses/:id_shelter/:id_expenses", async (req, res) => {
         });
     }
 });
-
 router.post("/insertExpensesData", async (req, res) =>{
     const {
-        id_expenses ,
         id_shelter,
         id_food,
         id_medical,
@@ -60,14 +58,13 @@ router.post("/insertExpensesData", async (req, res) =>{
         });
     }
     try {
-        const result = await insertExpensesData(
-            id_expenses ,
+        const result = await insertExpenses(
             id_shelter,
             id_food,
             id_medical,
             id_equipment,
             id_salary,
-            created_by,
+            created_by
         );
 
         if (result.error) {
@@ -87,7 +84,7 @@ router.post("/insertExpensesData", async (req, res) =>{
 router.post("/deleteExpensesData", async (req, res) => {
     const { id_shelter, id_expenses } = req.body;
     try {
-      const result = await deleteExpensesData(id_shelter, id_expenses);
+      const result = await deleteExpenses(id_shelter, id_expenses);
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({ error: true, message: "failed to delete data" });

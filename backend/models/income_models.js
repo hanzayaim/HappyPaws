@@ -84,11 +84,7 @@ async function getIncomeById(id_shelter,id_income) {
         ]
       );
       
-      return {
-        error: false,
-        message: "Income data created successfully",
-        data: result.rows[0],
-      };
+      return result.rows[0];
     } catch (error) {
       console.log(error)
       return {
@@ -101,10 +97,11 @@ async function getIncomeById(id_shelter,id_income) {
   async function deleteIncomeData(id_shelter,id_income){
     try {
         const result = await pool.query(
-          "DELETE FROM income WHERE id_income = $1 AND id_shelter = $2", 
+          "delete from income WHERE id_income = $1 AND id_shelter = $2 RETURNING*", 
           [id_income,id_shelter]
         );
-      
+
+       
         if (result.rowCount == 0) {
           return {
             error: true,
@@ -121,7 +118,7 @@ async function getIncomeById(id_shelter,id_income) {
         
         return {
           error: true,
-          message: "Error deleting salary",
+          message: "Error deleting Income",
           data: null,
         };
       }
