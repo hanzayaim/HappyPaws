@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const authRoutes = require("./auth_routes");
 const adopterRoutes = require("./adopter_routes");
 const animalRoutes = require("./animal_routes");
 const employeeRoutes = require("./employee_routes");
@@ -13,6 +14,7 @@ const expensesRoutes = require("./expenses_routes");
 const incomeRoutes = require("./income_routes");
 const salaryRoutes = require("./salary_routes");
 
+router.use("/auth", authRoutes);
 router.use("/adopters", adopterRoutes);
 router.use("/animals", animalRoutes);
 router.use("/employees", employeeRoutes);
