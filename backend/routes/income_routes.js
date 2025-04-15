@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { deleteIncomeData, insertIncomeData, updateIncomeData, getIncome, getIncomeById } = require("../models/income_models.js");
-
+const{ insertIncome, deleteIncome, updateIncome } = require("../controllers/income_controller.js")
 router.get("/getIncome/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
     const result = await getIncome(id_shelter);
@@ -22,29 +22,25 @@ router.get("/getIncomebyId/:id_shelter/:id_income", async (req, res) =>  {
 router.post("/insertIncomeData", async (req, res) => {
     try {
         const { 
-            id_income,
             id_shelter,
             name,
             amount,
             date,
             type,
             note,
-            created_by,
-            update_by } = req.body;
+            created_by} = req.body;
 
-        if (!id_income || !id_shelter || !name || !amount || !date || !type) {
+        if (!id_shelter || !name || !amount || !date || !type) {
             return res.status(400).json({ error: true, message: "Please provide all required data." });
         }
-        const result = await insertIncomeData(
-            id_income,
+        const result = await insertIncome(
             id_shelter,
             name,
             amount,
             date,
             type,
             note,
-            created_by,
-            update_by     
+            created_by,   
         );
         if (result.error) {
             return res.status(500).json(result); 
@@ -58,7 +54,7 @@ router.post("/insertIncomeData", async (req, res) => {
 router.post("/deleteIncomeData", async (req, res) => { 
     const { id_shelter,id_income } = req.body;
     try {
-        const result = await deleteIncomeData(id_shelter,id_income );
+        const result = await deleteIncome(id_shelter,id_income );
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: true, message: "Failed to delete data" });
@@ -66,7 +62,6 @@ router.post("/deleteIncomeData", async (req, res) => {
 });
 
 router.post("/updateIncomeData", async (req, res) => {
-    
         const { 
             id_income,
             id_shelter,
@@ -82,7 +77,7 @@ router.post("/updateIncomeData", async (req, res) => {
             return res.status(400).json({ error: true, message: "Please provide all required data." });
         }
     try {
-        const result = await updateIncomeData(
+        const result = await updateIncome(
             id_income,
             id_shelter,
             name,

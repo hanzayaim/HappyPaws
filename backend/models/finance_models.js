@@ -96,12 +96,10 @@ const pool = require("../config/db.js");
       };
     }
   }
-  async function updateFinanceBalanceExpensesData(
+  async function decreaseBalance(
     id_finance,
     id_shelter,
-    id_expenses,
     amount,
-    updated_by
   ) {
     try {
       const res = await pool.query(
@@ -114,37 +112,19 @@ const pool = require("../config/db.js");
         throw new Error("Amount is not a valid number");
       }
       const newBalance = lastBalance - parseFloat(amount);
-      const updated_at = new Date();
-      const result = await pool.query(
-        "UPDATE finance SET id_expenses = $1, total_balance = $2, updated_at = $3 , updated_by = $4 WHERE id_finance = $5 AND id_shelter = $6 RETURNING *",
-        [
-          id_expenses,
-          newBalance,
-          updated_at,
-          updated_by,
-          id_finance,
-          id_shelter
-        ]
-      );
-      return {
-        error: false,
-        message: "Finance data updated successfully",
-        data: result.rows[0],
-      };
+      return newBalance;
     } catch (error) {
       return {
         error: true,
-        message: "Error updating finance data",
+        message: "Error decrease Balance data",
         data: null,
       };
     }
   }
-  async function updateFinanceBalanceIncomeData(
+  async function increaseBalance(
     id_finance,
     id_shelter,
-    id_income,
     amount,
-    updated_by
   ) {
     try {
       const res = await pool.query(
@@ -157,14 +137,22 @@ const pool = require("../config/db.js");
         throw new Error("Amount is not a valid number");
       }
       const newBalance = lastBalance + parseFloat(amount);
-      const updated_at = new Date();
-      const result = await pool.query(
-        "UPDATE finance SET id_income = $1, total_balance = $2, updated_at = $3 , updated_by = $4 WHERE id_finance = $5 AND id_shelter = $6 RETURNING *",
+      return newBalance;
+    } catch (error) {
+      return {
+        error: true,
+        message: "Error increase Balance data",
+        data: null,
+      };
+    }
+  }
+  async function updateBalance(
+    total_balance,id_finance,id_shelter
+  ) {
+    try {
+        const result = await pool.query("UPDATE finance SET total_balance = $1 WHERE id_finance = $2 AND id_shelter = $3 RETURNING *",
         [
-          id_income,
-          newBalance,
-          updated_at,
-          updated_by,
+          total_balance,
           id_finance,
           id_shelter
         ]
@@ -175,6 +163,7 @@ const pool = require("../config/db.js");
         data: result.rows[0],
       };
     } catch (error) {
+      console.error(error)
       return {
         error: true,
         message: "Error updating finance data",
@@ -182,5 +171,9 @@ const pool = require("../config/db.js");
       };
     }
   }
+  
 
-  module.exports = {getFinance, updateFinanceBalanceExpensesData,updateFinanceBalanceIncomeData, insertFinanceData, deleteFinanceData };
+  
+
+
+  module.exports = {getFinance, decreaseBalance,increaseBalance,updateBalance, insertFinanceData, deleteFinanceData };

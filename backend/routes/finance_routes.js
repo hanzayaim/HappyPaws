@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   getFinance, 
-  updateFinanceBalanceExpensesData,
-  updateFinanceBalanceIncomeData, 
+  // decreaseBalance,
+  // increaseBalance, 
   insertFinanceData, 
   deleteFinanceData
 } = require("../models/finance_models.js");
@@ -65,82 +65,69 @@ router.post("/deleteFinanceData", async (req, res) => {
     }
 });
 
-router.post("/UpdateTotalBalanceExpenses", async (req, res) =>{
-    const {
-      id_finance,
-      id_shelter,
-      id_expenses,
-      amount,
-      updated_by
-    } = req.body;
+// router.post("/decreaseBalance", async (req, res) =>{
+//     const {
+//       id_finance,
+//       id_shelter,
+//       amount
+//     } = req.body;
 
-    if (
-      id_finance == null||
-      id_shelter == null||
-      id_expenses == null||
-      amount == null||
-      updated_by == null
-    ) {
-        return res.status(400).send({
-            error: true,
-            message: "Please provide all required data."
-        });
-    }
+//     if (
+//       id_finance == null||
+//       id_shelter == null||
+//       amount == null) {
+//         return res.status(400).send({
+//             error: true,
+//             message: "Please provide all required data."
+//         });
+//     }
 
-    try {
-        const result = await updateFinanceBalanceExpensesData(
-          id_finance,
-          id_shelter,
-          id_expenses,
-          amount,
-          updated_by
-        );
-        return res.status(200).json(result);
-    } catch (error) {
-        return res.status(500).json({
-            error: true,
-            message: "Failed to update data"
-        });
-    }
-});
+//     try {
+//         const result = await decreaseBalance(
+//           id_finance,
+//           id_shelter,
+//           amount
+//         );
+//         return res.status(200).json(result);
+//     } catch (error) {
+//         return res.status(500).json({
+//             error: true,
+//             message: "Failed to update data"
+//         });
+//     }
+// });
 
-router.post("/UpdateTotalBalanceIncome", async (req, res) =>{
-    const {
-      id_finance,
-      id_shelter,
-      id_income,
-      amount,
-      updated_by
-    } = req.body;
+// router.post("/increaseBalance", async (req, res) =>{
+//     const {
+//       id_finance,
+//       id_shelter,
+//       amount
+//     } = req.body;
 
-    if (
-      id_finance == null||
-      id_shelter == null||
-      id_income == null||
-      amount == null||
-      updated_by == null
-    ) {
-        return res.status(400).send({
-            error: true,
-            message: "Please provide all required data."
-        });
-    }
+//     if (
+//       id_finance == null||
+//       id_shelter == null||
+//       amount == null
+//     ) {
+//         return res.status(400).send({
+//             error: true,
+//             message: "Please provide all required data."
+//         });
+//     }
 
-    try {
-        const result = await updateFinanceBalanceIncomeData(
-          id_finance,
-          id_shelter,
-          id_income,
-          amount,
-          updated_by
-        );
-        return res.status(200).json(result);
-    } catch (error) {
-        return res.status(500).json({
-            error: true,
-            message: "Failed to update data"
-        });
-    }
-});
+//     try {
+//         const result = await increaseBalance(
+//           id_finance,
+//           id_shelter,
+//           amount
+//         );
+//         return res.status(200).json(result);
+//     } catch (error) {
+//         return res.status(500).json({
+//             error: true,
+//             message: "Failed to update data"
+//         });
+//     }
+// });
 
 module.exports = router;

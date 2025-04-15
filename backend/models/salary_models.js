@@ -26,8 +26,35 @@ async function getSalary(id_shelter) {
       };
     }
   }
+async function getSalaryById(id_shelter,id_salary) {
+    try {
+      const {rows} = await pool.query(
+        "SELECT * FROM salary WHERE id_shelter = $1 AND id_salary = $2",
+        [id_shelter,id_salary]
+      );
+      if (rows.length > 0) {
+        return {
+          error: false,
+          message: "data fetched successfully",
+          data: rows,
+        };
+      } else {
+        return {
+          error: true,
+          message: "no data found",
+          data: null,
+        };
+      }
+    } catch (error) {
+      return {
+        error: true,
+        message: "error fetching data",
+        data: null,
+      };
+    }
+  }
 
-  async function insertSalary(
+  async function insertSalaryData(
     id_salary,
     id_shelter,
     id_employee,
@@ -66,7 +93,7 @@ async function getSalary(id_shelter) {
     }
   }
 
-  async function deleteSalary(id_shelter,id_salary){
+  async function deleteSalaryData(id_shelter,id_salary){
     try {
         const result = await pool.query(
           "DELETE FROM salary WHERE id_salary = $1 AND id_shelter = $2 RETURNING * ", 
@@ -83,10 +110,9 @@ async function getSalary(id_shelter) {
         return {
           error: false,
           message: "Salary deleted successfully",
-          data: result.rows[0],
+          data: result,
         };
       } catch (error) {
-        
         return {
           error: true,
           message: "Error deleting salary",
@@ -95,4 +121,4 @@ async function getSalary(id_shelter) {
       }
   }
 
-  module.exports = { deleteSalary, insertSalary, getSalary };
+  module.exports = { deleteSalaryData, insertSalaryData, getSalary, getSalaryById};
