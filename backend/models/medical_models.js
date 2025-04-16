@@ -1,4 +1,5 @@
 const pool = require("../config/db.js");
+const { updateAnimalStatus } = require("../models/animal_models.js");
 
 async function getMedicalData(id_shelter) {
     try {
@@ -33,17 +34,16 @@ async function getMedicalData(id_shelter) {
     }
 }
 
-async function getMedicalDataById(id_shelter, id_animal, id_medical) {
+async function getMedicalDataById(id_shelter, id_medical) {
     try {
         const { rows } = await pool.query(
             `select m.*, a.animal_name
             from medical m
             left join animal a on a.id_animal = m.id_animal
             where m.id_shelter = $1
-            and a.id_animal = $2
-            and m.id_medical = $3
+            and m.id_medical = $2
             order by m.created_at desc`,
-            [id_shelter, id_animal, id_medical]
+            [id_shelter, id_medical]
         );
         if (rows.length > 0) {
             return {
@@ -70,7 +70,6 @@ async function getMedicalDataById(id_shelter, id_animal, id_medical) {
 
 async function insertMedicalData(
     id_medical,
-    medical_process,
     medical_status,
     vaccin_status,
     medical_date_in,
@@ -84,8 +83,7 @@ async function insertMedicalData(
     try {
         const result = await pool.query(
             `insert into medical (
-            id_medical,
-            medical_process
+            id_medical
             , medical_status
             , vaccin_status
             , medical_date_in
@@ -97,12 +95,11 @@ async function insertMedicalData(
             , id_animal 
             )
             values (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
             )
             returning *`,
             [
                 id_medical,
-                medical_process,
                 medical_status,
                 vaccin_status,
                 medical_date_in,
@@ -120,8 +117,8 @@ async function insertMedicalData(
             message: "Medical created successfully.",
             medical: result.rows[0]
         }
-
     } catch (error) {
+        console.error(error);
         return {
             error: true,
             message: "Error creating medical.",

@@ -29,7 +29,8 @@ const insertExpenses = async (
     id_equipment= null;
     id_salary= null; 
     const medical = await getMedicalDataById(id_shelter,id_medical);
-    amount = medical.data[0].medical_cost;
+    amount = medical.data.medical_cost;
+    console.log(amount);
   }
   if (id_equipment) {
     id_food= null;
@@ -44,7 +45,6 @@ const insertExpenses = async (
     id_equipment= null;
     const salary = await getSalaryById(id_shelter,id_salary);
     amount = salary.data[0].cost;
-    console.log(amount);
   }
   try {
 

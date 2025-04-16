@@ -165,6 +165,21 @@ async function updateAnimalData(
   }
 }
 
+async function updateAnimalStatus(animal_status, id_shelter, id_animal, updated_by) {
+  try {
+    const { rows } = await pool.query(
+      `update animal set animal_status = $1 where id_shelter = $2 and id_animal = $3 updatedBy = $4 returning *`,
+      [animal_status, id_shelter, id_animal, updated_by]
+    );
+  } catch (error) {
+    return {
+      error: true,
+      message: "Error updating animal status.",
+      data: null
+    }
+  }
+}
+
 async function deleteAnimalData(id_shelter, id_animal) {
   try {
     const { rows } = await pool.query(
@@ -190,5 +205,6 @@ module.exports = {
   getAnimalData,
   insertAnimalData,
   updateAnimalData,
+  updateAnimalStatus,
   deleteAnimalData,
 };
