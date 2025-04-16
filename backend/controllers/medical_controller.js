@@ -40,9 +40,9 @@ const insertMedical = async (
         );
 
         const animal_status = (medical_status === "Healthy") ? "Available" : "Not Available";
-        await updateAnimalStatus(animal_status, id_shelter, id_animal, created_by);
+        const resultAnimalStatus = await updateAnimalStatus(animal_status, created_by, id_shelter, id_animal);
 
-        return { resultMedical, resultExpenses };
+        return { resultMedical, resultExpenses, resultAnimalStatus };
     } catch (error) {
         console.error(error);
         return {

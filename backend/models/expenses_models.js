@@ -78,7 +78,7 @@ async function insertExpensesData(
       return{
         error: false,
         message: "Expanses data created successfully",
-        data: rows[0]
+        data: rows
       };
     } catch (error) {
       return {

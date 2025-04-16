@@ -1,5 +1,4 @@
 const pool = require("../config/db.js");
-const { updateAnimalStatus } = require("../models/animal_models.js");
 
 async function getMedicalData(id_shelter) {
     try {
