@@ -113,6 +113,7 @@ async function getSalaryById(id_shelter,id_salary) {
           data: result,
         };
       } catch (error) {
+        console.error(error)
         return {
           error: true,
           message: "Error deleting salary",

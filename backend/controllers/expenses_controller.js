@@ -1,11 +1,10 @@
-const { insertExpensesData, getExpensesById, deleteExpensesData, updateExpensesData } = require("../models/expenses_models");
-const { getFinance, decreaseBalance, increaseBalance, updateBalance } = require("../models/finance_models.js");
+const { insertExpensesData, getExpensesById, deleteExpensesData, updateExpensesData, getExpenses } = require("../models/expenses_models");
 const { getFoodDataById } = require("../models/food_models.js");
 const { getMedicalDataById } = require("../models/medical_models.js");
 const { getEquipmentDataById } = require("../models/equipment_models.js");
 const { getSalary, getSalaryById } = require("../models/salary_models.js");
-const { getAnimalData } = require("../models/animal_models.js");
 const generateId = require("../config/generate_id");
+const { updateTotalBalance } = require("./finance_controller.js");
 
 const insertExpenses = async (
   id_shelter,
@@ -46,18 +45,6 @@ const insertExpenses = async (
     amount = salary.data[0].cost;
   }
   try {
-
-    const finance = await getFinance(id_shelter);
-    const newBalance = await decreaseBalance(
-      finance.data[0].id_finance,
-      id_shelter,
-      amount
-    );
-    await updateBalance(
-      newBalance,
-      finance.data[0].id_finance,
-      id_shelter,
-    );
     const result = await insertExpensesData(
       id_expenses,
       id_shelter,
@@ -67,6 +54,8 @@ const insertExpenses = async (
       id_salary,
       created_by
     );
+    
+    updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
     return {
@@ -90,8 +79,43 @@ const deleteExpenses = async (
       result: null,
     };
   }
+}; 
+
+const deleteExpensesById = async (
+  id_shelter,table_id
+) => {
+  try {
+    const expenses = await getExpenses(id_shelter);
+    // const ArrExpenses = Array.isArray(expenses.data) ? expenses.data : [expenses.data];
+    let result;
+    if (expenses.data[0].id_food == table_id) {
+      const dataExpenses = expenses.data.find(expense => expense.id_salary === table_id);
+      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
+    }
+    if (expenses.data[0].id_equipment == table_id) {
+      const dataExpenses = expenses.data.find(expense => expense.id_equipment === table_id);
+      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
+    }
+    if (expenses.data[0].id_medical == table_id) {
+      const dataExpenses = expenses.data.find(expense => expense.id_medical === table_id);
+      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
+    }
+    if (expenses.data[0].id_salary == table_id) {
+      const dataExpenses = expenses.data.find(expense => expense.id_salary === table_id);
+      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
+    }
+    updateTotalBalance(id_shelter)
+    return result;
+  } catch (error) {
+    console.error(error)
+    return {
+      error: true,
+      message: "Failed to delete Expenses data.",
+      result: null,
+    };
+  }
 };
 
 module.exports = {
-  insertExpenses,deleteExpenses
+  insertExpenses,deleteExpenses,deleteExpensesById
 };

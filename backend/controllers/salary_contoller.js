@@ -1,9 +1,10 @@
 const { insertSalaryData, deleteSalaryData, getSalaryById }= require("../models/salary_models.js");
-const { insertExpenses, deleteExpenses }= require("../controllers/expenses_controller.js");
+const { insertExpenses, deleteExpenses, deleteExpensesById }= require("../controllers/expenses_controller.js");
 
 const generateId = require("../config/generate_id");
 const { getExpenses } = require("../models/expenses_models.js");
 const { getFinance, increaseBalance, updateBalance } = require("../models/finance_models.js");
+const { increaseBalanceFinance } = require("./finance_controller.js");
 
 
 const insertSalary = async (
@@ -17,7 +18,7 @@ const insertSalary = async (
   ) => {
     const id_salary = "SALARY-" + generateId();
     try {
-        await insertSalaryData(
+        const result1 = await insertSalaryData(
             id_salary,
             id_shelter,
             id_employee,
@@ -27,7 +28,7 @@ const insertSalary = async (
             note,
             created_by
         );
-        const result = await insertExpenses(
+        const result2 = await insertExpenses(
             id_shelter,
             id_food = null,
             id_medical = null,
@@ -35,11 +36,11 @@ const insertSalary = async (
             id_salary,
             created_by
         );
-        
+      
         return {
             error: false,
             message: "Salary data created successfully",
-            data: result
+            data: {result1,result2}
           };
         } catch (error) {
             
@@ -56,22 +57,7 @@ const deleteSalary = async (
     id_salary
   ) => {
     try {
-        const expenses = await getExpenses(id_shelter);
-        const dataExpenses = expenses.data.find(expense => expense.id_salary === id_salary);
-        await deleteExpenses(id_shelter, dataExpenses.id_expenses);
-        const amount = await getSalaryById(id_shelter,id_salary);
-        const finance = await getFinance(id_shelter);
-        const newBalance = await increaseBalance(
-            finance.data[0].id_finance,
-            id_shelter,
-            amount.data[0].cost
-        );
-
-        await updateBalance(
-            newBalance,
-            finance.data[0].id_finance,
-            id_shelter,
-        );
+        await deleteExpensesById(id_shelter,id_salary)
         const result = await deleteSalaryData(
             id_shelter,
             id_salary
@@ -82,7 +68,6 @@ const deleteSalary = async (
             data: result
           };
         } catch (error) {
-            console.error(error)
             return {
                 error: true,
                 message: "Failed delete Data",

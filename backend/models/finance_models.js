@@ -35,23 +35,15 @@ const pool = require("../config/db.js");
   async function insertFinanceData(
     id_finance, 
     id_shelter,
-    id_income,
-    id_expenses,
     total_balance,
-    note,
-    created_by
   ) {
     try {
       const result = await pool.query(
-        "INSERT INTO finance (id_finance, id_shelter, id_income, id_expenses, total_balance, note, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+        "INSERT INTO finance (id_finance, id_shelter, total_balance) VALUES ($1, $2, $3, $4) RETURNING *",
         [
           id_finance,
           id_shelter,
-          id_income,
-          id_expenses,
-          total_balance,
-          note,
-          created_by,
+          total_balance
         ]
       );
       return {
@@ -146,6 +138,7 @@ const pool = require("../config/db.js");
       };
     }
   }
+
   async function updateBalance(
     total_balance,id_finance,id_shelter
   ) {
@@ -160,10 +153,9 @@ const pool = require("../config/db.js");
       return {
         error: false,
         message: "Finance data updated successfully",
-        data: result.rows[0],
+        data: result,
       };
     } catch (error) {
-      console.error(error)
       return {
         error: true,
         message: "Error updating finance data",

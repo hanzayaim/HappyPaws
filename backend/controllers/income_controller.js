@@ -1,5 +1,6 @@
 const { insertIncomeData, deleteIncomeData, getIncomeById, updateIncomeData } = require("../models/income_models.js");
 const { getFinance, increaseBalance,decreaseBalance, updateBalance } = require("../models/finance_models.js");
+const{  updateTotalBalance, updateProfit } = require("../controllers/finance_controller.js");
 const generateId = require("../config/generate_id");
 
 /**
@@ -17,18 +18,6 @@ const insertIncome = async (
 ) => {
   const id_income = "INCOME-" + generateId();
   try {
-    const finance = await getFinance(id_shelter);
-    const newBalance = await increaseBalance(
-      finance.data[0].id_finance,
-      id_shelter,
-      amount
-    );
-    
-    await updateBalance(
-      newBalance,
-      finance.data[0].id_finance,
-      id_shelter,
-    );
     const result = await insertIncomeData(
       id_income,
       id_shelter,
@@ -39,6 +28,8 @@ const insertIncome = async (
       note,
       created_by
     );
+    // update total balance
+    await updateTotalBalance(id_shelter);
     return {
       error: false,
       message: "Income data created successfully",
@@ -57,21 +48,10 @@ const insertIncome = async (
     id_shelter,id_income
   ) => {
     try {
-      const income = await getIncomeById(id_shelter,id_income);
-      const finance = await getFinance(id_shelter);
-      const newBalance = await decreaseBalance(
-        finance.data[0].id_finance,
-        id_shelter,
-        income.data.amount
-      );
-      await updateBalance(
-        newBalance,
-        finance.data[0].id_finance,
-        id_shelter,
-      );
       const result = await deleteIncomeData(
         id_shelter,id_income
       );
+      await updateTotalBalance(id_shelter);
       return result
     } catch (error) {
       return {
@@ -82,7 +62,7 @@ const insertIncome = async (
     }
   };
   
-  const updateIncome = async (
+const updateIncome = async (
     id_income,
     id_shelter,
     name,
@@ -93,18 +73,6 @@ const insertIncome = async (
     update_by
 ) =>{
   try {
-    const incomedata = await getIncomeById(id_shelter,id_income);
-    const currentAmount = incomedata.data.amount
-    if (currentAmount != amount) {
-      const finance = await getFinance(id_shelter);
-      const currentBalance = finance.data[0].total_balance;
-      const newBalance = (currentBalance - currentAmount) + amount;
-      await updateBalance(
-        newBalance,
-        finance.data[0].id_finance,
-        id_shelter,
-      );
-    }
     const result = await updateIncomeData(
       id_income,
       id_shelter,
@@ -115,9 +83,9 @@ const insertIncome = async (
       note,
       update_by
     );
+    updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    console.error(error)
     return{
       error: true,
       message: "Failed to update income data.",
