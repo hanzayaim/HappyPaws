@@ -4,7 +4,7 @@ const { insertExpenses, deleteExpenses, deleteExpensesById }= require("../contro
 const generateId = require("../config/generate_id");
 const { getExpenses } = require("../models/expenses_models.js");
 const { getFinance, increaseBalance, updateBalance } = require("../models/finance_models.js");
-const { increaseBalanceFinance } = require("./finance_controller.js");
+const { increaseBalanceFinance, updateTotalBalance } = require("./finance_controller.js");
 
 
 const insertSalary = async (
@@ -62,6 +62,7 @@ const deleteSalary = async (
             id_shelter,
             id_salary
         );
+        updateTotalBalance(id_shelter);
         return {
             error: false,
             message: "Delete Salary data successfully",

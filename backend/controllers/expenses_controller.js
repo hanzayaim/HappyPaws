@@ -86,33 +86,18 @@ const deleteExpenses = async (id_shelter, id_expenses) => {
 const deleteExpensesById = async (id_shelter, table_id) => {
   try {
     const expenses = await getExpenses(id_shelter);
-    // const ArrExpenses = Array.isArray(expenses.data) ? expenses.data : [expenses.data];
+    const findExpense = expenses.data.find((expense) => 
+      expense.id_food === table_id ||
+      expense.id_medical === table_id ||
+      expense.id_equipment === table_id ||
+      expense.id_salary === table_id
+    );
+    
     let result;
-    if (expenses.data[0].id_food == table_id) {
-      const dataExpenses = expenses.data.find(
-        (expense) => expense.id_food === table_id
-      );
-      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
+    if (findExpense) {
+      result = await deleteExpensesData(id_shelter, findExpense.id_expenses);
     }
-    if (expenses.data[0].id_equipment == table_id) {
-      const dataExpenses = expenses.data.find(
-        (expense) => expense.id_equipment === table_id
-      );
-      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
-    }
-    if (expenses.data[0].id_medical == table_id) {
-      const dataExpenses = expenses.data.find(
-        (expense) => expense.id_medical === table_id
-      );
-      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
-    }
-    if (expenses.data[0].id_salary == table_id) {
-      const dataExpenses = expenses.data.find(
-        (expense) => expense.id_salary === table_id
-      );
-      result = await deleteExpensesData(id_shelter, dataExpenses.id_expenses);
-    }
-    updateTotalBalance(id_shelter);
+    
     return result;
   } catch (error) {
     console.error(error);

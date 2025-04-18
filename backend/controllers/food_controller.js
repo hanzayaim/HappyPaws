@@ -1,6 +1,7 @@
 const generateId = require("../config/generate_id");
 const { insertFoodData, deleteFoodData } = require("../models/food_models");
 const { insertExpenses, deleteExpensesById } = require("./expenses_controller");
+const { updateTotalBalance } = require("./finance_controller");
 
 const insertFood = async (
   name,
@@ -51,7 +52,7 @@ const insertFood = async (
       };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
       error: true,
       message: "Failed create Food Data",
@@ -64,6 +65,7 @@ const deleteFood = async (id_shelter, id_food) => {
   try {
     await deleteExpensesById(id_shelter, id_food);
     const result = await deleteFoodData(id_shelter, id_food);
+    updateTotalBalance(id_shelter);
     return {
       error: false,
       message: "Food data deleted successfully",
