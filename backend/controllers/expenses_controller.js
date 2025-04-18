@@ -28,7 +28,7 @@ const insertExpenses = async (
     id_equipment= null;
     id_salary= null; 
     const medical = await getMedicalDataById(id_shelter,id_medical);
-    amount = medical.data[0].medical_cost;
+    amount = medical.data.medical_cost;
   }
   if (id_equipment) {
     id_food= null;
@@ -58,7 +58,6 @@ const insertExpenses = async (
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    console.error(error)
     return {
       error: true,
       message: "Failed to insert expenses data.",

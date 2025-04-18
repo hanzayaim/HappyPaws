@@ -1,25 +1,31 @@
-const { insertShelterData } = require("../models/shelter_models");
+const { insertEmployeeData } = require("../models/employee_models");
 const generateId = require("../config/generate_id");
 const bcrypt = require("bcrypt");
 
-const insertNewShelter = async (
-  owner_name,
+const insertNewEmployee = async (
+  id_shelter,
+  name,
   email,
   password,
+  role,
+  gender,
   shelter_name,
   phone_number,
   address
 ) => {
   try {
-    const id_shelter = "SHELTER-" + generateId();
+    const id_employee = "EMPLOYEE-" + generateId();
     const status = "New";
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await insertShelterData(
+    const result = await insertEmployeeData(
       id_shelter,
-      owner_name,
+      id_employee,
+      name,
       email,
       hashedPassword,
+      role,
+      gender,
       shelter_name,
       phone_number,
       address,
@@ -29,12 +35,12 @@ const insertNewShelter = async (
   } catch (error) {
     return {
       error: true,
-      message: "Failed to insert new shelter.",
+      message: "Failed to insert new employee.",
       result: null,
     };
   }
 };
 
 module.exports = {
-  insertNewShelter,
+  insertNewEmployee,
 };

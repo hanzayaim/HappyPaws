@@ -3,10 +3,10 @@ const router = express.Router();
 const {
   getAdopterData,
   getAdopterDataById,
-  insertAdopterData,
   updateAdopterData,
   deleteAdopterData,
 } = require("../models/adopter_models");
+const { insertNewAdopter } = require("../controllers/adopter_controller");
 
 router.get("/getAdopterData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
@@ -31,7 +31,6 @@ router.get("/getAdopterDataById/:id_shelter/:id_adopter", async (req, res) => {
 router.post("/insertAdopterData", async (req, res) => {
   const {
     id_shelter,
-    id_adopter,
     adopter_name,
     profile_img,
     gender,
@@ -41,7 +40,6 @@ router.post("/insertAdopterData", async (req, res) => {
   } = req.body;
   if (
     id_shelter == null ||
-    id_adopter == null ||
     adopter_name == null ||
     gender == null ||
     phone_number == null ||
@@ -54,9 +52,8 @@ router.post("/insertAdopterData", async (req, res) => {
     });
   }
   try {
-    const result = await insertAdopterData(
+    const result = await insertNewAdopter(
       id_shelter,
-      id_adopter,
       adopter_name,
       profile_img,
       gender,

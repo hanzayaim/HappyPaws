@@ -3,10 +3,12 @@ const router = express.Router();
 const {
   getEmployeeDataById,
   getEmployeeData,
-  insertEmployeeData,
   updateEmployeeStatus,
   deleteEmployeeData,
+  getShelterIdByEmployee,
+  getEmployeePassByEmail,
 } = require("../models/employee_models");
+const { insertNewEmployee } = require("../controllers/employee_controller");
 
 router.get("/getEmployeeData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
@@ -31,10 +33,29 @@ router.get(
   }
 );
 
-router.post("/insertEmployeeData", async (req, res) => {
+router.post("/getShelterIdByEmployee", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getShelterIdByEmployee(email);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
+
+router.post("/getEmployeePassByEmail", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const result = await getEmployeePassByEmail(email);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: true, message: "failed to get data" });
+  }
+});
+
+router.post("/insertEmployee", async (req, res) => {
   const {
     id_shelter,
-    id_employee,
     name,
     email,
     password,
@@ -43,11 +64,9 @@ router.post("/insertEmployeeData", async (req, res) => {
     shelter_name,
     phone_number,
     address,
-    status,
   } = req.body;
   if (
     id_shelter == null ||
-    id_employee == null ||
     name == null ||
     email == null ||
     password == null ||
@@ -55,8 +74,7 @@ router.post("/insertEmployeeData", async (req, res) => {
     gender == null ||
     shelter_name == null ||
     phone_number == null ||
-    address == null ||
-    status == null
+    address == null
   ) {
     return res.status(400).send({
       error: true,
@@ -64,9 +82,8 @@ router.post("/insertEmployeeData", async (req, res) => {
     });
   }
   try {
-    const result = await insertEmployeeData(
+    const result = await insertNewEmployee(
       id_shelter,
-      id_employee,
       name,
       email,
       password,
@@ -74,8 +91,7 @@ router.post("/insertEmployeeData", async (req, res) => {
       gender,
       shelter_name,
       phone_number,
-      address,
-      status
+      address
     );
     res.status(200).json(result);
   } catch {

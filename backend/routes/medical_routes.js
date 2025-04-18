@@ -3,10 +3,11 @@ const router = express.Router();
 const { 
     getMedicalData,
     getMedicalDataById,
-    insertMedicalData,
     updateMedicalData,
     deleteMedicalData
 } = require("../models/medical_models");
+const { insertMedical } = require("../controllers/medical_controller");
+const { insertExpenses } = require("../controllers/expenses_controller");
 
 router.get("/getMedicalData/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
@@ -28,15 +29,14 @@ router.get("/getMedicalData/:id_shelter", async (req, res) =>  {
     }
 });
 
-router.get("/getMedicalDataById/:id_shelter/:id_animal/:id_medical", async (req, res) =>  {
+router.get("/getMedicalDataById/:id_shelter/:id_medical", async (req, res) =>  {
     const { 
         id_shelter,
-        id_animal,
         id_medical
     } = req.params;
 
     try {
-        const result = await getMedicalDataById(id_shelter, id_animal, id_medical);
+        const result = await getMedicalDataById(id_shelter, id_medical);
 
         if (result.error) {
             return res.status(400).json(result);
@@ -52,9 +52,8 @@ router.get("/getMedicalDataById/:id_shelter/:id_animal/:id_medical", async (req,
 });
 
 router.post("/insertMedicalData", async (req, res) =>  {
+    console.log(req.body)
     const { 
-        id_medical,
-        medical_process,
         medical_status,
         vaccin_status,
         medical_date_in,
@@ -67,8 +66,6 @@ router.post("/insertMedicalData", async (req, res) =>  {
     } = req.body;
 
     if (
-        id_medical == null ||
-        medical_process == null ||
         medical_status == null ||
         vaccin_status == null ||
         medical_date_in == null ||
@@ -86,9 +83,7 @@ router.post("/insertMedicalData", async (req, res) =>  {
     }
 
     try {
-        const result = await insertMedicalData(
-            id_medical,
-            medical_process,
+        const result = await insertMedical(
             medical_status,
             vaccin_status,
             medical_date_in,
@@ -106,6 +101,7 @@ router.post("/insertMedicalData", async (req, res) =>  {
 
         return res.status(200).json(result);
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             error: true,
             message: "Failed to insert data.",
