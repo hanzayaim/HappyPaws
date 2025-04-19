@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getFinance, 
-  insertFinanceData, 
+  getFinance,
   deleteFinanceData
 } = require("../models/finance_models.js");
-const { updateTotalBalance, getProfit, getLoss } = require("../controllers/finance_controller.js");
+const { updateTotalBalance, getProfit, getLoss, insertFinance } = require("../controllers/finance_controller.js");
 
 router.get("/getFinance/:id_shelter", async (req, res) =>  {
     const { id_shelter } = req.params;
@@ -18,26 +17,20 @@ router.get("/getFinance/:id_shelter", async (req, res) =>  {
 router.post("/insertFinanceData", async (req, res) => {
     try {
       const {
-        id_finance,
         id_shelter,
         total_balance
       } = req.body;
   
-      if (!id_finance || !created_by || !id_shelter) {
+      if (!id_shelter) {
         return res.status(400).json({ error: true, message: "Please provide all required data." });
       }
-      const result = await insertFinanceData(
-        id_finance,
-        id_shelter,
-        total_balance
-      );
-  
+      const result = await insertFinance(id_shelter,total_balance);
       if (result.error) {
         return res.status(500).json(result);
       }
-  
       res.status(200).json(result);
     } catch (error) {
+
       res.status(500).json({ error: true, message: "Failed to insert finance data" });
     }
 });

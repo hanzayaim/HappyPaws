@@ -6,7 +6,7 @@ const {
 const { getFoodDataById } = require("../models/food_models.js");
 const { getMedicalDataById } = require("../models/medical_models.js");
 const { getEquipmentDataById } = require("../models/equipment_models.js");
-const { getSalary, getSalaryById } = require("../models/salary_models.js");
+const { getSalaryById } = require("../models/salary_models.js");
 const generateId = require("../config/generate_id");
 const { updateTotalBalance } = require("./finance_controller.js");
 

@@ -1,10 +1,8 @@
-const { insertSalaryData, deleteSalaryData, getSalaryById }= require("../models/salary_models.js");
-const { insertExpenses, deleteExpenses, deleteExpensesById }= require("../controllers/expenses_controller.js");
+const { insertSalaryData, deleteSalaryData }= require("../models/salary_models.js");
+const { insertExpenses, deleteExpensesById }= require("../controllers/expenses_controller.js");
 
 const generateId = require("../config/generate_id");
-const { getExpenses } = require("../models/expenses_models.js");
-const { getFinance, increaseBalance, updateBalance } = require("../models/finance_models.js");
-const { increaseBalanceFinance, updateTotalBalance } = require("./finance_controller.js");
+const { updateTotalBalance } = require("./finance_controller.js");
 
 
 const insertSalary = async (
@@ -51,7 +49,6 @@ const insertSalary = async (
             };
         }    
     };
-
 const deleteSalary = async (
     id_shelter,
     id_salary
@@ -76,8 +73,6 @@ const deleteSalary = async (
             };
         }    
     };
-
-
   module.exports = {
     insertSalary,deleteSalary
   };

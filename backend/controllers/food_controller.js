@@ -1,5 +1,5 @@
 const generateId = require("../config/generate_id");
-const { insertFoodData, deleteFoodData } = require("../models/food_models");
+const { insertFoodData, deleteFoodData, updateFoodData } = require("../models/food_models");
 const { insertExpenses, deleteExpensesById } = require("./expenses_controller");
 const { updateTotalBalance } = require("./finance_controller");
 
@@ -72,7 +72,6 @@ const deleteFood = async (id_shelter, id_food) => {
       data: result,
     };
   } catch (error) {
-    console.log(error);
     return {
       error: true,
       message: "Failed delete Food Data",
@@ -80,8 +79,49 @@ const deleteFood = async (id_shelter, id_food) => {
     };
   }
 };
+const updateFood = async (
+  name,
+  quantity,
+  category,
+  type,
+  exp_date,
+  cost,
+  date,
+  note,
+  updated_by,
+  id_shelter,
+  id_food
+) => {
+  try {
+    const updated_at = new Date();
+    const result = await updateFoodData(
+      name,
+      quantity,
+      category,
+      type,
+      exp_date,
+      cost,
+      date,
+      note,
+      updated_at,
+      updated_by,
+      id_shelter,
+      id_food
+    );
+    updateTotalBalance(id_shelter);
+    return result
+  } catch (error) {
+    return {
+      error: true,
+      message: "Failed update Food Data",
+      data: null,
+    };
+  }
+};
+
 
 module.exports = {
   insertFood,
   deleteFood,
+  updateFood
 };

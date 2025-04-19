@@ -30,7 +30,6 @@ async function getFoodData(id_shelter) {
     };
   }
 }
-
 async function getFoodDataById(id_shelter, id_food) {
   try {
     const { rows } = await pool.query(
@@ -62,7 +61,6 @@ async function getFoodDataById(id_shelter, id_food) {
     };
   }
 }
-
 async function insertFoodData(
   id_food,
   name,
@@ -121,7 +119,6 @@ async function insertFoodData(
     };
   }
 }
-
 async function updateFoodData(
   name,
   quantity,
@@ -131,6 +128,7 @@ async function updateFoodData(
   cost,
   date,
   note,
+  updated_at,
   updated_by,
   id_shelter,
   id_food
@@ -146,9 +144,10 @@ async function updateFoodData(
                 , cost = $6
                 , date = $7
                 , note = $8
-                , updated_by = $9
-            where id_shelter = $10
-            and id_food = $11
+                , updated_at= $9
+                , updated_by = $10
+            where id_shelter = $11
+            and id_food = $12
             returning *`,
       [
         name,
@@ -159,6 +158,7 @@ async function updateFoodData(
         cost,
         date,
         note,
+        updated_at,
         updated_by,
         id_shelter,
         id_food,
@@ -177,7 +177,6 @@ async function updateFoodData(
     };
   }
 }
-
 async function deleteFoodData(id_shelter, id_food) {
   try {
     const result = await pool.query(

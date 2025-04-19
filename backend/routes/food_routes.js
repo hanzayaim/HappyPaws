@@ -5,7 +5,7 @@ const {
   getFoodDataById,
   updateFoodData,
 } = require("../models/food_models");
-const { insertFood, deleteFood } = require("../controllers/food_controller");
+const { insertFood, deleteFood, updateFood } = require("../controllers/food_controller");
 
 router.get("/getFoodData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
@@ -142,7 +142,7 @@ router.post("/updateFoodData", async (req, res) => {
   }
 
   try {
-    const result = await updateFoodData(
+    const result = await updateFood(
       name,
       quantity,
       category,
@@ -159,7 +159,6 @@ router.post("/updateFoodData", async (req, res) => {
     if (result.error) {
       return res.status(400).json(result);
     }
-
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({

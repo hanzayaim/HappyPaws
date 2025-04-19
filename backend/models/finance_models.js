@@ -39,7 +39,7 @@ const pool = require("../config/db.js");
   ) {
     try {
       const result = await pool.query(
-        "INSERT INTO finance (id_finance, id_shelter, total_balance) VALUES ($1, $2, $3, $4) RETURNING *",
+        "INSERT INTO finance (id_finance, id_shelter, total_balance) VALUES ($1, $2, $3) RETURNING *",
         [
           id_finance,
           id_shelter,
@@ -138,7 +138,6 @@ const pool = require("../config/db.js");
       };
     }
   }
-
   async function updateBalance(
     total_balance,id_finance,id_shelter
   ) {
@@ -164,8 +163,4 @@ const pool = require("../config/db.js");
     }
   }
   
-
-  
-
-
-  module.exports = {getFinance, decreaseBalance,increaseBalance,updateBalance, insertFinanceData, deleteFinanceData };
+  module.exports = {getFinance,updateBalance, insertFinanceData, deleteFinanceData };

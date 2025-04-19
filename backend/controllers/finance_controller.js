@@ -1,24 +1,12 @@
 
-const { getFinance, increaseBalance,decreaseBalance, updateBalance } = require("../models/finance_models.js");
-const { getExpenses } = require("../models/expenses_models.js")
-const { getIncome, getIncomeById } = require("../models/income_models.js")
+const { getFinance,updateBalance, insertFinanceData } = require("../models/finance_models.js");
+const { getIncome} = require("../models/income_models.js")
 const { getFoodData } = require("../models/food_models.js")
 const { getMedicalData } = require("../models/medical_models.js")
 const { getEquipmentData } = require("../models/equipment_models.js")
-const { getSalary } = require("../models/salary_models.js")
-/*
-profit = income
-loss = expenses
-total balace = profit - loss
+const { getSalary } = require("../models/salary_models.js");
+const generateId = require("../config/generate_id.js");
 
-
-func profit
-func loss
-func update total balance
-func UPDATE loss
-func UPDATE profit
-
-*/
 let totalProfit;
 let totalLoss;
 const getProfit = async (id_shelter) => {
@@ -37,8 +25,6 @@ const getProfit = async (id_shelter) => {
     };
   }
 };
-
-
 const getLoss = async (id_shelter) => {
   try {
     const foodData = await getFoodData(id_shelter);
@@ -67,8 +53,23 @@ const getLoss = async (id_shelter) => {
   };
   }
 };
-
-
+const insertFinance = async (id_shelter,total_balance) => {
+  try {
+    const id_finance = "FINANCE-" + generateId();
+    const result = await insertFinanceData(
+      id_finance,
+      id_shelter,
+      total_balance
+    );
+    return result
+  } catch (error) {
+    return{
+      error: true,
+      message: "Failed to Insert Finance",
+      result: null,
+  };
+  }
+};
 const updateTotalBalance = async(id_shelter) =>{
   try {
     const finance = await getFinance(id_shelter);
@@ -91,94 +92,7 @@ const updateTotalBalance = async(id_shelter) =>{
   }
 }
 
-
-// const updateDecreaseBalance = async (
-//     id_shelter,DataCost,amount
-//   ) => {
-//       const currentAmount = DataCost.data.amount
-//       if (currentAmount != amount) {
-//         const finance = await getFinance(id_shelter);
-//         const currentBalance = finance.data[0].total_balance;
-//         const newBalance = (currentBalance - currentAmount) - amount;
-//         if (newBalance < 0) {
-//             return{
-//                 error: true,
-//                 message: "Failed to update balance data",
-//                 result: null,
-//               };
-//         }else{
-//             await updateBalance(
-//               newBalance,
-//               finance.data[0].id_finance,
-//               id_shelter,
-//             );
-//         }
-//       }
-//   }
-//   const updateIncreaseBalance = async (
-//     id_shelter, DataCost, amount
-//   ) => {
-//       const currentAmount = DataCost.data.amount
-//       if (currentAmount != amount) {
-//         const finance = await getFinance(id_shelter);
-//         const currentBalance = finance.data[0].total_balance;
-//         const newBalance = (currentBalance - currentAmount) + amount;
-//         if (newBalance < 0) {
-//             return{
-//                 error: true,
-//                 message: "Failed to update balance data.",
-//                 result: null,
-//               };
-//         }else{
-//             await updateBalance(
-//               newBalance,
-//               finance.data[0].id_finance,
-//               id_shelter,
-//             );
-//         }
-//       }
-//   }
-//   const increaseBalanceFinance = async (
-//     id_shelter,amount
-//   ) =>{
-//     const finance = await getFinance(id_shelter);
-//     const newBalance = await increaseBalance(
-//         finance.data[0].id_finance,
-//         id_shelter,
-//         amount.data[0].cost
-//     );
-//     await updateBalance(
-//         newBalance,
-//         finance.data[0].id_finance,
-//         id_shelter
-//     );
-//   }
-// const decreaseBalanceFinance = async (
-//     id_shelter,amount
-//   ) =>{
-//     try {
-//         const finance = await getFinance(id_shelter);
-//         const newBalance = await decreaseBalance(
-//           finance.data[0].id_finance,
-//           id_shelter,
-//           amount
-//         );
-//         await updateBalance(
-//           newBalance,
-//           finance.data[0].id_finance,
-//           id_shelter,
-//         );
-//     } catch (error) {
-//         return{
-//             error: true,
-//             message: "Failed to update income data.",
-//             result: null,
-//         };
-//     }
-//   }
-
-
   module.exports = {
-    updateTotalBalance,getLoss,getProfit,totalProfit,totalLoss
+    updateTotalBalance,getLoss,getProfit,totalProfit,totalLoss,insertFinance
   };
   
