@@ -6,7 +6,8 @@ const {
     insertEquipmentData,
     updateEquipmentData,
     deleteEquipmentData
-} = require("../models/equipment_models")
+} = require("../models/equipment_models");
+const { insertEquipment, updateEquipment, deleteEquipment } = require("../controllers/equipment_controller");
 
 router.get("/getEquipmentData/:id_shelter", async (req, res) => {
     const { id_shelter } = req.params;
@@ -50,7 +51,6 @@ router.get("/getEquipmentDataById/:id_shelter/:id_equipment", async (req, res) =
 
 router.post("/insertEquipmentData", async (req, res) => {
     const {
-        id_equipment,
         name,
         type,
         date,
@@ -61,7 +61,6 @@ router.post("/insertEquipmentData", async (req, res) => {
     } = req.body;
 
     if (
-        id_equipment == null ||
         name == null ||
         type == null ||
         date == null ||
@@ -75,10 +74,8 @@ router.post("/insertEquipmentData", async (req, res) => {
             message: "Please provide all required data."
         });
     }
-
     try {
-        const result = await insertEquipmentData(
-            id_equipment,
+        const result = await insertEquipment(
             name,
             type,
             date,
@@ -87,11 +84,9 @@ router.post("/insertEquipmentData", async (req, res) => {
             created_by,
             id_shelter
         );
-
         if (result.error) {
             return res.status(400).json(result);
         }
-
         return res.status(200).json(result);
     } catch (error) {
         return res.status(500).json({
@@ -130,7 +125,7 @@ router.post("/updateEquipmentData", async (req, res) => {
     }
 
     try {
-        const result = await updateEquipmentData(
+        const result = await updateEquipment(
             name,
             type,
             date,
@@ -165,7 +160,7 @@ router.post("/deleteEquipmentData", async (req, res) => {
     }
 
     try {
-        const result = await deleteEquipmentData(id_shelter, id_equipment);
+        const result = await deleteEquipment(id_shelter, id_equipment);
 
         if (result.error) {
             return res.status(400).json(result);

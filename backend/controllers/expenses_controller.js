@@ -19,34 +19,25 @@ const insertExpenses = async (
   created_by
 ) => {
   const id_expenses = "EXPENSES-" + generateId();
-  let amount = null;
   if (id_food) {
     id_medical = null;
     id_equipment = null;
     id_salary = null;
-    const food = await getFoodDataById(id_shelter, id_food);
-    amount = food.data[0].cost;
   }
   if (id_medical) {
     id_food = null;
     id_equipment = null;
     id_salary = null;
-    const medical = await getMedicalDataById(id_shelter, id_medical);
-    amount = medical.data[0].medical_cost;
   }
   if (id_equipment) {
     id_food = null;
     id_medical = null;
     id_salary = null;
-    const equipment = await getEquipmentDataById(id_shelter, id_equipment);
-    amount = equipment.data[0].cost;
   }
   if (id_salary) {
     id_food = null;
     id_medical = null;
     id_equipment = null;
-    const salary = await getSalaryById(id_shelter, id_salary);
-    amount = salary.data[0].cost;
   }
   try {
     const result = await insertExpensesData(
@@ -58,7 +49,7 @@ const insertExpenses = async (
       id_salary,
       created_by
     );
-
+    
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {

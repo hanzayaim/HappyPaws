@@ -119,6 +119,7 @@ async function updateEquipmentData(
     date,
     cost,
     note,
+    updated_at,
     updated_by,
     id_shelter,
     id_equipment
@@ -131,9 +132,10 @@ async function updateEquipmentData(
                 , date = $3
                 , cost = $4
                 , note = $5
-                , updated_by = $6
-            where id_shelter = $7 
-            and id_equipment = $8
+                , updated_at = $6
+                , updated_by = $7
+            where id_shelter = $8 
+            and id_equipment = $9
             returning *`,
             [
                 name,
@@ -141,6 +143,7 @@ async function updateEquipmentData(
                 date,
                 cost,
                 note,
+                updated_at,
                 updated_by,
                 id_shelter,
                 id_equipment

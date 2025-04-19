@@ -1,31 +1,25 @@
 const generateId = require("../config/generate_id");
-const { insertFoodData, deleteFoodData, updateFoodData } = require("../models/food_models");
+const { insertEquipmentData, deleteEquipmentData, updateEquipmentData } = require("../models/equipment_models.js");
 const { insertExpenses, deleteExpensesById } = require("./expenses_controller");
 const { updateTotalBalance } = require("./finance_controller");
 
-const insertFood = async (
+const insertEquipment = async (
   name,
-  quantity,
-  category,
   type,
-  exp_date,
-  cost,
   date,
+  cost,
   note,
   created_by,
   id_shelter
 ) => {
-  const id_food = "FOOD-" + generateId();
+  const id_equipment = "EQUIPMENT-" + generateId();
   try {
-    const result1 = await insertFoodData(
-      id_food,
+    const result1 = await insertEquipmentData(
+      id_equipment,
       name,
-      quantity,
-      category,
       type,
-      exp_date,
-      cost,
       date,
+      cost,
       note,
       created_by,
       id_shelter
@@ -33,79 +27,73 @@ const insertFood = async (
     if (cost != 0) {
       const result2 = await insertExpenses(
         id_shelter,
-        id_food,
+        (id_food = null),
         (id_medical = null),
-        (id_equipment = null),
+        id_equipment,
         (id_salary = null),
         created_by
       );
       return {
         error: false,
-        message: "Food data created successfully",
+        message: "equipment data created successfully",
         data: { result1, result2 },
       };
     } else {
       return {
         error: false,
-        message: "Food data created successfully",
+        message: "equipment data created successfully",
         data: result1,
       };
     }
   } catch (error) {
+    console.error(error)
     return {
       error: true,
-      message: "Failed create Food Data",
+      message: "Failed create equipment Data",
       data: null,
     };
   }
 };
-
-const deleteFood = async (id_shelter, id_food) => {
+const deleteEquipment = async (id_shelter, id_equipment) => {
   try {
-    await deleteExpensesById(id_shelter, id_food);
-    const result = await deleteFoodData(id_shelter, id_food);
+    await deleteExpensesById(id_shelter, id_equipment);
+    const result = await deleteEquipmentData(id_shelter, id_equipment);
     updateTotalBalance(id_shelter);
     return {
       error: false,
-      message: "Food data deleted successfully",
+      message: "equipment data deleted successfully",
       data: result,
     };
   } catch (error) {
     return {
       error: true,
-      message: "Failed delete Food Data",
+      message: "Failed delete equipment Data",
       data: null,
     };
   }
 };
-const updateFood = async (
+const updateEquipment = async (
   name,
-  quantity,
-  category,
   type,
-  exp_date,
-  cost,
   date,
+  cost,
   note,
   updated_by,
   id_shelter,
-  id_food
+  id_equipment
 ) => {
   try {
     const updated_at = new Date();
-    const result = await updateFoodData(
+    const result = await updateEquipmentData(
       name,
-      quantity,
-      category,
       type,
-      exp_date,
-      cost,
       date,
+      cost,
       note,
       updated_at,
       updated_by,
       id_shelter,
-      id_food
+      id_equipment
     );
     updateTotalBalance(id_shelter);
     return result
@@ -120,7 +108,7 @@ const updateFood = async (
 
 
 module.exports = {
-  insertFood,
-  deleteFood,
-  updateFood
+  insertEquipment,
+  deleteEquipment,
+  updateEquipment
 };
