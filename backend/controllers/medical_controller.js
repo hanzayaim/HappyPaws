@@ -33,7 +33,6 @@ const insertMedical = async (
         );
 
         if (medical_cost != 0) {
-            console.log(typeof(medical_cost))
             resultExpenses = await insertExpenses(
                 id_shelter,
                 id_food = null,

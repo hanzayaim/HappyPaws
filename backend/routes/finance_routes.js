@@ -17,14 +17,13 @@ router.get("/getFinance/:id_shelter", async (req, res) =>  {
 router.post("/insertFinanceData", async (req, res) => {
     try {
       const {
-        id_shelter,
-        total_balance
+        id_shelter
       } = req.body;
   
       if (!id_shelter) {
         return res.status(400).json({ error: true, message: "Please provide all required data." });
       }
-      const result = await insertFinance(id_shelter,total_balance);
+      const result = await insertFinance(id_shelter);
       if (result.error) {
         return res.status(500).json(result);
       }

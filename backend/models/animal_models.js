@@ -96,6 +96,7 @@ async function insertAnimalData(
       animal: rows[0],
     };
   } catch (error) {
+    console.error(error)
     return {
       error: true,
       message: "error creating animal",

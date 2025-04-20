@@ -83,15 +83,12 @@ const deleteExpensesById = async (id_shelter, table_id) => {
       expense.id_equipment === table_id ||
       expense.id_salary === table_id
     );
-    
     let result;
     if (findExpense) {
       result = await deleteExpensesData(id_shelter, findExpense.id_expenses);
     }
-    
     return result;
   } catch (error) {
-    console.error(error);
     return {
       error: true,
       message: "Failed to delete Expenses data.",

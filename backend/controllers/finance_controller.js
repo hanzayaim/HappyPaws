@@ -53,9 +53,10 @@ const getLoss = async (id_shelter) => {
   };
   }
 };
-const insertFinance = async (id_shelter,total_balance) => {
+const insertFinance = async (id_shelter) => {
   try {
     const id_finance = "FINANCE-" + generateId();
+    const total_balance = 0;
     const result = await insertFinanceData(
       id_finance,
       id_shelter,
@@ -75,7 +76,7 @@ const updateTotalBalance = async(id_shelter) =>{
     const finance = await getFinance(id_shelter);
     const totalProfit = await getProfit(id_shelter);
     const totalLoss = await getLoss(id_shelter);
-    const newBalance = totalProfit - totalLoss;
+    const newBalance = totalProfit -  totalLoss;
     const result = await updateBalance(
       newBalance,
       finance.data[0].id_finance,
