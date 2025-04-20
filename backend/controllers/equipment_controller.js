@@ -1,5 +1,9 @@
 const generateId = require("../config/generate_id");
-const { insertEquipmentData, deleteEquipmentData, updateEquipmentData } = require("../models/equipment_models.js");
+const {
+  insertEquipmentData,
+  deleteEquipmentData,
+  updateEquipmentData,
+} = require("../models/equipment_models.js");
 const { insertExpenses, deleteExpensesById } = require("./expenses_controller");
 const { updateTotalBalance } = require("./finance_controller");
 
@@ -46,7 +50,6 @@ const insertEquipment = async (
       };
     }
   } catch (error) {
-    console.error(error)
     return {
       error: true,
       message: "Failed create equipment Data",
@@ -96,7 +99,7 @@ const updateEquipment = async (
       id_equipment
     );
     updateTotalBalance(id_shelter);
-    return result
+    return result;
   } catch (error) {
     return {
       error: true,
@@ -106,9 +109,8 @@ const updateEquipment = async (
   }
 };
 
-
 module.exports = {
   insertEquipment,
   deleteEquipment,
-  updateEquipment
+  updateEquipment,
 };

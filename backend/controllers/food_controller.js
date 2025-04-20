@@ -1,5 +1,9 @@
 const generateId = require("../config/generate_id");
-const { insertFoodData, deleteFoodData, updateFoodData } = require("../models/food_models");
+const {
+  insertFoodData,
+  deleteFoodData,
+  updateFoodData,
+} = require("../models/food_models");
 const { insertExpenses, deleteExpensesById } = require("./expenses_controller");
 const { updateTotalBalance } = require("./finance_controller");
 
@@ -107,8 +111,9 @@ const updateFood = async (
       id_shelter,
       id_food
     );
+
     updateTotalBalance(id_shelter);
-    return result
+    return result;
   } catch (error) {
     return {
       error: true,
@@ -118,9 +123,8 @@ const updateFood = async (
   }
 };
 
-
 module.exports = {
   insertFood,
   deleteFood,
-  updateFood
+  updateFood,
 };

@@ -5,7 +5,11 @@ const {
   getFoodDataById,
   updateFoodData,
 } = require("../models/food_models");
-const { insertFood, deleteFood, updateFood } = require("../controllers/food_controller");
+const {
+  insertFood,
+  deleteFood,
+  updateFood,
+} = require("../controllers/food_controller");
 
 router.get("/getFoodData/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
@@ -99,7 +103,6 @@ router.post("/insertFoodData", async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
-    console.error("Insert error:", error);
     return res.status(500).json({
       error: true,
       message: "Failed to insert data.",

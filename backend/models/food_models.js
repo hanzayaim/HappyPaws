@@ -111,7 +111,6 @@ async function insertFoodData(
       food: result.rows[0],
     };
   } catch (error) {
-    console.error(error)
     return {
       error: true,
       message: "Error creating food.",
