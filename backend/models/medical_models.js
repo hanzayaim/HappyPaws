@@ -127,7 +127,6 @@ async function insertMedicalData(
 }
 
 async function updateMedicalData(
-    medical_process,
     medical_status,
     vaccin_status,
     medical_date_in,
@@ -142,20 +141,18 @@ async function updateMedicalData(
     try {
         const result = await pool.query(
             `update medical
-            set medical_process = $1
-                , medical_status = $2
-                , vaccin_status = $3
-                , medical_date_in = $4
-                , medical_date_out = $5
-                , medical_cost = $6
-                , note = $7
-                , updated_by = $8
-            WHERE id_shelter = $9 
-            and id_animal = $10 
-            and id_medical = $11
+            set medical_status = $1
+                , vaccin_status = $2
+                , medical_date_in = $3
+                , medical_date_out = $4
+                , medical_cost = $5
+                , note = $6
+                , updated_by = $7
+            where id_shelter = $8 
+            and id_animal = $9
+            and id_medical = $10
             returning *`,
             [
-                medical_process,
                 medical_status,
                 vaccin_status,
                 medical_date_in,
@@ -174,6 +171,7 @@ async function updateMedicalData(
             medical: result.rows[0]
         }
     } catch (error) {
+        console.error(error);
         return {
             error: true,
             message: "Error updating medical.",

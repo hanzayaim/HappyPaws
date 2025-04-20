@@ -111,7 +111,6 @@ router.post("/insertMedicalData", async (req, res) =>  {
 
 router.post("/updateMedicalData", async (req, res) => {
     const {
-        medical_process,
         medical_status,
         vaccin_status,
         medical_date_in,
@@ -125,7 +124,6 @@ router.post("/updateMedicalData", async (req, res) => {
     } = req.body;
 
     if (
-        medical_process == null ||
         medical_status == null ||
         vaccin_status == null ||
         medical_date_in == null ||
@@ -145,7 +143,6 @@ router.post("/updateMedicalData", async (req, res) => {
 
     try {
         const result = await updateMedicalData(
-            medical_process,
             medical_status,
             vaccin_status,
             medical_date_in,
