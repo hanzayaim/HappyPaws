@@ -1,8 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { AlertDialogDemo } from "./components/page-components/alertDialog";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh"></div>
+    <div className="flex flex-col items-center justify-center min-h-svh">
+      <AlertDialogDemo></AlertDialogDemo>
+    </div>
   );
 }
 
