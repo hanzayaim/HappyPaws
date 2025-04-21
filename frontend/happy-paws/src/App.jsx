@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import RadioGroupComponent from "./components/page-components/radioGroup";
 
 function App() {
   return (

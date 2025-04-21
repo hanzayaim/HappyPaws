@@ -24,3 +24,4 @@ Editor directories and files
 *.sw?
 vite.config.js
 jsconfig.json
+App.jsx
