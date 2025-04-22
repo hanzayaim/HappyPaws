@@ -7,20 +7,32 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
+import GenderCombobox from "../components/pages-component/gender-combobox";
+import RolesCombobox from "../components/pages-component/role-combobox";
 import { useState } from "react";
+import ShelterCombobox from "../components/pages-component/shelterlist-combobox";
 
-export default function RegisterOwner() {
+export default function RegisterEmployee() {
+  const [gender, setGender] = useState("");
+  const [role, setRole] = useState("");
+  const [shelter, setShelter] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [genderError, setGenderError] = useState(false);
+  const [roleError, setRoleError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [shelterError, setShelterError] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setPhoneNumberError(false);
+    setShelterError(false);
+    setGenderError(false);
+    setRoleError(false);
     setConfirmPasswordError(false);
+    setPhoneNumberError(false);
 
     let hasError = false;
 
@@ -31,6 +43,20 @@ export default function RegisterOwner() {
 
     if (phoneNumber.length < 10 || isNaN(phoneNumber)) {
       setPhoneNumberError(true);
+      hasError = true;
+    }
+    if (!gender) {
+      setGenderError(true);
+      hasError = true;
+    }
+
+    if (!role) {
+      setRoleError(true);
+      hasError = true;
+    }
+
+    if (!shelter) {
+      setShelterError(true);
       hasError = true;
     }
 
@@ -44,7 +70,7 @@ export default function RegisterOwner() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl text-center">
-                Register Owner Shelter
+                Register Employee Shelter
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -85,23 +111,15 @@ export default function RegisterOwner() {
                   </div>
                   <div className="grid gap-2">
                     <Input
-                      id="shelterName"
+                      id="employeeName"
                       type="text"
-                      placeholder="Shelter Name"
+                      placeholder="Employee Name"
                       required
                     />
                   </div>
                   <div className="grid gap-2">
                     <Input
-                      id="shelterOwnerName"
-                      type="text"
-                      placeholder="Owner Name"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="shelterPhoneNumber"
+                      id="employeePhoneNumber"
                       type="text"
                       placeholder="Phone Number (ex: 08XXXXXXX)"
                       required
@@ -118,11 +136,35 @@ export default function RegisterOwner() {
                   </div>
                   <div className="grid gap-2">
                     <Input
-                      id="shelterAddress"
+                      id="employeeAddress"
                       type="text"
-                      placeholder="Shelter Address"
+                      placeholder="Employee Address"
                       required
                     />
+                  </div>
+                  <div className="grid gap-2">
+                    <GenderCombobox value={gender} onChange={setGender} />
+                    {genderError && (
+                      <p className="text-sm text-red-500">
+                        Please select a gender.
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <RolesCombobox value={role} onChange={setRole} />
+                    {roleError && (
+                      <p className="text-sm text-red-500">
+                        Please select a role.
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <ShelterCombobox value={shelter} onChange={setShelter} />
+                    {shelterError && (
+                      <p className="text-sm text-red-500">
+                        Please select a shelter.
+                      </p>
+                    )}
                   </div>
                   <Button
                     variant="default"
@@ -133,6 +175,7 @@ export default function RegisterOwner() {
                   </Button>
                 </div>
               </form>
+
               <div className="text-sm flex mt-2 items-center justify-center gap-1">
                 Already have an account ?
                 <Link to="/login" className="text-orange-500 hover:underline">

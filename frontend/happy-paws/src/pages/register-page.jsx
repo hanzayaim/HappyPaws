@@ -17,13 +17,13 @@ export default function RegisterPage() {
         <div className="flex flex-col gap-6">
           <Card className="text-center w-full max-w-xl h-auto p-15 gap-6 justify-center">
             <CardHeader>
-              <CardTitle className="text-2xl">Registrasi</CardTitle>
+              <CardTitle className="text-2xl">Register</CardTitle>
             </CardHeader>
             <CardContent className="flex gap-4 justify-center">
               <Button
                 variant="outline"
-                className="flex flex-col items-center justify-center gap-2 p-6 w-35 h-auto"
-                onClick={() => navigate("./registrasi-owner")}
+                className="flex flex-col justify-center gap-2 p-6 w-35 h-auto"
+                onClick={() => navigate("./register-owner")}
               >
                 <UserRound className="size-9" />
                 <span className="text-base">Owner Shelter</span>
@@ -31,11 +31,11 @@ export default function RegisterPage() {
 
               <Button
                 variant="outline"
-                className="flex flex-col items-center justify-center gap-2 p-6 w-35 h-auto"
-                // onClick={() => navigate("/registrasi-pegawai")}
+                className="flex flex-col justify-center gap-2 p-6 w-35 h-auto"
+                onClick={() => navigate("./register-employee")}
               >
                 <UsersRound className="size-9" />
-                <span className="text-base">Pegawai Shelter</span>
+                <span className="text-base">Employee Shelter</span>
               </Button>
             </CardContent>
           </Card>
