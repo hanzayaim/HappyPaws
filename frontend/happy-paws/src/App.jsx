@@ -1,10 +1,13 @@
-import { AlertDialogDemo } from "./components/page-components/alertDialog";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import InventoryPages from "./pages/inventory-pages";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <AlertDialogDemo></AlertDialogDemo>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/food" element={<InventoryPages/>} />
+      </Routes>
+    </Router>
   );
 }
 
