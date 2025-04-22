@@ -1,10 +1,15 @@
-import { AlertDialogDemo } from "./components/page-components/alertDialog";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import RegisterOwner from "./pages/register-owner";
+import RegisterPage from "./pages/register-page";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <AlertDialogDemo></AlertDialogDemo>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register/registrasi-owner" element={<RegisterOwner />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
