@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button"
+import AnimalManagement from "./pages/animal-management"
+import AnimalDetail from "./pages/animal-detail"
 
 function App() {
   return (
     <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button>Click me</Button>
+      <AnimalDetail></AnimalDetail>
     </div>
   )
 }
