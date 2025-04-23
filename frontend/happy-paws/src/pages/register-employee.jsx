@@ -7,10 +7,10 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import GenderCombobox from "../components/pages-component/gender-combobox";
-import RolesCombobox from "../components/pages-component/role-combobox";
 import { useState } from "react";
-import ShelterCombobox from "../components/pages-component/shelterlist-combobox";
+import GenderCombobox from "../components/pages-components/gender-combobox";
+import RolesCombobox from "../components/pages-components/role-combobox";
+import ShelterCombobox from "../components/pages-components/shelterlist-combobox";
 
 export default function RegisterEmployee() {
   const [gender, setGender] = useState("");
