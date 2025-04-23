@@ -18,8 +18,8 @@ import {
 import {
   FoodCategoryCombobox,
   FoodTypeCombobox,
-} from "../page-components/FoodCombobox";
-import { FoodExpiredDate, FoodDate } from "../page-components/FoodDatepicker";
+} from "./FoodCombobox";
+import { FoodExpiredDate, FoodDate } from "./FoodDatepicker";
 
 const foodSchema = z.object({
   foodName: z.string().min(1, "Name is required"),
