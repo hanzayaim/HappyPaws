@@ -110,7 +110,7 @@ export default function AnimalManagement(){
 
     return(
         <Layout>
-            <div className="flex-row min-h-svh bg-gray-100 w-full p-6 md:p-10">
+            <div className="flex-row min-h-svh  bg-gray-100 w-full p-6 md:p-10">
                 <div>
                     <Label className="text-3xl font-bold">Animal Management</Label>
                 </div>
