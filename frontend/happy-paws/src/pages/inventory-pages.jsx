@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import {
   Table,
@@ -18,11 +20,22 @@ import {
   PaginationLink,
 } from "../components/ui/pagination";
 import { Plus, Pencil, Trash } from "lucide-react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "../components/ui/dialog";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { FoodCombobox } from "../components/page-components/food-combobox";
 
 const foods = [
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
-    name: "Whiskas",
+    name: "Whiskas1",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -33,7 +46,7 @@ const foods = [
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
-    name: "Whiskas",
+    name: "Whiskas2",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -44,7 +57,7 @@ const foods = [
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
-    name: "Whiskas",
+    name: "Whiskas3",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -55,7 +68,7 @@ const foods = [
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
-    name: "Whiskas",
+    name: "Whiskas4",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -66,7 +79,7 @@ const foods = [
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
-    name: "Whiskas",
+    name: "Whiskas5",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -77,7 +90,7 @@ const foods = [
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
-    name: "Whiskas",
+    name: "Whiskas6",
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
@@ -88,7 +101,7 @@ const foods = [
   },
 ];
 
-function InventoryPages() {
+export default function InventoryPages() {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -96,13 +109,14 @@ function InventoryPages() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentFoods = foods.slice(startIndex, startIndex + itemsPerPage);
 
+  const [category, setCategory] = useState("");
+  const [type, setType] = useState("");
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
-
-  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
@@ -111,58 +125,90 @@ function InventoryPages() {
       </Label>
       <div className="flex justify-between items-center w-full">
         <Label className="text-2xl font-medium">Food</Label>
-        <Button
-          className="flex items-center gap-2"
-          // onClick={() => setIsModalOpen(true)}
-        >
-          <Plus size={16} />
-          Tambah Data
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-1">
+              <Plus className="size-4" />
+              Add Data
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Add New Food</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              Insert new food below.
+            </DialogDescription>
+            <div className="grid gap-4 py-4">
+              <Input placeholder="Name" name="foodName" />
+              <Input
+                placeholder="Quantity"
+                name="foodQuantity"
+              />
+              <FoodCombobox
+              category={category}
+              setCategory={setCategory}
+              type={type}
+              setType={setType}
+              />
+              <Input placeholder="Cost" name="foodCost" />
+              <Textarea
+                placeholder="Note"
+                name="foodNote"
+              />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button onClick="">Save</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
         <Table>
           <TableHeader>
-            <TableRow className="text-center">
-              <TableHead>No.</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Expired Date</TableHead>
-              <TableHead>Cost</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Note</TableHead>
-              <TableHead>Action</TableHead>
+            <TableRow>
+              <TableHead className="text-center">No.</TableHead>
+              <TableHead className="text-center">Name</TableHead>
+              <TableHead className="text-center">Quantity</TableHead>
+              <TableHead className="text-center">Category</TableHead>
+              <TableHead className="text-center">Type</TableHead>
+              <TableHead className="text-center">Expired Date</TableHead>
+              <TableHead className="text-center">Cost</TableHead>
+              <TableHead className="text-center">Date</TableHead>
+              <TableHead className="text-center">Note</TableHead>
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {currentFoods.map((food, index) => (
-              <TableRow key={food.id_food} className="text-center">
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{food.name}</TableCell>
-                <TableCell>{food.quantity}</TableCell>
-                <TableCell>{food.category}</TableCell>
-                <TableCell>{food.type}</TableCell>
-                <TableCell>
+              <TableRow key={food.id_food}>
+                <TableCell className="text-center">{index + 1}</TableCell>
+                <TableCell className="text-center">{food.name}</TableCell>
+                <TableCell className="text-center">{food.quantity}</TableCell>
+                <TableCell className="text-center">{food.category}</TableCell>
+                <TableCell className="text-center">{food.type}</TableCell>
+                <TableCell className="text-center">
                   {new Date(food.exp_date).toLocaleDateString()}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   {new Intl.NumberFormat("id-ID", {
                     style: "currency",
                     currency: "IDR",
                   }).format(food.cost)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   {new Date(food.date).toLocaleDateString()}
                 </TableCell>
-                <TableCell>{food.note}</TableCell>
-                <TableCell>
-                  <Button>
-                    <Pencil size={16} />
+                <TableCell className="text-center">{food.note}</TableCell>
+                <TableCell className="flex gap-1 justify-center">
+                  <Button className="text-sm" variant="success">
+                    <Pencil className="size-4" />
                     Edit
                   </Button>
-                  <Button>
-                    <Trash size={16} />
+                  <Button className="text-sm" variant="alert">
+                    <Trash className="size-4" />
                     Delete
                   </Button>
                 </TableCell>
@@ -208,13 +254,6 @@ function InventoryPages() {
           </Pagination>
         </div>
       </div>
-      {/* {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
-          <div className="bg-white rouded-lg shadow-lg w-full max-w-md p-6"></div>
-        </div>
-      )} */}
     </div>
   );
 }
-
-export default InventoryPages;
