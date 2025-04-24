@@ -9,9 +9,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-
+import { useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import Layout from "../app/layout";
+import { AnimalInDialog, AnimalOutDialog } from "../components/pages-components/animalDialog";
 
 export default function AnimalManagement() {
   const animals = [
@@ -107,7 +108,8 @@ export default function AnimalManagement() {
       umur: "4 tahun",
     },
   ];
-
+    const [openAnimalIn, setOpenAnimalIn] = useState(false);
+    const [openAnimalOut, setOpenAnimalOut] = useState(false);
   return (
     <Layout>
       <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">
@@ -115,13 +117,24 @@ export default function AnimalManagement() {
           <Label className="text-3xl font-bold">Animal Management</Label>
         </div>
         <div className="flex lg:justify-end md:justify-end sm:justify-center mt-2 gap-3">
-          <Button className="w-32" variant="success">
-            <ArrowDown /> Animal In
+          <Button 
+          className="w-32" 
+          variant="success"
+          onClick={() => setOpenAnimalIn(true)}
+          >
+            <ArrowDown /> 
+            Animal In
           </Button>
-          <Button className="w-32" variant="alert">
+          <AnimalInDialog open={openAnimalIn} onOpenChange={setOpenAnimalIn}/>
+          <Button 
+          className="w-32" 
+          variant="alert"
+          onClick={() => setOpenAnimalOut(true)}
+          >
             <ArrowUp />
             Animal Out
           </Button>
+          <AnimalOutDialog open={openAnimalOut} onOpenChange={setOpenAnimalOut}/>
         </div>
         <div className="flex pt-3 lg:px-15 md:px-10 justify-center min-h-svh w-full">
           <Carousel
