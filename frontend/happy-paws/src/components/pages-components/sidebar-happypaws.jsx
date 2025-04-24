@@ -25,27 +25,27 @@ import { SidebarFooter } from "../ui/sidebar";
 const items = [
   {
     title: "User Management",
-    url: "#",
+    url: "/user-management",
     icon: UserRoundCog,
   },
   {
     title: "Animal Management",
-    url: "#",
+    url: "/animal-management",
     icon: PawPrint,
   },
   {
     title: "Finance Management",
-    url: "#",
+    url: "/finance-management",
     icon: Landmark,
   },
   {
     title: "Medical Management",
-    url: "#",
+    url: "/medical-management",
     icon: ClipboardPlus,
   },
   {
     title: "Inventory Management",
-    url: "#",
+    url: "/inventory-management",
     icon: Warehouse,
   },
 ];
