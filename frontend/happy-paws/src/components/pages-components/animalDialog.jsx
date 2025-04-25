@@ -501,3 +501,38 @@ export function AnimalEditDialog({ open, onOpenChange,animalData }){
 
 
   }
+
+  export function AnimalDeleteDialog({ open, onOpenChange, animalData }) {
+    const onSubmit = (e) => {
+      e.preventDefault();
+      console.log("Delete Animal with ID: ", animalData.id_animal);
+      onOpenChange(false);
+    };
+  
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Delete Animal</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={onSubmit} className="grid gap-2 py-2">
+            <DialogDescription>
+              Are you sure want to delete this Animal?
+            </DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" variant="alert">
+                Delete
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+  

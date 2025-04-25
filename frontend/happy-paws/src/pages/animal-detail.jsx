@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { PencilLine,Trash,ChevronsRight } from "lucide-react"
-import { AnimalEditDialog } from "../components/pages-components/animalDialog";
+import { AnimalDeleteDialog, AnimalEditDialog } from "../components/pages-components/animalDialog";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { AlertDialogDelete } from "../components/pages-components/AnimalAlert";
@@ -99,7 +99,7 @@ export default function AnimalDetail(){
                     </Button>
                 </div>
                 <AnimalEditDialog open={openEdit} onOpenChange={setOpenEdit} animalData={animal}/>
-                <AlertDialogDelete open={isAlert} onOpenChange={setAlert}/>
+                <AnimalDeleteDialog open={isAlert} onOpenChange={setAlert} animal={animal}/>
                 <div className="w-full bg-secondary/70 min-h-fit flex flex-col mt-6 px-12 py-20 lg:gap-10 gap-4 rounded-xl">
                     <div className="flex lg:flex-row flex-col h-fit w-full items-center text-center gap-3">
                         <img
@@ -119,9 +119,9 @@ export default function AnimalDetail(){
                             <Label className="lg:text-2xl">Rescue location : {animal.rescue_location}</Label>
                             <Label className="lg:text-2xl">Medical Status  : {medicaldatabyId?.medical_status??"Medical Status Belum ada"}</Label>
                             <Label className="lg:text-2xl">
-                            Vaccinate Status: {medicaldatabyId?.vaccin_status != null 
-                                ? (medicaldatabyId.vaccin_status ? "Sudah Vaksin" : "Belum Vaksin") 
-                                : "Vaksin Status Belum ada"}
+                                Vaccinate Status: {medicaldatabyId?.vaccin_status != null 
+                                    ? (medicaldatabyId.vaccin_status ? "Sudah Vaksin" : "Belum Vaksin") 
+                                    : "Vaksin Status Belum ada"}
                             </Label>
                         <div/>
                     </div>
