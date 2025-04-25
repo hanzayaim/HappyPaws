@@ -9,34 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function FoodExpiredDate({ value, onChange }) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"combobox"}
-          className={cn(
-            "w-full justify-start text-left font-normal",
-            !value && "text-muted-foreground"
-          )}
-        >
-          <CalendarIcon />
-          {value ? format(value, "PPP") : <span>Expired Date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={value}
-          onSelect={onChange}
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-export function FoodDate({ value, onChange }) {
+export default function EquipmentDate({ value, onChange }) {
   return (
     <Popover>
       <PopoverTrigger asChild>

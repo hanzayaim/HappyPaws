@@ -1,0 +1,344 @@
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+  DialogDescription,
+} from "../ui/dialog";
+import EquipmentTypeCombobox from "./EquipmentCombobox";
+import EquipmentDate from "./EquipmentDatepicker";
+import { Label } from "../ui/label";
+
+const equipmentSchema = z.object({
+  equipmentName: z.string().min(1, "Name is required"),
+  equipmentType: z.string().min(1, "Type is required"),
+  equipmentDate: z
+    .date({ required_error: "Expired date is required" })
+    .nullable()
+    .refine((data) => data !== null, {
+      message: "Expired date is required",
+    }),
+  equipmentCost: z.coerce
+    .number()
+    .min(0, "Cost must be 0 or more")
+    .or(z.literal("").transform(() => 0)),
+  equipmentNote: z.string().optional(),
+});
+
+export function InsertEquipmentDialog({ open, onOpenChange }) {
+  const [equipmentType, setEquipmentType] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(equipmentSchema),
+    defaultValues: {
+      equipmentName: "",
+      equipmentType: "",
+      equipmentDate: null,
+      equipmentCost: null,
+      equipmentNote: "",
+    },
+  });
+
+  const onSubmit = (data) => {
+    console.log("Form data: ", data);
+    reset();
+    onOpenChange(false);
+  };
+
+  const handleEquipmentTypeChange = (value) => {
+    setEquipmentType(value);
+    setValue("equipmentType", value);
+  };
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+      setEquipmentType("");
+    }
+  }, [open, reset]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Add Equipment</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+          <DialogDescription>Insert new equipment below.</DialogDescription>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label>Name</Label>
+              <Input
+                placeholder="Input Name..."
+                {...register("equipmentName")}
+              />
+              {errors.equipmentName && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentName.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Type</Label>
+              <EquipmentTypeCombobox
+                className="w-full"
+                value={equipmentType}
+                onChange={handleEquipmentTypeChange}
+              />
+              {errors.equipmentType && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentType.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Date</Label>
+              <Controller
+                control={control}
+                name="equipmentDate"
+                render={({ field }) => (
+                  <EquipmentDate
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.equipmentDate && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentDate.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Cost</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="Input Cost..."
+                {...register("equipmentCost")}
+              />
+              {errors.equipmentCost && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentCost.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Note</Label>
+              <Textarea
+                placeholder="Input Note..."
+                {...register("equipmentNote")}
+              />
+              {errors.equipmentNote && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentNote.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="cancel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit">Add</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
+  const [equipmentType, setEquipmentType] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(equipmentSchema),
+    defaultValues: {
+      equipmentName: "",
+      equipmentType: "",
+      equipmentDate: null,
+      equipmentCost: null,
+      equipmentNote: "",
+    },
+  });
+
+  useEffect(() => {
+    if (equipment && open) {
+      reset({
+        equipmentName: equipment.name,
+        equipmentType: equipment.type,
+        equipmentDate: new Date(equipment.date),
+        equipmentCost: equipment.cost,
+        equipmentNote: equipment.note,
+      });
+      setEquipmentType(equipment.type);
+    }
+  }, [equipment, open, reset]);
+
+  const onSubmit = (data) => {
+    console.log("Form data: ", data);
+    reset();
+    onOpenChange(false);
+  };
+
+  const handleEquipmentTypeChange = (value) => {
+    setEquipmentType(value);
+    setValue("equipmentType", value);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Edit Equipment</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+          <DialogDescription>Edit equipment below.</DialogDescription>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label>Name</Label>
+              <Input
+                placeholder="Input Name..."
+                {...register("equipmentName")}
+              />
+              {errors.equipmentName && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentName.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Type</Label>
+              <EquipmentTypeCombobox
+                className="w-full"
+                value={equipmentType}
+                onChange={handleEquipmentTypeChange}
+              />
+              {errors.equipmentType && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentType.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Cost</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="Input Cost..."
+                {...register("equipmentCost")}
+              />
+              {errors.equipmentCost && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentCost.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Date</Label>
+              <Controller
+                control={control}
+                name="equipmentDate"
+                render={({ field }) => (
+                  <EquipmentDate
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.equipmentDate && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentDate.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Note</Label>
+              <Textarea
+                placeholder="Input Note..."
+                {...register("equipmentNote")}
+              />
+              {errors.equipmentNote && (
+                <p className="text-destructive text-sm">
+                  {errors.equipmentNote.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="cancel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit">Submit</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function DeleteEquipmentDialog({ open, onOpenChange, equipment }) {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Delete equipment with ID: ", equipment?.id_equipment);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Delete Equipment</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="grid gap-2 py-2">
+          <DialogDescription>
+            Are you sure want to delete this equipment item?
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="cancel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" variant="alert">
+              Delete
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

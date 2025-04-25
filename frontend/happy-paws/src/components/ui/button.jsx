@@ -22,6 +22,7 @@ const buttonVariants = cva(
         alert: "bg-[#FF6464] text-white shadow-xs hover:bg-destructive",
         success: "bg-[#28C823] text-white shadow-xs hover:bg-[#239A1F]",
         disabled: "bg-[#979797] text-white shadow-xs",
+        cancel: "bg-[#979797] text-white shadow-xs shadow-xs hover:bg-[#D3D3D3] hover:text-black",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
