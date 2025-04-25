@@ -15,10 +15,10 @@ const AnimalCard = ({ name, imageUrl, status, jenis, umur, detailLink }) => {
         <CardTitle className="text-xl text-center font-bold mt-2">{name}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col align-middle items-center gap-1 px-6">
-        <Label className="text-lg">Status: {status}</Label>
-        <Label className="text-lg">Jenis: {jenis}</Label>
-        <Label className="text-lg">Umur: {umur}</Label>
-        <a href={detailLink} className="flex items-center justify-center gap-1 hover:underline mt-2">
+        <Label className="text-lg md:text-sm">Status: {status}</Label>
+        <Label className="text-lg  md:text-sm">Jenis: {jenis}</Label>
+        <Label className="text-lg  md:text-sm">Umur: {umur}</Label>
+        <a href={detailLink} className="flex items-center  md:text-sm justify-center gap-1 hover:underline mt-2">
           View Detail <ChevronsRight className="w-4 h-4" />
         </a>
       </CardContent>
