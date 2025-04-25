@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
@@ -20,6 +20,7 @@ import {
 import { Plus, Pencil, Trash, CircleUser } from "lucide-react";
 import Layout from "../app/layout";
 import { DeleteAdopterDialog, EditAdopterDialog, InsertAdopterDialog } from "../components/pages-components/AdopterDialog";
+import { Input } from "../components/ui/input";
 
 const adopterData = [
     {
@@ -165,16 +166,21 @@ export default function AdopterManagement(){
       const [addAdopterDialogOpen, setAddAdopterDialogOpen] = useState(false);
       const [editAdopterDialogOpen, setEditAdopterDialogOpen] = useState(false);
       const [deleteAdopterDialogOpen, setDeleteAdopterDialogOpen] = useState(false);
-    
+      const [searchQuery, setSearchQuery] = useState("");
       const [selectedAdopter, setSelectedAdopter] = useState(null);
-    
-      const AdopterTotalPages = Math.ceil(adopterData.length / itemsPerPage);
+      const filteredAdopters = adopterData.filter((adopter) =>
+        adopter.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        adopter.phone_number.includes(searchQuery)
+      );
+      const AdopterTotalPages = Math.ceil(filteredAdopters.length / itemsPerPage);
       const AdopterStartIndex = (AdopterCurrentPage - 1) * itemsPerPage;
-      const currentAdopters = adopterData.slice(
+      const currentAdopters = filteredAdopters.slice(
         AdopterStartIndex,
         AdopterStartIndex + itemsPerPage
       );
-    
+      useEffect(() => {
+        setAdopterCurrentPage(1);
+      }, [searchQuery]);
       const handleAdopterPageChange = (page) => {
         if (page >= 1 && page <= AdopterTotalPages) {
           setAdopterCurrentPage(page);
@@ -191,14 +197,22 @@ export default function AdopterManagement(){
         setSelectedAdopter(Adopter);
         setDeleteAdopterDialogOpen(true);
       };
+      
     return(
     <Layout>
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
         <Label className="text-3xl font-bold self-start">
           Adopter Management
         </Label>
-        <div className="flex justify-between items-center w-full">
           <Label className="text-2xl font-medium">Adopter</Label>
+        <div className="flex justify-between gap-2 lg:gap-0 items-center w-full">
+          <Input
+            type="text"
+            placeholder="Search by name or phone..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-64"
+          />
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddAdopterDialogOpen(true)}
