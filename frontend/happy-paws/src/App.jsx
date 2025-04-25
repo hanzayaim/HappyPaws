@@ -5,6 +5,8 @@ import RegisterEmployee from "./pages/register-employee";
 import LoginPage from "./pages/login-page";
 import AnimalManagement from "./pages/animal-management";
 import AnimalDetail from "./pages/animal-detail";
+import AdopterManagement from "./pages/adopter-management";
+import InventoryPages from "./pages/inventory-pages";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           element={<RegisterEmployee />}
         />
         <Route path="/animal-management" element={<AnimalManagement />} />
+        <Route path="/adopter-management" element={<AdopterManagement />} />
+        <Route path="/inventory-management" element={<InventoryPages />} />
         <Route path="/animal-management/animal-detail/:id" element={<AnimalDetail />} />
 
       </Routes>
