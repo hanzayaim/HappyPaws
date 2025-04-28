@@ -17,7 +17,7 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { EmployeeNameCombobox } from "./SalaryCombobox";
-import SalaryDate from "./SalaryDatepicker";
+import DatePicker from "./DatePicker";
 
 const SalarySchema = z.object({
   SalaryName: z.string().min(1, "Name is required"),
@@ -116,7 +116,7 @@ export function InsertSalaryDialog({ open, onOpenChange, EmployeeData }) {
                 control={control}
                 name="SalaryDate"
                 render={({ field }) => (
-                  <SalaryDate value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.SalaryDate && (

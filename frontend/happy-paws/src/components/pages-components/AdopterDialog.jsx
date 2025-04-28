@@ -2,7 +2,6 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -16,7 +15,7 @@ import {
 } from "../ui/dialog";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { AdopterGenderCombobox } from "./AdopterCombobox";
+import GenderCombobox from "./gender-combobox";
 
 const adopterSchema = z.object({
   AdopterName: z
@@ -127,7 +126,7 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
                 name="AdopterGender"
                 render={({ field }) => (
                   <>
-                    <AdopterGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -282,7 +281,7 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
                 name="AdopterGender"
                 render={({ field }) => (
                   <>
-                    <AdopterGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}

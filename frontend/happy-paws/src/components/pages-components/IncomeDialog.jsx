@@ -16,8 +16,8 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
-import IncomeDate from "./IncomeDatepicker";
 import IncomeTypeCombobox from "./IncomeCombobox";
+import DatePicker from "./DatePicker";
 
 const incomeSchema = z.object({
   incomeName: z.string().min(1, "Name is required"),
@@ -101,7 +101,7 @@ export function InsertIncomeDialog({ open, onOpenChange }) {
                 control={control}
                 name="incomeDate"
                 render={({ field }) => (
-                  <IncomeDate value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.incomeDate && (
@@ -250,7 +250,7 @@ export function EditIncomeDialog({ open, onOpenChange, incomeData }) {
                 control={control}
                 name="incomeDate"
                 render={({ field }) => (
-                  <IncomeDate value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.incomeDate && (

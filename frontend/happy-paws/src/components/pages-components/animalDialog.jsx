@@ -14,14 +14,11 @@ import {
   DialogClose,
   DialogDescription,
 } from "../ui/dialog";
-import { AnimalDateIn } from "./AnimalDatepicker";
-import {
-  AnimalAdopterCombobox,
-  AnimalGenderCombobox,
-  AnimalNameCombobox,
-} from "./AnimalCombobox";
+import { AnimalAdopterCombobox, AnimalNameCombobox } from "./AnimalCombobox";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
+import GenderCombobox from "./gender-combobox";
+import DatePicker from "./DatePicker";
 
 const animalInSchema = z.object({
   animalName: z
@@ -153,7 +150,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <AnimalDateIn value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -169,7 +166,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <AnimalGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -310,21 +307,6 @@ export function AnimalOutDialog({ open, onOpenChange }) {
   );
 }
 
-const animalEditSchema = z.object({
-  animalName: z
-    .string()
-    .min(1, "Animal name is required")
-    .refine((val) => val.trim().length > 0, {
-      message: "Animal name cannot be empty",
-    }),
-  animalType: z.string().optional(),
-  animalAge: z.coerce.number().optional(),
-  animalRescueLoc: z.string().optional(),
-  animalDate: z.date({ required_error: "Date is required" }),
-  animalGender: z.string().min(1, "Animal gender is required"),
-  animalNote: z.string().optional(),
-  animalImg: z.any().optional(),
-});
 export function AnimalEditDialog({ open, onOpenChange, animalData }) {
   const {
     register,
@@ -333,7 +315,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: zodResolver(animalEditSchema),
+    resolver: zodResolver(animalInSchema),
     mode: "onChange",
     defaultValues: {
       animalName: "",
@@ -448,7 +430,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <AnimalDateIn value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -464,7 +446,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <AnimalGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
