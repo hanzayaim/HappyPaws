@@ -7,6 +7,7 @@ import AnimalManagement from "./pages/animal-management";
 import AnimalDetail from "./pages/animal-detail";
 import AdopterManagement from "./pages/adopter-management";
 import InventoryPages from "./pages/inventory-pages";
+import FinancePage from "./pages/finance-management";
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
         />
         <Route path="/animal-management" element={<AnimalManagement />} />
         <Route path="/adopter-management" element={<AdopterManagement />} />
-        <Route path="/inventory-management" element={<InventoryPages />} />
         <Route path="/animal-management/animal-detail/:id" element={<AnimalDetail />} />
+        <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route path="/finance-management" element={<FinancePage />} />
 
       </Routes>
     </BrowserRouter>
