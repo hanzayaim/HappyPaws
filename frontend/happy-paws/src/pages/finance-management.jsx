@@ -723,7 +723,7 @@ const medicals = [
 const finance = {
   id_finance: "FNC-001",
   id_shelter: "Shelter01",
-  total_balance: 5000000,
+  total_balance: -5000000,
   created_at: "2025-04-10T07:30:00.000Z",
 };
 //#endregion
@@ -802,7 +802,7 @@ export default function FinancePage() {
     <Layout>
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
         <Label className="lg:text-3xl text-2xl font-bold self-start">
-          Inventory Management
+          Finance Management
         </Label>
         <div className="w-full flex justify-center items-center ">
           <Card className="lg:min-w-lg w-lg">
@@ -810,7 +810,11 @@ export default function FinancePage() {
               <CardTitle className="text-center">Saldo saat ini</CardTitle>
             </CardHeader>
             <CardContent className="flex w-full justify-center items-center ">
-              <Label className={"lg:text-3xl text-2xl"}>
+              <Label
+                className={`lg:text-3xl text-2xl ${
+                  finance.total_balance < 0 ? "text-red-700" : ""
+                }`}
+              >
                 {typeof finance.total_balance === "number"
                   ? new Intl.NumberFormat("id-ID", {
                       style: "currency",
@@ -1035,7 +1039,7 @@ export default function FinancePage() {
                       {expensesStartIndex + index + 1}
                     </TableCell>
                     <TableCell className="text-center">{name}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       {typeof cost === "number"
                         ? new Intl.NumberFormat("id-ID", {
                             style: "currency",
@@ -1139,7 +1143,7 @@ export default function FinancePage() {
                     {SalaryStartIndex + index + 1}
                   </TableCell>
                   <TableCell className="text-center">{Salary.name}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
