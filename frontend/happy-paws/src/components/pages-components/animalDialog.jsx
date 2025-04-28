@@ -79,6 +79,11 @@ export function AnimalInDialog({ open, onOpenChange }) {
       }
     }
   }, [watchFile]);
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
