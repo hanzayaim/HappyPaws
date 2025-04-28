@@ -115,7 +115,7 @@ export const AnimalData = [
   },
 ];
 
-export function AnimalManagement() {
+export default function AnimalManagement() {
   const [openAnimalIn, setOpenAnimalIn] = useState(false);
   const [openAnimalOut, setOpenAnimalOut] = useState(false);
   return (

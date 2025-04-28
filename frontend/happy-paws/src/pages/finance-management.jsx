@@ -720,7 +720,12 @@ const medicals = [
     id_animal: "animal_002",
   },
 ];
-
+const finance = {
+  id_finance: "FNC-001",
+  id_shelter: "Shelter01",
+  total_balance: 5000000,
+  created_at: "2025-04-10T07:30:00.000Z",
+};
 //#endregion
 
 export default function FinancePage() {
@@ -796,7 +801,7 @@ export default function FinancePage() {
   return (
     <Layout>
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
-        <Label className="text-3xl font-bold self-start">
+        <Label className="lg:text-3xl text-2xl font-bold self-start">
           Inventory Management
         </Label>
         <div className="w-full flex justify-center items-center ">
@@ -806,7 +811,12 @@ export default function FinancePage() {
             </CardHeader>
             <CardContent className="flex w-full justify-center items-center ">
               <Label className={"lg:text-3xl text-2xl"}>
-                Rp.1.000.000.000.000
+                {typeof finance.total_balance === "number"
+                  ? new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(finance.total_balance)
+                  : finance.total_balance}
               </Label>
             </CardContent>
             <CardFooter className="flex w-full justify-between items-center ">
@@ -816,7 +826,7 @@ export default function FinancePage() {
           </Card>
         </div>
         <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Income</Label>
+          <Label className="lg:text-2xl text-xl font-medium">Income</Label>
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddIncomeDialogOpen(true)}
@@ -944,7 +954,7 @@ export default function FinancePage() {
           </div>
         </div>
         <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Expenses</Label>
+          <Label className="lg:text-2xl text-xl font-medium">Expenses</Label>
         </div>
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -1087,9 +1097,11 @@ export default function FinancePage() {
         </div>
 
         <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Employee Salary</Label>
+          <Label className="lg:text-2xl text-xl font-medium">
+            Employee Salary
+          </Label>
           <Button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 "
             onClick={() => setAddSalaryDialogOpen(true)}
           >
             <Plus className="size-4" />
