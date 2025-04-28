@@ -9,6 +9,8 @@ import AdopterManagement from "./pages/adopter-management";
 import InventoryPages from "./pages/inventory-pages";
 import FinancePage from "./pages/finance-management";
 import { Dashboard } from "./pages/dashboard-pages";
+import ForgotPassword from "./pages/forgot-password";
+import ForgotPasswordLink from "./pages/forgot-password-link";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
         <Route path="/finance-management" element={<FinancePage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
