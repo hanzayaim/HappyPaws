@@ -225,12 +225,17 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
       }
     }
   }, [watchFile]);
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adopter In</DialogTitle>
+          <DialogTitle>Edit Adopter</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid gap-4 py-4">

@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
   DialogDescription,
 } from "../ui/dialog";
 import { AnimalDateIn } from "./AnimalDatepicker";
@@ -205,11 +206,13 @@ export function AnimalInDialog({ open, onOpenChange }) {
               )}
               <Label>Preview image</Label>
               {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
+                <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ) : (
                 <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden"></div>
               )}
@@ -511,6 +514,39 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
           </div>
           <DialogFooter>
             <Button type="submit">Edit</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+export function DeleteAnimalDialog({ open, onOpenChange, animal }) {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Delete food with ID: ", animal?.id_animal);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Delete Animal</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="grid gap-2 py-2">
+          <DialogDescription>
+            Are you sure want to delete this Animal data?
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="cancel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" variant="alert">
+              Delete
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
