@@ -3,9 +3,12 @@ import RegisterOwner from "./pages/register-owner";
 import RegisterPage from "./pages/register-page";
 import RegisterEmployee from "./pages/register-employee";
 import LoginPage from "./pages/login-page";
+import AnimalManagement from "./pages/animal-management";
 import AnimalDetail from "./pages/animal-detail";
-import { AnimalManagement } from "./pages/animal-management";
+import AdopterManagement from "./pages/adopter-management";
 import InventoryPages from "./pages/inventory-pages";
+import FinancePage from "./pages/finance-management";
+import { Dashboard } from "./pages/dashboard-pages";
 
 function App() {
   return (
@@ -19,11 +22,14 @@ function App() {
           element={<RegisterEmployee />}
         />
         <Route path="/animal-management" element={<AnimalManagement />} />
+        <Route path="/adopter-management" element={<AdopterManagement />} />
         <Route
           path="/animal-management/animal-detail/:id"
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route path="/finance-management" element={<FinancePage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
