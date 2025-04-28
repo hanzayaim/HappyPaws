@@ -294,7 +294,7 @@ export function AnimalOutDialog({ open, onOpenChange }) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Add</Button>
+            <Button type="submit">Animal Out</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -368,7 +368,6 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
         const preview = URL.createObjectURL(file);
         setPreviewUrl(preview);
 
-        // cleanup URL object
         return () => URL.revokeObjectURL(preview);
       }
     }

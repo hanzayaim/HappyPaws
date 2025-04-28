@@ -6,28 +6,12 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { AlertDialogDelete } from "../components/pages-components/AnimalAlert";
 import Layout from "../app/layout";
+import { AnimalData } from "./animal-management";
 
 export default function AnimalDetail() {
-  const animal = {
-    id_animal: "A001",
-    id_shelter: "S001",
-    id_adopter: null,
-    animal_name: "Luna",
-    animal_img:
-      "https://www.allianz.ie/blog/your-pet/choosing-a-pedigree-pet/_jcr_content/root/stage/stageimage.img.82.3360.jpeg/1727944382981/cute-happy-pup.jpeg", // dog
-    animal_gender: "Female",
-    animal_type: "Dog",
-    animal_age: 3,
-    animal_status: "Available",
-    rescue_location:
-      "Jl. Anggrek No. 25 RT 003 / RW 007, Kelurahan Pondok Bambu, Kecamatan Duren Sawit, Kota Jakarta Timur, Provinsi DKI Jakarta, Kode Pos 13430",
-    date: "2024-12-10T10:00:00",
-    note: "Friendly and calm temperaments",
-    created_at: "2024-12-10T10:10:00",
-    created_by: "admin001",
-    updated_at: "2025-01-01T08:00:00",
-    updated_by: "admin001",
-  };
+  const { id } = useParams();
+  const animal = AnimalData.find((item) => item.id_animal === id);
+
   const MedicalData = [
     {
       id_medical: "M001",
@@ -75,7 +59,7 @@ export default function AnimalDetail() {
       id_animal: "A003",
     },
   ];
-  const { id } = useParams();
+
   const medicaldatabyId = MedicalData.find((item) => item.id_animal === id);
   const [openEdit, setOpenEdit] = useState(false);
   const [isAlert, setAlert] = useState(false);
@@ -111,14 +95,15 @@ export default function AnimalDetail() {
         <div className="w-full bg-[#FAF7F2] shadow-lg min-h-fit flex flex-col p-5 mt-5 gap-5 rounded-xl">
           <div className="flex flex-col lg:flex-row gap-5">
             {/* Gambar */}
-            <div className="w-full lg:w-1/2">
-              <img
-                src={animal.animal_img}
-                alt="imgAnimal"
-                className="object-cover rounded-xl"
-              />
+            <div className="w-full lg:w-1/2 flex items-center justify-center">
+              <div className="relative w-4/5 h-64 bg-white rounded-xl overflow-hidden">
+                <img
+                  src={animal.animal_img}
+                  alt="imgAnimal"
+                  className="absolute top-1/2 left-1/2 w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 rounded-xl"
+                />
+              </div>
             </div>
-
             {/* Detail */}
             <div className="w-full lg:w-1/2 text-start">
               <Label className="text-3xl font-bold mb-4">
