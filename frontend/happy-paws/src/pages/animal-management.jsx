@@ -43,7 +43,7 @@ export const AnimalData = [
     id_adopter: "AD123",
     animal_name: "Max",
     animal_img:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrjtNVIoesRaukkpGZ5ApIKj4iwk_NHzHTqQ&s", // cat
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrjtNVIoesRaukkpGZ5ApIKj4iwk_NHzHTqQ&s",
     animal_gender: "Male",
     animal_type: "Cat",
     animal_age: 2,
