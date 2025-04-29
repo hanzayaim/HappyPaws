@@ -17,22 +17,12 @@ import {
   PaginationNext,
   PaginationLink,
 } from "../components/ui/pagination";
-import {
-  InsertFoodDialog,
-  EditFoodDialog,
-  DeleteFoodDialog,
-} from "../components/pages-components/FoodDialog";
-import {
-  InsertEquipmentDialog,
-  EditEquipmentDialog,
-  DeleteEquipmentDialog,
-} from "../components/pages-components/EquipmentDialog";
+
 import { Plus, Pencil, Trash } from "lucide-react";
 import Layout from "../app/layout";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
