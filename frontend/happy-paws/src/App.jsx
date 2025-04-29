@@ -11,6 +11,7 @@ import FinancePage from "./pages/finance-management";
 import { Dashboard } from "./pages/dashboard-pages";
 import ForgotPassword from "./pages/forgot-password";
 import ForgotPasswordLink from "./pages/forgot-password-link";
+import MedicalManagement from "./pages/medical-management";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route path="/medical-management" element={<MedicalManagement />} />
         <Route path="/finance-management" element={<FinancePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />

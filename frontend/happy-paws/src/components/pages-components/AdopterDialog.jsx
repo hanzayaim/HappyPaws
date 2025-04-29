@@ -80,7 +80,7 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adopter In</DialogTitle>
+          <DialogTitle>Add New Adopter</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid gap-4 py-4">
@@ -230,7 +230,7 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adopter In</DialogTitle>
+          <DialogTitle>Edit Adopter Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid gap-4 py-4">

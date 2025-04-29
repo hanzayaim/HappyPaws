@@ -17,7 +17,7 @@ import { AnimalDateIn } from "./AnimalDatepicker";
 import {
   AnimalAdopterCombobox,
   AnimalGenderCombobox,
-  AnimalNameCombobox,
+  AnimalOutCombobox,
 } from "./AnimalCombobox";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -258,7 +258,7 @@ export function AnimalOutDialog({ open, onOpenChange }) {
                 name="animalName"
                 render={({ field }) => (
                   <>
-                    <AnimalNameCombobox
+                    <AnimalOutCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
