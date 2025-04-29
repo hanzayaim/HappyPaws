@@ -390,7 +390,6 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
 export function DeleteMedicalDialog({ open, onOpenChange, medical }) {
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("Delete medical with ID:", medical?.id_medical);
     onOpenChange(false);
   };
 
