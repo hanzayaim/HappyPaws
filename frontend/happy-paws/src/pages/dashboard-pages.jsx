@@ -106,7 +106,7 @@ export const AnimalData = [
     updated_by: "admin002",
   },
 ];
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <Layout>
       <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">

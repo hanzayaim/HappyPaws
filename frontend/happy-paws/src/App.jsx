@@ -10,6 +10,15 @@ import RegisterEmployee from "./pages/register-employee";
 import LoginPage from "./pages/login-page";
 import InventoryPages from "./pages/inventory-pages";
 import ShelterManagementPages from "./pages/shelter-management-pages";
+import AnimalManagement from "./pages/animal-management";
+import AdopterManagement from "./pages/adopter-management";
+import AnimalDetail from "./pages/animal-detail";
+import MedicalManagement from "./pages/medical-management";
+import FinancePage from "./pages/finance-management";
+import ForgotPassword from "./pages/forgot-password";
+import ForgotPasswordLink from "./pages/forgot-password-link";
+import Dashboard from "./pages/dashboard-pages";
+
 
 function App() {
   return (
@@ -26,7 +35,25 @@ function App() {
           path="/shelter-management"
           element={<ShelterManagementPages />}
         />
-        <Route path="/inventory" element={<InventoryPages />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register/register-owner" element={<RegisterOwner />} />
+        <Route
+          path="/register/register-employee"
+          element={<RegisterEmployee />}
+        />
+        <Route path="/animal-management" element={<AnimalManagement />} />
+        <Route path="/adopter-management" element={<AdopterManagement />} />
+        <Route
+          path="/animal-management/animal-detail/:id"
+          element={<AnimalDetail />}
+        />
+        <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route path="/medical-management" element={<MedicalManagement />} />
+        <Route path="/finance-management" element={<FinancePage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

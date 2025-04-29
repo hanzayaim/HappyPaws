@@ -18,6 +18,7 @@ import {
 import { FoodCategoryCombobox, FoodTypeCombobox } from "./FoodCombobox";
 import { FoodExpiredDate, FoodDate } from "./FoodDatepicker";
 import { Label } from "../ui/label";
+import DatePicker from "./DatePicker";
 
 const foodSchema = z.object({
   foodName: z.string().min(1, "Name is required"),
@@ -158,7 +159,7 @@ export function InsertFoodDialog({ open, onOpenChange }) {
                 control={control}
                 name="foodExpiredDate"
                 render={({ field }) => (
-                  <FoodExpiredDate
+                  <Datepi
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -348,7 +349,7 @@ export function EditFoodDialog({ open, onOpenChange, food }) {
                 control={control}
                 name="foodExpiredDate"
                 render={({ field }) => (
-                  <FoodExpiredDate
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -381,7 +382,7 @@ export function EditFoodDialog({ open, onOpenChange, food }) {
                 control={control}
                 name="foodDate"
                 render={({ field }) => (
-                  <FoodDate value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.foodDate && (

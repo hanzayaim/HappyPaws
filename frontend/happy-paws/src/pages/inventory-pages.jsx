@@ -37,7 +37,7 @@ const foods = [
     quantity: 20,
     category: "Makanan Basah",
     type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
+    exp_date: "2025-04-15T00:00:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",

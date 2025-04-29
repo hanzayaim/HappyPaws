@@ -16,8 +16,8 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import EquipmentTypeCombobox from "./EquipmentCombobox";
-import EquipmentDate from "./EquipmentDatepicker";
 import { Label } from "../ui/label";
+import DatePicker from "./DatePicker";
 
 const equipmentSchema = z.object({
   equipmentName: z.string().min(1, "Name is required"),
@@ -115,7 +115,7 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <EquipmentDate
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -270,7 +270,7 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <EquipmentDate
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
