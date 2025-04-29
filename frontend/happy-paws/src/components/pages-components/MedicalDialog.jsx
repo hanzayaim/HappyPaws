@@ -240,7 +240,10 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
         animalName: medical.animalName,
         medicalStatus: medical.medicalStatus,
         vaccineStatus: medical.vaccineStatus,
-        medicalDate: new Date(medical.medical_date),
+        medicalDate: new Date(medical.medical_date_in),
+        medicalDateOut: medical.medical_date_out
+          ? new Date(medical.medical_date_out)
+          : null,
         medicalCost: medical.medical_cost,
         medicalNote: medical.medicalNote,
       });
