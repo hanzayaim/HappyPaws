@@ -210,7 +210,13 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
   );
 }
 
-export function EditMedicalDialog({ open, onOpenChange, medical }) {
+export function EditMedicalDialog({
+  open,
+  onOpenChange,
+  medical,
+  getAnimalName,
+}) {
+  console.log("medical", medical);
   const [medicalStatus, setMedicalStatus] = useState("");
   const [vaccineStatus, setVaccineStatus] = useState("");
   const [animalName, setAnimalName] = useState("");
@@ -237,21 +243,22 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
   useEffect(() => {
     if (medical && open) {
       reset({
-        animalName: medical.animalName,
-        medicalStatus: medical.medicalStatus,
-        vaccineStatus: medical.vaccineStatus,
+        animalName: getAnimalName.animal_name,
+        medicalStatus: medical.medical_status,
+        vaccineStatus: medical.vaccine_status,
         medicalDate: new Date(medical.medical_date_in),
         medicalDateOut: medical.medical_date_out
           ? new Date(medical.medical_date_out)
           : null,
         medicalCost: medical.medical_cost,
-        medicalNote: medical.medicalNote,
+        medicalNote: medical.note,
       });
-      setAnimalName(medical.animalName);
       setMedicalStatus(medical.medicalStatus);
       setVaccineStatus(medical.vaccineStatus);
     }
   }, [medical, open, reset]);
+
+  console.log(animalName);
 
   const onSubmit = (data) => {
     console.log("Form data: ", data);

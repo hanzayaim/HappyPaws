@@ -186,7 +186,6 @@ export default function MedicalManagement() {
   };
 
   const handleEditMedicalClick = (medical) => {
-    console.log("Selected Medical: ", medical);
     setSelectedMedical(medical);
     setEditMedicalDialogOpen(true);
   };
@@ -280,55 +279,69 @@ export default function MedicalManagement() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentMedical.map((medical, index) => (
-                <TableRow key={medical.id_medical}>
-                  <TableCell className="text-center">
-                    {medicalStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {getAnimalName(medical.id_animal, medical.id_shelter)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_status}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.vaccin_status}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_date_in
-                      ? new Date(medical.medical_date_in).toLocaleDateString()
-                      : "No Date"}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_date_out
-                      ? new Date(medical.medical_date_out).toLocaleDateString()
-                      : "No Date"}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(medical.medical_cost)}
-                  </TableCell>
-                  <TableCell className="text-center">{medical.note}</TableCell>
-                  <TableCell className="flex justify-center gap-2">
-                    <Button
-                      variant="success"
-                      className="text-sm"
-                      onClick={() => handleEditMedicalClick(medical)}
-                    >
-                      <Pencil className="size-4" /> Edit
-                    </Button>
-                    <Button
-                      variant="alert"
-                      className="text-sm"
-                      onClick={() => handleDeleteMedicalClick(medical)}
-                    >
-                      <Trash className="size-4" /> Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {currentMedical.map((medical, index) => {
+                let name = "-";
+
+                const findAnimalName = AnimalData.find(
+                  (a) =>
+                    a.id_animal === medicalData.id_animal &&
+                    a.id_shelter === medicalData.id_shelter
+                );
+
+                console.log(findAnimalName);
+
+                return (
+                  <TableRow key={medical.id_medical}>
+                    <TableCell className="text-center">
+                      {medicalStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">{name}</TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_status}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.vaccin_status}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_date_in
+                        ? new Date(medical.medical_date_in).toLocaleDateString()
+                        : "No Date"}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_date_out
+                        ? new Date(
+                            medical.medical_date_out
+                          ).toLocaleDateString()
+                        : "No Date"}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(medical.medical_cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.note}
+                    </TableCell>
+                    <TableCell className="flex justify-center gap-2">
+                      <Button
+                        variant="success"
+                        className="text-sm"
+                        onClick={() => handleEditMedicalClick(medical)}
+                      >
+                        <Pencil className="size-4" /> Edit
+                      </Button>
+                      <Button
+                        variant="alert"
+                        className="text-sm"
+                        onClick={() => handleDeleteMedicalClick(medical)}
+                      >
+                        <Trash className="size-4" /> Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
 
