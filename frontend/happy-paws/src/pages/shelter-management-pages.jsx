@@ -186,54 +186,84 @@ export default function ShelterManagementPages() {
                   <TableCell className="text-center">{user.address}</TableCell>
                   <TableCell className="text-center">{user.status}</TableCell>
                   <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleApproveUserClick(user)}
-                    >
-                      <ToggleRight className="size-4" />
-                      Approve
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleRejectUserClick(user)}
-                    >
-                      <ToggleLeft className="size-4" />
-                      Reject
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleActivateUserClick(user)}
-                    >
-                      <Check className="size-4" />
-                      Activate
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeactivateUserClick(user)}
-                    >
-                      <X className="size-4" />
-                      Deactivate
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleEditUserClick(user)}
-                    >
-                      <Pencil className="size-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteUserClick(user)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+                    {user.status === "New" && (
+                      <>
+                        <Button
+                          className="text-sm w-28"
+                          variant="success"
+                          onClick={() => handleApproveUserClick(user)}
+                        >
+                          <ToggleRight className="size-4" />
+                          Approve
+                        </Button>
+                        <Button
+                          className="text-sm w-28"
+                          variant="alert"
+                          onClick={() => handleRejectUserClick(user)}
+                        >
+                          <ToggleLeft className="size-4" />
+                          Reject
+                        </Button>
+                      </>
+                    )}
+
+                    {user.status === "Active" && (
+                      <>
+                        <Button
+                          className="text-sm w-28"
+                          variant="alert"
+                          onClick={() => handleDeactivateUserClick(user)}
+                        >
+                          <X className="size-4" />
+                          Deactivate
+                        </Button>
+                        <Button
+                          className="text-sm w-28"
+                          variant="success"
+                          onClick={() => handleEditUserClick(user)}
+                        >
+                          <Pencil className="size-4" />
+                          Edit
+                        </Button>
+                        <Button
+                          className="text-sm w-28"
+                          variant="alert"
+                          onClick={() => handleDeleteUserClick(user)}
+                        >
+                          <Trash className="size-4" />
+                          Delete
+                        </Button>
+                      </>
+                    )}
+
+                    {user.status === "Inactive" && (
+                      <>
+                        <Button
+                          className="text-sm w-28"
+                          variant="success"
+                          onClick={() => handleActivateUserClick(user)}
+                        >
+                          <Check className="size-4" />
+                          Activate
+                        </Button>
+                        <Button
+                          className="text-sm w-28"
+                          variant="success"
+                          onClick={() => handleEditUserClick(user)}
+                        >
+                          <Pencil className="size-4" />
+                          Edit
+                        </Button>
+                        <Button
+                          className="text-sm w-28"
+                          variant="alert"
+                          onClick={() => handleDeleteUserClick(user)}
+                        >
+                          <Trash className="size-4" />
+                          Delete
+                        </Button>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
