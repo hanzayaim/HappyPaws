@@ -2,25 +2,47 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ChevronsRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const AnimalCard = ({ name, imageUrl, status, jenis, umur, detailLink }) => {
   return (
-    <Card className="w-full max-h-100 rounded-sm shadow-md bg-[#CA8D55]">
-      <CardHeader className="text-center">
+    <Card className="w-full max-h-100 rounded-lg shadow-md bg-[#FAF7F2]">
+      <CardHeader>
         <img
           src={imageUrl}
           alt={name}
           className="w-full h-40 object-cover rounded-t-xl"
         />
-        <CardTitle className="text-xl text-center font-bold mt-2">{name}</CardTitle>
+        <CardTitle className="text-xl text-center text-[#EC8C5B] font-semibold mt-2">
+          {name}
+        </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col align-middle items-center gap-1 px-6">
-        <Label className="text-lg">Status: {status}</Label>
-        <Label className="text-lg">Jenis: {jenis}</Label>
-        <Label className="text-lg">Umur: {umur}</Label>
-        <a href={detailLink} className="flex items-center justify-center gap-1 hover:underline mt-2">
-          View Detail <ChevronsRight className="w-4 h-4" />
-        </a>
+      <CardContent className="flex flex-col items-center gap-1 px-6">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-2">
+          <Label className="text-lg md:text-sm">Status</Label>
+          <span
+            className={`text-lg md:text-sm ${
+              status === "Available" ? "text-[#26B521]" : "text-red-500"
+            } font-medium`}
+          >
+            : {status}
+          </span>
+
+          <Label className="text-lg md:text-sm">Jenis</Label>
+          <span className="text-lg md:text-sm">: {jenis}</span>
+
+          <Label className="text-lg md:text-sm">Umur</Label>
+          <span className="text-lg md:text-sm">: {umur}</span>
+        </div>
+        <Button className="w-auto mt-2 bg-[#F97316] hover:bg-[#EA580C] text-white">
+          <Link
+            to={detailLink}
+            className="flex items-center md:text-sm justify-center gap-1"
+          >
+            View Detail <ChevronsRight className="w-4 h-4" />
+          </Link>
+        </Button>
       </CardContent>
     </Card>
   );

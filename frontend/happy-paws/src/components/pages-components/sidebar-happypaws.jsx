@@ -1,5 +1,6 @@
 import {
   ClipboardPlus,
+  HeartHandshake,
   Landmark,
   LogOut,
   PawPrint,
@@ -42,6 +43,11 @@ const items = [
     title: "Medical Management",
     url: "/medical-management",
     icon: ClipboardPlus,
+  },
+  {
+    title: "Adopter Management",
+    url: "/adopter-management",
+    icon: HeartHandshake,
   },
   {
     title: "Inventory Management",
