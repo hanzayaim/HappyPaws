@@ -27,7 +27,6 @@ const medicalSchema = z.object({
   animalName: z.string().min(1, "Animal is required"),
   medicalStatus: z.string().min(1, "Medical Status is required"),
   vaccineStatus: z.string().min(1, "Vaccine Status is required"),
-  vaccinStatus: z.string().min(1, "Vaccine Status is required"),
   medicalDate: z
     .date({ required_error: "Medical Date In is required" })
     .nullable()
@@ -213,7 +212,7 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
 
 export function EditMedicalDialog({ open, onOpenChange, medical }) {
   const [medicalStatus, setMedicalStatus] = useState("");
-  const [vaccinStatus, setVaccinStatus] = useState("");
+  const [vaccineStatus, setVaccinStatus] = useState("");
   const [animalName, setAnimalName] = useState("");
 
   const {
@@ -228,7 +227,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
     defaultValues: {
       animalName: "",
       medicalStatus: "",
-      vaccinStatus: "",
+      vaccineStatus: "",
       medicalDate: null,
       medicalDateOut: null,
       medicalCost: null,
@@ -241,7 +240,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
       reset({
         animalName: medical.id_animal,
         medicalStatus: medical.medical_status,
-        vaccinStatus: medical.vaccin_status,
+        vaccineStatus: medical.vaccin_status,
         medicalDate: new Date(medical.medical_date_in),
         medicalDateOut: medical.medical_date_out
           ? new Date(medical.medical_date_out)
@@ -268,7 +267,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
 
   const handleVaccinStatusChange = (value) => {
     setVaccinStatus(value);
-    setValue("vaccinStatus", value);
+    setValue("vaccineStatus", value);
   };
 
   const handleAnimalNameChange = (value) => {
@@ -318,12 +317,12 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
               <Label>Vaccine Status</Label>
               <VaccineStatusCombobox
                 className="w-full"
-                value={vaccinStatus}
+                value={vaccineStatus}
                 onChange={handleVaccinStatusChange}
               />
-              {errors.vaccinStatus && (
+              {errors.vaccineStatus && (
                 <p className="text-destructive text-sm">
-                  {errors.vaccinStatus.message}
+                  {errors.vaccineStatus.message}
                 </p>
               )}
             </div>
