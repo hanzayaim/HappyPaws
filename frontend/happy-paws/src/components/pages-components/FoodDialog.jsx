@@ -16,7 +16,6 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { FoodCategoryCombobox, FoodTypeCombobox } from "./FoodCombobox";
-import { FoodExpiredDate, FoodDate } from "./FoodDatepicker";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
 
