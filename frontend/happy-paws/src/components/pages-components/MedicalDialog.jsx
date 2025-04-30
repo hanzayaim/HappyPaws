@@ -212,7 +212,7 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
 
 export function EditMedicalDialog({ open, onOpenChange, medical }) {
   const [medicalStatus, setMedicalStatus] = useState("");
-  const [vaccineStatus, setVaccineStatus] = useState("");
+  const [vaccineStatus, setVaccinStatus] = useState("");
   const [animalName, setAnimalName] = useState("");
 
   const {
@@ -229,6 +229,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
       medicalStatus: "",
       vaccineStatus: "",
       medicalDate: null,
+      medicalDateOut: null,
       medicalCost: null,
       medicalNote: "",
     },
@@ -237,19 +238,19 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
   useEffect(() => {
     if (medical && open) {
       reset({
-        animalName: medical.animalName,
-        medicalStatus: medical.medicalStatus,
-        vaccineStatus: medical.vaccineStatus,
+        animalName: medical.id_animal,
+        medicalStatus: medical.medical_status,
+        vaccineStatus: medical.vaccin_status,
         medicalDate: new Date(medical.medical_date_in),
         medicalDateOut: medical.medical_date_out
           ? new Date(medical.medical_date_out)
           : null,
         medicalCost: medical.medical_cost,
-        medicalNote: medical.medicalNote,
+        medicalNote: medical.note,
       });
-      setAnimalName(medical.animalName);
-      setMedicalStatus(medical.medicalStatus);
-      setVaccineStatus(medical.vaccineStatus);
+      setAnimalName(medical.id_animal);
+      setMedicalStatus(medical.medical_status);
+      setVaccinStatus(medical.vaccin_status);
     }
   }, [medical, open, reset]);
 
@@ -264,8 +265,8 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
     setValue("medicalStatus", value);
   };
 
-  const handleVaccineStatusChange = (value) => {
-    setVaccineStatus(value);
+  const handleVaccinStatusChange = (value) => {
+    setVaccinStatus(value);
     setValue("vaccineStatus", value);
   };
 
@@ -276,7 +277,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
+      <DialogTrigger asChild />
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Medical</DialogTitle>
@@ -297,6 +298,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 </p>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Medical Status</Label>
               <MedicalStatusCombobox
@@ -310,12 +312,13 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 </p>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Vaccine Status</Label>
               <VaccineStatusCombobox
                 className="w-full"
                 value={vaccineStatus}
-                onChange={handleVaccineStatusChange}
+                onChange={handleVaccinStatusChange}
               />
               {errors.vaccineStatus && (
                 <p className="text-destructive text-sm">
@@ -323,6 +326,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 </p>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Medical Date In</Label>
               <Controller
@@ -338,6 +342,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 </p>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Medical Date Out</Label>
               <Controller
@@ -348,6 +353,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 )}
               />
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Medical Cost</Label>
               <Input
@@ -363,6 +369,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 </p>
               )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label>Note</Label>
               <Textarea
@@ -382,7 +389,7 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Add</Button>
+            <Button type="submit">Update</Button>
           </DialogFooter>
         </form>
       </DialogContent>

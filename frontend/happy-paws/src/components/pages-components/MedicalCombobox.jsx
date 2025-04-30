@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 const status = [
   { value: "Died", label: "Died" },
   { value: "Sick", label: "Sick" },
-  { value: "Health", label: "Health" },
+  { value: "Healthy", label: "Healthy" },
 ];
 
 const vaccineStatus = [

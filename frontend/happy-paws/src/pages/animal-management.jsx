@@ -39,7 +39,7 @@ export const AnimalData = [
   },
   {
     id_animal: "A002",
-    id_shelter: "S002",
+    id_shelter: "S001",
     id_adopter: "AD123",
     animal_name: "Max",
     animal_img:
@@ -77,7 +77,7 @@ export const AnimalData = [
   },
   {
     id_animal: "A004",
-    id_shelter: "S003",
+    id_shelter: "S001",
     id_adopter: null,
     animal_name: "Molly",
     animal_img:
@@ -96,7 +96,7 @@ export const AnimalData = [
   },
   {
     id_animal: "A005",
-    id_shelter: "S002",
+    id_shelter: "S001",
     id_adopter: null,
     animal_name: "Shadow",
     animal_img:
