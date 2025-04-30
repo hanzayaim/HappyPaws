@@ -37,99 +37,99 @@ import {
   InsertSalaryDialog,
 } from "../components/pages-components/SalaryDialog";
 //#region Dummy
-const Salaries = [
-  {
-    id_salary: "sal_001",
-    id_shelter: "shelter_001",
-    id_employee: "emp_001",
-    name: "April Salary - John",
-    cost: 3000000,
-    date: "2025-04-01T09:00:00",
-    note: "Full-time staff",
-    created_at: "2025-04-01T08:45:00",
-    created_by: "admin",
-    updated_at: "2025-04-01T10:00:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_002",
-    id_shelter: "shelter_001",
-    id_employee: "emp_002",
-    name: "April Salary - Alice",
-    cost: 2800000,
-    date: "2025-04-02T10:30:00",
-    note: "Veterinarian",
-    created_at: "2025-04-01T17:30:00",
-    created_by: "admin",
-    updated_at: "2025-04-02T11:00:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_003",
-    id_shelter: "shelter_001",
-    id_employee: "emp_003",
-    name: "April Salary - Bob",
-    cost: 2500000,
-    date: "2025-04-03T08:00:00",
-    note: "Caretaker",
-    created_at: "2025-04-02T19:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-03T08:15:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_004",
-    id_shelter: "shelter_001",
-    id_employee: "emp_004",
-    name: "April Salary - Sarah",
-    cost: 2700000,
-    date: "2025-04-04T14:20:00",
-    note: "Admin staff",
-    created_at: "2025-04-04T09:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-04T14:45:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_005",
-    id_shelter: "shelter_001",
-    id_employee: "emp_005",
-    name: "April Salary - Kevin",
-    cost: 2600000,
-    date: "2025-04-05T12:00:00",
-    note: "Driver",
-    created_at: "2025-04-05T08:20:00",
-    created_by: "admin",
-    updated_at: "2025-04-05T12:15:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_006",
-    id_shelter: "shelter_001",
-    id_employee: "emp_006",
-    name: "April Salary - Emma",
-    cost: 3100000,
-    date: "2025-04-06T11:10:00",
-    note: "Operations",
-    created_at: "2025-04-06T09:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-06T11:30:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_007",
-    id_shelter: "shelter_001",
-    id_employee: "emp_007",
-    name: "April Salary - Michael",
-    cost: 2950000,
-    date: "2025-04-07T13:45:00",
-    note: "Finance officer",
-    created_at: "2025-04-07T10:15:00",
-    created_by: "admin",
-    updated_at: "2025-04-07T14:00:00",
-    updated_by: "admin",
-  },
-];
+// const Salaries = [
+//   {
+//     id_salary: "sal_001",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_001",
+//     name: "April Salary - John",
+//     cost: 3000000,
+//     date: "2025-04-01T09:00:00",
+//     note: "Full-time staff",
+//     created_at: "2025-04-01T08:45:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-01T10:00:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_002",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_002",
+//     name: "April Salary - Alice",
+//     cost: 2800000,
+//     date: "2025-04-02T10:30:00",
+//     note: "Veterinarian",
+//     created_at: "2025-04-01T17:30:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-02T11:00:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_003",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_003",
+//     name: "April Salary - Bob",
+//     cost: 2500000,
+//     date: "2025-04-03T08:00:00",
+//     note: "Caretaker",
+//     created_at: "2025-04-02T19:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-03T08:15:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_004",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_004",
+//     name: "April Salary - Sarah",
+//     cost: 2700000,
+//     date: "2025-04-04T14:20:00",
+//     note: "Admin staff",
+//     created_at: "2025-04-04T09:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-04T14:45:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_005",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_005",
+//     name: "April Salary - Kevin",
+//     cost: 2600000,
+//     date: "2025-04-05T12:00:00",
+//     note: "Driver",
+//     created_at: "2025-04-05T08:20:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-05T12:15:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_006",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_006",
+//     name: "April Salary - Emma",
+//     cost: 3100000,
+//     date: "2025-04-06T11:10:00",
+//     note: "Operations",
+//     created_at: "2025-04-06T09:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-06T11:30:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_007",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_007",
+//     name: "April Salary - Michael",
+//     cost: 2950000,
+//     date: "2025-04-07T13:45:00",
+//     note: "Finance officer",
+//     created_at: "2025-04-07T10:15:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-07T14:00:00",
+//     updated_by: "admin",
+//   },
+// ];
 // const Employees = [
 //   {
 //     id_employee: "emp_001",
@@ -631,12 +631,16 @@ export default function FinancePage() {
     expensesStartIndex + itemsPerPage
   );
 
-  const SalaryTotalPages = Math.ceil(Salaries.length / itemsPerPage);
+  const SalaryTotalPages =
+    Salaries && Salaries.length ? Math.ceil(Salaries.length / itemsPerPage) : 1;
+
   const SalaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
-  const currentSalaries = Salaries.slice(
-    SalaryStartIndex,
-    SalaryStartIndex + itemsPerPage
-  );
+
+  const currentSalaries =
+    Salaries && Salaries.length
+      ? Salaries.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
+      : [];
+
   const fetchIncomeData = async () => {
     try {
       const incomesRes = await fetch(
@@ -688,6 +692,8 @@ export default function FinancePage() {
     }
   };
   const fetchFinanceData = async () => {
+    fetchIncomeData();
+    fetchSalaryData();
     try {
       const FinanceRes = await fetch(
         `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
@@ -836,17 +842,20 @@ export default function FinancePage() {
           open={addIncomeDialogOpen}
           onOpenChange={setAddIncomeDialogOpen}
           User={user}
-          fetchData={fetchIncomeData}
+          fetchData={fetchFinanceData}
         />
         <EditIncomeDialog
           open={editIncomeDialogOpen}
           onOpenChange={setEditIncomeDialogOpen}
           incomeData={selectedIncome}
+          User={user}
+          fetchData={fetchFinanceData}
         />
         <DeleteIncomeDialog
           open={deleteIncomeDialogOpen}
           onOpenChange={setDeleteIncomeDialogOpen}
-          food={selectedIncome}
+          income={selectedIncome}
+          fetchData={fetchFinanceData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -969,7 +978,7 @@ export default function FinancePage() {
                 let date = "-";
                 let note = "-";
 
-                if (exp.id_salary) {
+                if (exp.id_salary && Array.isArray(Salaries)) {
                   const salary = Salaries.find(
                     (s) => s.id_salary === exp.id_salary
                   );
@@ -1111,6 +1120,7 @@ export default function FinancePage() {
           open={deleteSalaryDialogOpen}
           onOpenChange={setDeleteSalaryDialogOpen}
           SalaryData={selectedSalary}
+          fetchData={fetchFinanceData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -1125,34 +1135,45 @@ export default function FinancePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentSalaries.map((Salary, index) => (
-                <TableRow key={Salary.id_salary}>
-                  <TableCell className="text-center">
-                    {SalaryStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">{Salary.name}</TableCell>
-                  <TableCell className="text-center">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(Salary.cost)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(Salary.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-center">{Salary.note}</TableCell>
-                  <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteSalaryClick(Salary)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+              {currentSalaries.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No salary data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentSalaries.map((Salary, index) => (
+                  <TableRow key={Salary.id_salary}>
+                    <TableCell className="text-center">
+                      {SalaryStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">{Salary.name}</TableCell>
+                    <TableCell className="text-center">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(Salary.cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Date(Salary.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-center">{Salary.note}</TableCell>
+                    <TableCell className="flex gap-1 justify-center">
+                      <Button
+                        className="text-sm"
+                        variant="alert"
+                        onClick={() => handleDeleteSalaryClick(Salary)}
+                      >
+                        <Trash className="size-4" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">

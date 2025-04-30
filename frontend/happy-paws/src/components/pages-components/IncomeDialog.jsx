@@ -181,7 +181,13 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
   );
 }
 
-export function EditIncomeDialog({ open, onOpenChange, incomeData }) {
+export function EditIncomeDialog({
+  open,
+  onOpenChange,
+  incomeData,
+  User,
+  fetchData,
+}) {
   const [incomeType, setIncomeType] = useState("");
 
   const {
@@ -212,13 +218,48 @@ export function EditIncomeDialog({ open, onOpenChange, incomeData }) {
         incomeNote: incomeData.note,
       });
       setIncomeType(incomeData.type);
+      setValue("incomeType", incomeData.type);
     }
-  }, [incomeData, open, reset]);
+  }, [incomeData, open, reset, setValue]);
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    console.log(data);
+    console.log(incomeData.id_income);
+    console.log(User.id_shelter);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/income/updateIncomeData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_income: incomeData.id_income,
+            id_shelter: User.id_shelter,
+            name: data.incomeName,
+            amount: data.incomeAmount,
+            date: data.incomeDate.toISOString().split("T")[0],
+            type: data.incomeType,
+            note: data.incomeNote,
+            update_by: "admin",
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Failed to update income data"); // ✅ fixed message
+      }
+
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error updating income:", error.message);
+    }
   };
 
   const handleIncomeTypeChange = (value) => {
@@ -315,11 +356,33 @@ export function EditIncomeDialog({ open, onOpenChange, incomeData }) {
   );
 }
 
-export function DeleteIncomeDialog({ open, onOpenChange, equipment }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete equipment with ID: ", equipment?.id_equipment);
-    onOpenChange(false);
+export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/income/deleteIncomeData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_shelter: income.id_shelter,
+            id_income: income.id_income,
+          }),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Failed to Delete Income data");
+      }
+      data.preventDefault();
+      console.log("Delete Income with ID: ", income?.id_income);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error deleting Income:", error.message);
+    }
+    fetchData();
   };
 
   return (

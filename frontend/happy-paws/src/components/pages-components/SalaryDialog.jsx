@@ -22,14 +22,12 @@ import DatePicker from "./DatePicker";
 const SalarySchema = z.object({
   SalaryName: z
     .object({
-      id_employee: z.number(),
+      id_employee: z.string(),
       name: z.string(),
     })
-    .nullable()
-    .refine((val) => val !== null, {
-      message: "Employee is required",
-    }),
-  SalaryAmount: z.coerce.number().min(1, "Amount must be 0 or more"),
+    .nullable(),
+
+  SalaryAmount: z.coerce.number().min(0, "Amount must be 0 or more"), // Adjusted validation
   SalaryDate: z.date({ required_error: "Date is required" }),
   SalaryNote: z.string().optional(),
 });
@@ -58,6 +56,11 @@ export function InsertSalaryDialog({
   });
 
   const onSubmit = async (data) => {
+    console.log(data.SalaryName);
+    if (!data.SalaryName) {
+      console.log("Employee is required");
+      return;
+    }
     try {
       const response = await fetch(
         "http://localhost:3000/api/salary/insertSalaryData",
@@ -81,16 +84,17 @@ export function InsertSalaryDialog({
       const result = await response.json();
 
       if (!response.ok || result.error) {
-        throw new Error(result.message || "Failed to insert income data");
+        throw new Error(result.message || "Failed to insert Salary data");
       }
 
       reset();
       onOpenChange(false);
       fetchDataSalary();
     } catch (error) {
-      console.error("Error inserting income:", error.message);
+      console.error("Error inserting Salary:", error.message);
     }
   };
+
   useEffect(() => {
     if (!open) {
       reset();
@@ -98,36 +102,40 @@ export function InsertSalaryDialog({
   }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Employee Salary</DialogTitle>
         </DialogHeader>
+        <DialogDescription>Insert new salary below.</DialogDescription>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Insert new salary below.</DialogDescription>
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
               <Label>Name</Label>
               <Controller
                 control={control}
                 name="SalaryName"
-                render={({ field }) => (
-                  <>
-                    <EmployeeNameCombobox
-                      EmployeeData={EmployeeData}
-                      className="w-full"
-                      value={field.value}
-                      onChange={(selectedEmployee) => {
-                        field.onChange(selectedEmployee);
-                      }}
-                    />
-                    {errors.SalaryName && (
-                      <p className="text-destructive text-sm">
-                        {errors.SalaryName.message}
-                      </p>
-                    )}
-                  </>
-                )}
+                render={({ field }) => {
+                  // console.log(field.value);
+                  const handleChange = (value) => {
+                    console.log("Selected Employee:", value);
+                    field.onChange(value);
+                  };
+                  return (
+                    <>
+                      <EmployeeNameCombobox
+                        EmployeeData={EmployeeData}
+                        className="w-full"
+                        value={field.value}
+                        onChange={handleChange}
+                      />
+                      {errors.SalaryName && (
+                        <p className="text-destructive text-sm">
+                          {errors.SalaryName.message}
+                        </p>
+                      )}
+                    </>
+                  );
+                }}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -194,11 +202,38 @@ export function InsertSalaryDialog({
   );
 }
 
-export function DeleteSalaryDialog({ open, onOpenChange, SalaryData }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete equipment with ID: ", SalaryData?.id_salary);
-    onOpenChange(false);
+export function DeleteSalaryDialog({
+  open,
+  onOpenChange,
+  SalaryData,
+  fetchData,
+}) {
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/salary/deleteSalaryData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_shelter: SalaryData.id_shelter,
+            id_salary: SalaryData.id_salary,
+          }),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Failed to insert Salary data");
+      }
+      data.preventDefault();
+      console.log("Delete Salary with ID: ", SalaryData?.id_salary);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error deleting Salary:", error.message);
+    }
+    fetchData();
   };
 
   return (
