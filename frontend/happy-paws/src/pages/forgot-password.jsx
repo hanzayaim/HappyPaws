@@ -53,7 +53,7 @@ export default function ForgotPassword() {
                       {...register("email")}
                     />
                     {errors.email && (
-                      <p className="text-sm text-red-500">
+                      <p className="text-sm text-destructive">
                         {errors.email.message}
                       </p>
                     )}

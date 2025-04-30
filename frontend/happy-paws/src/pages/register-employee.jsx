@@ -12,6 +12,7 @@ import RolesCombobox from "../components/pages-components/role-combobox";
 import ShelterCombobox from "../components/pages-components/shelterlist-combobox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const employeeSchema = z
   .object({
@@ -22,7 +23,7 @@ const employeeSchema = z
     employeePhoneNumber: z
       .string()
       .regex(/^\d{10,}$/, "Invalid phone number (08XXXXXXX)"),
-    employeeAddress: z.string().min(1),
+    employeeAddress: z.string().min(1, "Address is required"),
     gender: z.string().min(1, "Gender is required"),
     role: z.string().min(1, "Role is required"),
     shelter: z.string().min(1, "Shelter is required"),
@@ -39,9 +40,14 @@ export default function RegisterEmployee() {
     setValue,
     reset,
     formState: { errors },
+    watch,
   } = useForm({
     resolver: zodResolver(employeeSchema),
   });
+
+  const genderValue = watch("gender");
+  const roleValue = watch("role");
+  const shelterValue = watch("shelter");
 
   const onSubmit = (data) => {
     console.log("Form data:", data);
@@ -63,7 +69,7 @@ export default function RegisterEmployee() {
                 <div className="flex flex-col gap-2">
                   <Input {...register("email")} placeholder="Email" />
                   {errors.email && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.email.message}
                     </p>
                   )}
@@ -74,7 +80,7 @@ export default function RegisterEmployee() {
                     {...register("password")}
                   />
                   {errors.password && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.password.message}
                     </p>
                   )}
@@ -85,7 +91,7 @@ export default function RegisterEmployee() {
                     {...register("confirmPassword")}
                   />
                   {errors.confirmPassword && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.confirmPassword.message}
                     </p>
                   )}
@@ -95,7 +101,7 @@ export default function RegisterEmployee() {
                     {...register("employeeName")}
                   />
                   {errors.employeeName && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.employeeName.message}
                     </p>
                   )}
@@ -106,7 +112,7 @@ export default function RegisterEmployee() {
                     {...register("employeePhoneNumber")}
                   />
                   {errors.employeePhoneNumber && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.employeePhoneNumber.message}
                     </p>
                   )}
@@ -116,30 +122,37 @@ export default function RegisterEmployee() {
                     {...register("employeeAddress")}
                   />
                   {errors.employeeAddress && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.employeeAddress.message}
                     </p>
                   )}
 
-                  <GenderCombobox onChange={(val) => setValue("gender", val)} />
+                  <GenderCombobox
+                    value={genderValue}
+                    onChange={(val) => setValue("gender", val)}
+                  />
                   {errors.gender && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.gender.message}
                     </p>
                   )}
 
-                  <RolesCombobox onChange={(val) => setValue("role", val)} />
+                  <RolesCombobox
+                    value={roleValue}
+                    onChange={(val) => setValue("role", val)}
+                  />
                   {errors.role && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.role.message}
                     </p>
                   )}
 
                   <ShelterCombobox
+                    value={shelterValue}
                     onChange={(val) => setValue("shelter", val)}
                   />
                   {errors.shelter && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.shelter.message}
                     </p>
                   )}

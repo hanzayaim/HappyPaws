@@ -21,7 +21,7 @@ const ownerSchema = z
     shelterPhoneNumber: z
       .string()
       .regex(/^\d{10,}$/, "Please enter a valid phone number (08XXXXXXX)"),
-    shelterAddress: z.string().min(1),
+    shelterAddress: z.string().min(1, "Address is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -58,7 +58,7 @@ export default function RegisterOwner() {
                 <div className="flex flex-col gap-2">
                   <Input {...register("email")} placeholder="Email" />
                   {errors.email && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.email.message}
                     </p>
                   )}
@@ -69,7 +69,7 @@ export default function RegisterOwner() {
                     {...register("password")}
                   />
                   {errors.password && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.password.message}
                     </p>
                   )}
@@ -80,7 +80,7 @@ export default function RegisterOwner() {
                     {...register("confirmPassword")}
                   />
                   {errors.confirmPassword && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.confirmPassword.message}
                     </p>
                   )}
@@ -90,7 +90,7 @@ export default function RegisterOwner() {
                     {...register("shelterName")}
                   />
                   {errors.shelterName && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.shelterName.message}
                     </p>
                   )}
@@ -100,7 +100,7 @@ export default function RegisterOwner() {
                     {...register("shelterOwnerName")}
                   />
                   {errors.shelterOwnerName && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.shelterOwnerName.message}
                     </p>
                   )}
@@ -111,7 +111,7 @@ export default function RegisterOwner() {
                     {...register("shelterPhoneNumber")}
                   />
                   {errors.shelterPhoneNumber && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.shelterPhoneNumber.message}
                     </p>
                   )}
@@ -121,7 +121,7 @@ export default function RegisterOwner() {
                     {...register("shelterAddress")}
                   />
                   {errors.shelterAddress && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       {errors.shelterAddress.message}
                     </p>
                   )}

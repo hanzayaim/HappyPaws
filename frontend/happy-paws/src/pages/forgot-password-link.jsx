@@ -60,7 +60,7 @@ export default function ForgotPasswordLink() {
                       {...register("newPassword")}
                     />
                     {errors.newPassword && (
-                      <p className="text-sm text-red-500">
+                      <p className="text-sm text-destructive">
                         {errors.newPassword.message}
                       </p>
                     )}
@@ -73,7 +73,7 @@ export default function ForgotPasswordLink() {
                       {...register("confirmNewPassword")}
                     />
                     {errors.confirmNewPassword && (
-                      <p className="text-sm text-red-500">
+                      <p className="text-sm text-destructive">
                         {errors.confirmNewPassword.message}
                       </p>
                     )}
