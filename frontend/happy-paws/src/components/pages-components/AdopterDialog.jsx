@@ -2,6 +2,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -15,7 +16,7 @@ import {
 } from "../ui/dialog";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import GenderCombobox from "./gender-combobox";
+import { AdopterGenderCombobox } from "./AdopterCombobox";
 
 const adopterSchema = z.object({
   AdopterName: z
@@ -79,7 +80,7 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adopter In</DialogTitle>
+          <DialogTitle>Add New Adopter</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid gap-4 py-4">
@@ -126,7 +127,7 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
                 name="AdopterGender"
                 render={({ field }) => (
                   <>
-                    <GenderCombobox
+                    <AdopterGenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -224,17 +225,12 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
       }
     }
   }, [watchFile]);
-  useEffect(() => {
-    if (!open) {
-      reset();
-    }
-  }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Adopter</DialogTitle>
+          <DialogTitle>Edit Adopter Data</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
           <div className="grid gap-4 py-4">
@@ -281,7 +277,7 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
                 name="AdopterGender"
                 render={({ field }) => (
                   <>
-                    <GenderCombobox
+                    <AdopterGenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}

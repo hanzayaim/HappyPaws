@@ -11,14 +11,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
   DialogDescription,
 } from "../ui/dialog";
-import { AnimalAdopterCombobox, AnimalNameCombobox } from "./AnimalCombobox";
+import { AnimalDateIn } from "./AnimalDatepicker";
+import {
+  AnimalAdopterCombobox,
+  AnimalGenderCombobox,
+  AnimalOutCombobox,
+} from "./AnimalCombobox";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import GenderCombobox from "./gender-combobox";
-import DatePicker from "./DatePicker";
 
 const animalInSchema = z.object({
   animalName: z
@@ -77,11 +79,6 @@ export function AnimalInDialog({ open, onOpenChange }) {
       }
     }
   }, [watchFile]);
-  useEffect(() => {
-    if (!open) {
-      reset();
-    }
-  }, [open, reset]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
@@ -150,7 +147,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <AnimalDateIn value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -166,7 +163,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <GenderCombobox
+                    <AnimalGenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -203,13 +200,11 @@ export function AnimalInDialog({ open, onOpenChange }) {
               )}
               <Label>Preview image</Label>
               {previewUrl ? (
-                <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden"></div>
               )}
@@ -263,7 +258,7 @@ export function AnimalOutDialog({ open, onOpenChange }) {
                 name="animalName"
                 render={({ field }) => (
                   <>
-                    <AnimalNameCombobox
+                    <AnimalOutCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -307,6 +302,21 @@ export function AnimalOutDialog({ open, onOpenChange }) {
   );
 }
 
+const animalEditSchema = z.object({
+  animalName: z
+    .string()
+    .min(1, "Animal name is required")
+    .refine((val) => val.trim().length > 0, {
+      message: "Animal name cannot be empty",
+    }),
+  animalType: z.string().optional(),
+  animalAge: z.coerce.number().optional(),
+  animalRescueLoc: z.string().optional(),
+  animalDate: z.date({ required_error: "Date is required" }),
+  animalGender: z.string().min(1, "Animal gender is required"),
+  animalNote: z.string().optional(),
+  animalImg: z.any().optional(),
+});
 export function AnimalEditDialog({ open, onOpenChange, animalData }) {
   const {
     register,
@@ -315,7 +325,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: zodResolver(animalInSchema),
+    resolver: zodResolver(animalEditSchema),
     mode: "onChange",
     defaultValues: {
       animalName: "",
@@ -430,7 +440,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <AnimalDateIn value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -446,7 +456,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <GenderCombobox
+                    <AnimalGenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -496,39 +506,6 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
           </div>
           <DialogFooter>
             <Button type="submit">Edit</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-export function DeleteAnimalDialog({ open, onOpenChange, animal }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete food with ID: ", animal?.id_animal);
-    onOpenChange(false);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Delete Animal</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={onSubmit} className="grid gap-2 py-2">
-          <DialogDescription>
-            Are you sure want to delete this Animal data?
-          </DialogDescription>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit" variant="alert">
-              Delete
-            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

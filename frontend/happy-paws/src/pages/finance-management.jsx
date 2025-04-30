@@ -23,7 +23,6 @@ import Layout from "../app/layout";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,

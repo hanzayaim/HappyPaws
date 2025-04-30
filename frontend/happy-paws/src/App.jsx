@@ -11,6 +11,8 @@ import FinancePage from "./pages/finance-management";
 import { Dashboard } from "./pages/dashboard-pages";
 import ForgotPassword from "./pages/forgot-password";
 import ForgotPasswordLink from "./pages/forgot-password-link";
+import MedicalManagement from "./pages/medical-management";
+import ShelterManagementPages from "./pages/shelter-management-pages";
 
 function App() {
   return (
@@ -30,10 +32,15 @@ function App() {
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route path="/medical-management" element={<MedicalManagement />} />
         <Route path="/finance-management" element={<FinancePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/shelter-management"
+          element={<ShelterManagementPages />}
+        />
       </Routes>
     </BrowserRouter>
   );
