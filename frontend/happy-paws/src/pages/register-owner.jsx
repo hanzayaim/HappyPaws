@@ -7,34 +7,40 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const ownerSchema = z
+  .object({
+    email: z.string().email("Invalid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+    shelterName: z.string().min(1, "Shelter name is required "),
+    shelterOwnerName: z.string().min(1, "Owner name is required"),
+    shelterPhoneNumber: z
+      .string()
+      .regex(/^\d{10,}$/, "Please enter a valid phone number (08XXXXXXX)"),
+    shelterAddress: z.string().min(1),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export default function RegisterOwner() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [phoneNumberError, setPhoneNumberError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(ownerSchema),
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setPhoneNumberError(false);
-    setConfirmPasswordError(false);
-
-    let hasError = false;
-
-    if (confirmPassword !== password) {
-      setConfirmPasswordError(true);
-      hasError = true;
-    }
-
-    if (phoneNumber.length < 10 || isNaN(phoneNumber)) {
-      setPhoneNumberError(true);
-      hasError = true;
-    }
-
-    if (hasError) return;
+  const onSubmit = (data) => {
+    console.log("Form data:", data);
+    reset();
   };
 
   return (
@@ -48,87 +54,79 @@ export default function RegisterOwner() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
-                  <div className="grid gap-2">
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Confirm Password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                    {confirmPasswordError && (
-                      <p className="text-sm text-red-500">
-                        Passwords do not match.
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="shelterName"
-                      type="text"
-                      placeholder="Shelter Name"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="shelterOwnerName"
-                      type="text"
-                      placeholder="Owner Name"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="shelterPhoneNumber"
-                      type="text"
-                      placeholder="Phone Number (ex: 08XXXXXXX)"
-                      required
-                      pattern="[0-9]+"
-                      inputMode="numeric"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                    {phoneNumberError && (
-                      <p className="text-sm text-red-500">
-                        Please enter a valid phone number (08XXXXXXX).
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="shelterAddress"
-                      type="text"
-                      placeholder="Shelter Address"
-                      required
-                    />
-                  </div>
-                  <Button
-                    variant="default"
-                    type="submit"
-                    className="w-full mt-2"
-                  >
+                  <Input {...register("email")} placeholder="Email" />
+                  {errors.email && (
+                    <p className="text-sm text-red-500">
+                      {errors.email.message}
+                    </p>
+                  )}
+
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    {...register("password")}
+                  />
+                  {errors.password && (
+                    <p className="text-sm text-red-500">
+                      {errors.password.message}
+                    </p>
+                  )}
+
+                  <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...register("confirmPassword")}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="text-sm text-red-500">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
+
+                  <Input
+                    placeholder="Shelter Name"
+                    {...register("shelterName")}
+                  />
+                  {errors.shelterName && (
+                    <p className="text-sm text-red-500">
+                      {errors.shelterName.message}
+                    </p>
+                  )}
+
+                  <Input
+                    placeholder="Owner Name"
+                    {...register("shelterOwnerName")}
+                  />
+                  {errors.shelterOwnerName && (
+                    <p className="text-sm text-red-500">
+                      {errors.shelterOwnerName.message}
+                    </p>
+                  )}
+
+                  <Input
+                    placeholder="Phone Number (ex: 08XXXXXXX)"
+                    inputMode="numeric"
+                    {...register("shelterPhoneNumber")}
+                  />
+                  {errors.shelterPhoneNumber && (
+                    <p className="text-sm text-red-500">
+                      {errors.shelterPhoneNumber.message}
+                    </p>
+                  )}
+
+                  <Input
+                    placeholder="Shelter Address"
+                    {...register("shelterAddress")}
+                  />
+                  {errors.shelterAddress && (
+                    <p className="text-sm text-red-500">
+                      {errors.shelterAddress.message}
+                    </p>
+                  )}
+
+                  <Button type="submit" className="w-full mt-2">
                     Register
                   </Button>
                 </div>

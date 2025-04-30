@@ -8,8 +8,27 @@ import {
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import logo from "../assets/logo-hp.png";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+});
 
 export default function ForgotPassword() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
+
+  const onSubmit = (data) => {
+    console.log("Forgot Password request:", data);
+  };
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 ">
       <div className="w-full max-w-sm">
@@ -24,15 +43,20 @@ export default function ForgotPassword() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
                   <div className="grid gap-2">
                     <Input
                       id="email"
                       type="email"
                       placeholder="Email"
-                      required
+                      {...register("email")}
                     />
+                    {errors.email && (
+                      <p className="text-sm text-red-500">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <Button variant="default" type="submit" className="w-full ">
                     Send Link
