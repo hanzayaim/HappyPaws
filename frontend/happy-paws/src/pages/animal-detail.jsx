@@ -6,61 +6,21 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { AlertDialogDelete } from "../components/pages-components/AnimalAlert";
 import Layout from "../app/layout";
-import { AnimalData } from "./animal-management";
+import { AnimalData, determineAnimalStatus } from "./animal-management";
+import { medicalData } from "./medical-management";
 
 export default function AnimalDetail() {
   const { id } = useParams();
+
   const animal = AnimalData.find((item) => item.id_animal === id);
+  const medicaldatabyId = medicalData.find((item) => item.id_animal === id);
 
-  const MedicalData = [
-    {
-      id_medical: "M001",
-      medical_status: "Healthy",
-      vaccin_status: true,
-      medical_date_in: "2024-12-11T09:00:00",
-      medical_date_out: "2024-12-11T11:00:00",
-      medical_cost: 150000,
-      note: "Initial health check and vaccination completed",
-      created_at: "2024-12-11T11:10:00",
-      created_by: "vet001",
-      updated_at: "2024-12-11T11:10:00",
-      updated_by: "vet001",
-      id_shelter: "S001",
-      id_animal: "A001",
-    },
-    {
-      id_medical: "M002",
-      medical_status: "Observation",
-      vaccin_status: true,
-      medical_date_in: "2025-01-15T10:00:00",
-      medical_date_out: "2025-01-17T10:00:00",
-      medical_cost: 300000,
-      note: "Mild digestive issue, monitored for two days",
-      created_at: "2025-01-17T10:10:00",
-      created_by: "vet002",
-      updated_at: "2025-01-17T10:10:00",
-      updated_by: "vet002",
-      id_shelter: "S001",
-      id_animal: "A002",
-    },
-    {
-      id_medical: "M003",
-      medical_status: "Healthy",
-      vaccin_status: true,
-      medical_date_in: "2025-03-01T08:30:00",
-      medical_date_out: "2025-03-01T09:00:00",
-      medical_cost: 100000,
-      note: "Regular monthly check-up",
-      created_at: "2025-03-01T09:05:00",
-      created_by: "vet003",
-      updated_at: "2025-03-01T09:05:00",
-      updated_by: "vet003",
-      id_shelter: "S001",
-      id_animal: "A003",
-    },
-  ];
+  const status = determineAnimalStatus(
+    medicaldatabyId?.medical_status,
+    medicaldatabyId?.vaccin_status,
+    animal?.id_adopter
+  );
 
-  const medicaldatabyId = MedicalData.find((item) => item.id_animal === id);
   const [openEdit, setOpenEdit] = useState(false);
   const [isAlert, setAlert] = useState(false);
   return (
@@ -113,12 +73,10 @@ export default function AnimalDetail() {
                 <Label className="font-medium text-sm ">Status</Label>
                 <span
                   className={`text-sm font-semibold ${
-                    animal.animal_status === "Available"
-                      ? "text-[#26B521]"
-                      : "text-red-500"
+                    status === "Available" ? "text-[#26B521]" : "text-red-500"
                   }`}
                 >
-                  {animal.animal_status}
+                  {status}
                 </span>
 
                 <Label className="font-medium text-sm">Jenis</Label>
@@ -139,8 +97,6 @@ export default function AnimalDetail() {
                 <span className="text-sm">
                   {medicaldatabyId?.vaccin_status != null
                     ? medicaldatabyId.vaccin_status
-                      ? "Sudah Vaksin"
-                      : "Belum Vaksin"
                     : "Belum Ada"}
                 </span>
               </div>

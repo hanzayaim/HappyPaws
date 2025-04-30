@@ -16,6 +16,8 @@ import {
   AnimalInDialog,
   AnimalOutDialog,
 } from "../components/pages-components/animalDialog";
+import { medicalData } from "./medical-management";
+import { useParams } from "react-router-dom";
 
 export const AnimalData = [
   {
@@ -24,11 +26,10 @@ export const AnimalData = [
     id_adopter: null,
     animal_name: "Luna",
     animal_img:
-      "https://www.allianz.ie/blog/your-pet/choosing-a-pedigree-pet/_jcr_content/root/stage/stageimage.img.82.3360.jpeg/1727944382981/cute-happy-pup.jpeg", // dog
+      "https://www.allianz.ie/blog/your-pet/choosing-a-pedigree-pet/_jcr_content/root/stage/stageimage.img.82.3360.jpeg/1727944382981/cute-happy-pup.jpeg",
     animal_gender: "Female",
     animal_type: "Dog",
     animal_age: 3,
-    animal_status: "Not Available",
     rescue_location: "Jakarta Selatan",
     date: "2024-12-10T10:00:00",
     note: "Friendly and calm temperament",
@@ -40,14 +41,13 @@ export const AnimalData = [
   {
     id_animal: "A002",
     id_shelter: "S001",
-    id_adopter: "AD123",
+    id_adopter: null,
     animal_name: "Max",
     animal_img:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrjtNVIoesRaukkpGZ5ApIKj4iwk_NHzHTqQ&s",
     animal_gender: "Male",
     animal_type: "Cat",
     animal_age: 2,
-    animal_status: "Adopted",
     rescue_location: "Bandung",
     date: "2025-01-05T09:30:00",
     note: "Playful and sociable",
@@ -66,7 +66,6 @@ export const AnimalData = [
     animal_gender: "Male",
     animal_type: "Rabbit",
     animal_age: 1,
-    animal_status: "Available",
     rescue_location: "Depok",
     date: "2025-03-15T11:00:00",
     note: "Loves to be held",
@@ -85,7 +84,6 @@ export const AnimalData = [
     animal_gender: "Female",
     animal_type: "Dog",
     animal_age: 5,
-    animal_status: "Available",
     rescue_location: "Tangerang",
     date: "2025-02-20T08:00:00",
     note: "Needs daily walks",
@@ -104,7 +102,6 @@ export const AnimalData = [
     animal_gender: "Male",
     animal_type: "Cat",
     animal_age: 4,
-    animal_status: "Available",
     rescue_location: "Bekasi",
     date: "2025-04-01T14:00:00",
     note: "Quiet and shy at first",
@@ -115,9 +112,28 @@ export const AnimalData = [
   },
 ];
 
+export function determineAnimalStatus(
+  medicalStatus,
+  vaccinateStatus,
+  adopterId
+) {
+  if (adopterId) {
+    return "Adopted";
+  }
+
+  if (medicalStatus === "Healthy" && vaccinateStatus === "Vaccinated") {
+    return "Available";
+  }
+
+  return "Not Available";
+}
+
 export default function AnimalManagement() {
   const [openAnimalIn, setOpenAnimalIn] = useState(false);
   const [openAnimalOut, setOpenAnimalOut] = useState(false);
+
+  const { id } = useParams();
+
   return (
     <Layout>
       <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">
@@ -159,6 +175,28 @@ export default function AnimalManagement() {
                   const animal1 = AnimalData[i * 2];
                   const animal2 = AnimalData[i * 2 + 1];
 
+                  const medical1 = medicalData?.find(
+                    (md) => md.id_animal === animal1?.id_animal
+                  );
+                  const medical2 = medicalData?.find(
+                    (md) => md.id_animal === animal2?.id_animal
+                  );
+                  const status1 = animal1
+                    ? determineAnimalStatus(
+                        medical1?.medical_status,
+                        medical1?.vaccin_status,
+                        animal1.id_adopter
+                      )
+                    : null;
+
+                  const status2 = animal2
+                    ? determineAnimalStatus(
+                        medical2?.medical_status,
+                        medical2?.vaccin_status,
+                        animal2.id_adopter
+                      )
+                    : null;
+
                   return (
                     <CarouselItem
                       key={i}
@@ -169,7 +207,7 @@ export default function AnimalManagement() {
                           <AnimalCard
                             name={animal1.animal_name}
                             imageUrl={animal1.animal_img}
-                            status={animal1.animal_status}
+                            status={status1}
                             jenis={animal1.animal_type}
                             umur={animal1.animal_age}
                             detailLink={`/animal-management/animal-detail/${animal1.id_animal}`}
@@ -179,7 +217,7 @@ export default function AnimalManagement() {
                           <AnimalCard
                             name={animal2.animal_name}
                             imageUrl={animal2.animal_img}
-                            status={animal2.animal_status}
+                            status={status2}
                             jenis={animal2.animal_type}
                             umur={animal2.animal_age}
                             detailLink={`/animal-management/animal-detail/${animal2.id_animal}`}

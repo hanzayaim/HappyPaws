@@ -66,7 +66,6 @@ async function insertAnimalData(
   animal_gender,
   animal_type,
   animal_age,
-  animal_status,
   rescue_location,
   date,
   note,
@@ -74,7 +73,7 @@ async function insertAnimalData(
 ) {
   try {
     const { rows } = await pool.query(
-      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, animal_status, rescue_location, date, note, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
+      "INSERT INTO animal (id_shelter, id_animal, animal_name, animal_img, animal_gender, animal_type, animal_age, rescue_location, date, note, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
       [
         id_shelter,
         id_animal,
@@ -83,7 +82,6 @@ async function insertAnimalData(
         animal_gender,
         animal_type,
         animal_age,
-        animal_status,
         rescue_location,
         date,
         note,

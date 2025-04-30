@@ -15,7 +15,6 @@ const insertNewAnimal = async (
 ) => {
   try {
     const id_animal = "ANIMAL-" + generateId();
-    const animal_status = "Not Available";
 
     const result = await insertAnimalData(
       id_shelter,
@@ -25,7 +24,6 @@ const insertNewAnimal = async (
       animal_gender,
       animal_type,
       animal_age,
-      animal_status,
       rescue_location,
       date,
       note,
