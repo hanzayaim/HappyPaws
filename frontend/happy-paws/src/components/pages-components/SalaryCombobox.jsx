@@ -29,7 +29,7 @@ export function EmployeeNameCombobox({ value, onChange, EmployeeData }) {
                 !value && "text-muted-foreground"
               )}
             >
-              {value ? value : "Select Employee..."}
+              {value ? value.name : "Select Employee..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -51,7 +51,7 @@ export function EmployeeNameCombobox({ value, onChange, EmployeeData }) {
                       <Check
                         className={cn(
                           "ml-auto",
-                          value === `Salary Month - ${employee.name}`
+                          value?.id_employee === employee.id_employee
                             ? "opacity-100"
                             : "opacity-0"
                         )}

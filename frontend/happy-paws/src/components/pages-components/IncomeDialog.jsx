@@ -27,7 +27,7 @@ const incomeSchema = z.object({
   incomeNote: z.string().optional(),
 });
 
-export function InsertIncomeDialog({ open, onOpenChange }) {
+export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
   const {
     register,
     handleSubmit,
@@ -45,10 +45,39 @@ export function InsertIncomeDialog({ open, onOpenChange }) {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/income/insertIncomeData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_shelter: User.id_shelter,
+            name: data.incomeName,
+            amount: data.incomeAmount,
+            date: data.incomeDate.toISOString().split("T")[0], // send as 'YYYY-MM-DD'
+            type: data.incomeType,
+            note: data.incomeNote || "",
+            created_by: "admin",
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Failed to insert income data");
+      }
+
+      reset(); // reset the form fields
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error inserting income:", error.message);
+    }
   };
   useEffect(() => {
     if (!open) {

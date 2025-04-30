@@ -20,13 +20,27 @@ import { EmployeeNameCombobox } from "./SalaryCombobox";
 import DatePicker from "./DatePicker";
 
 const SalarySchema = z.object({
-  SalaryName: z.string().min(1, "Name is required"),
+  SalaryName: z
+    .object({
+      id_employee: z.number(),
+      name: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, {
+      message: "Employee is required",
+    }),
   SalaryAmount: z.coerce.number().min(1, "Amount must be 0 or more"),
   SalaryDate: z.date({ required_error: "Date is required" }),
   SalaryNote: z.string().optional(),
 });
 
-export function InsertSalaryDialog({ open, onOpenChange, EmployeeData }) {
+export function InsertSalaryDialog({
+  open,
+  onOpenChange,
+  User,
+  EmployeeData,
+  fetchDataSalary,
+}) {
   const {
     register,
     handleSubmit,
@@ -36,17 +50,46 @@ export function InsertSalaryDialog({ open, onOpenChange, EmployeeData }) {
   } = useForm({
     resolver: zodResolver(SalarySchema),
     defaultValues: {
-      SalaryName: "",
+      SalaryName: null,
       SalaryAmount: "",
       SalaryDate: null,
       SalaryNote: "",
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/salary/insertSalaryData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_shelter: User.id_shelter,
+            id_employee: data.SalaryName.id_employee,
+            name: `Salary Month - ${data.SalaryName.name}`,
+            cost: data.SalaryAmount,
+            date: data.SalaryDate.toISOString().split("T")[0],
+            note: data.SalaryNote || "",
+            created_by: "admin",
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        throw new Error(result.message || "Failed to insert income data");
+      }
+
+      reset();
+      onOpenChange(false);
+      fetchDataSalary();
+    } catch (error) {
+      console.error("Error inserting income:", error.message);
+    }
   };
   useEffect(() => {
     if (!open) {
@@ -75,9 +118,7 @@ export function InsertSalaryDialog({ open, onOpenChange, EmployeeData }) {
                       className="w-full"
                       value={field.value}
                       onChange={(selectedEmployee) => {
-                        field.onChange(
-                          `Salary Month - ${selectedEmployee.name}`
-                        );
+                        field.onChange(selectedEmployee);
                       }}
                     />
                     {errors.SalaryName && (
