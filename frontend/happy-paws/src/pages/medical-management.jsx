@@ -34,7 +34,7 @@ import {
 } from "../components/ui/select";
 import { AnimalData } from "./animal-management";
 
-const medicalData = [
+export const medicalData = [
   {
     id_medical: "MED-001",
     medical_status: "Died",
