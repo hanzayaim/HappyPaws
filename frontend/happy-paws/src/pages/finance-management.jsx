@@ -114,12 +114,6 @@ export default function FinancePage() {
       ? Incomes.slice(incomeStartIndex, incomeStartIndex + itemsPerPage)
       : [];
 
-  // const expensesTotalPages = Math.ceil(Expenses.length / itemsPerPage);
-  // const expensesStartIndex = (expensesCurrentPage - 1) * itemsPerPage;
-  // const currentExpenses = Expenses.slice(
-  //   expensesStartIndex,
-  //   expensesStartIndex + itemsPerPage
-  // );
   const expensesTotalPages =
     Expenses && Expenses.length ? Math.ceil(Expenses.length / itemsPerPage) : 1;
   const expensesStartIndex = (expensesCurrentPage - 1) * itemsPerPage;
@@ -166,6 +160,25 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
+  const fetchSalaryData = async () => {
+    try {
+      const SalaryRes = await axios.get(
+        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
+      );
+      if (SalaryRes.status === 404) {
+        setSalaries(null);
+        return;
+      }
+      const SalaryData = SalaryRes.data;
+      if (SalaryData.error) {
+        throw new Error(SalaryData.message || "Failed to fetch Salary");
+      }
+
+      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
+    } catch (error) {
+      console.error("Error fetching salary data:", error);
+    }
+  };
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
@@ -198,25 +211,6 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
-  const fetchSalaryData = async () => {
-    try {
-      const SalaryRes = await axios.get(
-        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
-      );
-      if (SalaryRes.status === 404) {
-        setSalaries(null);
-        return;
-      }
-      const SalaryData = SalaryRes.data;
-      if (SalaryData.error) {
-        throw new Error(SalaryData.message || "Failed to fetch Salary");
-      }
-
-      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
-    } catch (error) {
-      console.error("Error fetching salary data:", error);
-    }
-  };
   const fetchEmployeeData = async () => {
     try {
       const EmployeeRes = await axios.get(
@@ -240,25 +234,21 @@ export default function FinancePage() {
       const FinanceRes = await axios.get(
         `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
       );
-
       const ProfitRes = await axios.post(
         `http://localhost:3000/api/finance/getPorfit`,
         {
           id_shelter: user.id_shelter,
         }
       );
-
       const LossRes = await axios.post(
         `http://localhost:3000/api/finance/getLoss`,
         {
           id_shelter: user.id_shelter,
         }
       );
-
       const FinanceData = FinanceRes.data;
       const ProfitData = ProfitRes.data;
       const LossData = LossRes.data;
-
       if (FinanceData.error) {
         throw new Error(FinanceData.message || "Failed to fetch Finance");
       }
@@ -268,7 +258,6 @@ export default function FinancePage() {
       if (LossData.error) {
         throw new Error(LossData.message || "Failed to fetch Loss");
       }
-
       setFinance(FinanceData.data?.[0] ?? "No data");
       setLoss(LossData.result ?? 0);
       setProfit(ProfitData.result ?? 0);
@@ -276,7 +265,6 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
-
   useEffect(() => {
     fetchFinanceData();
     fetchEmployeeData();
@@ -294,18 +282,15 @@ export default function FinancePage() {
       setExpensesCurrentPage(page);
     }
   };
-
   const handleEquipmentPageChange = (page) => {
     if (page >= 1 && page <= SalaryTotalPages) {
       setSalaryCurrentPage(page);
     }
   };
-
   const handleEditIncomeClick = (income) => {
     setSelectedIncome(income);
     setEditIncomeDialogOpen(true);
   };
-
   const handleDeleteIncomeClick = (income) => {
     setSelectedIncome(income);
     setDeleteIncomeDialogOpen(true);
@@ -341,7 +326,7 @@ export default function FinancePage() {
                   : Finance.total_balance}
               </Label>
             </CardContent>
-            <CardFooter className="flex w-full justify-between items-center ">
+            <CardFooter className="flex lg:flex-row flex-col w-full justify-between items-center ">
               <p className="flex">
                 Profit:
                 <span className="text-green-600">
