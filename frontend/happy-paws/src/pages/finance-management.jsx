@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
@@ -37,275 +37,143 @@ import {
   InsertSalaryDialog,
 } from "../components/pages-components/SalaryDialog";
 //#region Dummy
-const Incomes = [
-  {
-    id_income: "inc_001",
-    id_shelter: "shelter_001",
-    name: "Donation from John Doe",
-    amount: 500.0,
-    date: "2025-04-01T10:00:00",
-    type: "Donation",
-    note: "Monthly support",
-    created_at: "2025-04-01T09:50:00",
-    created_by: "admin",
-    update_at: "2025-04-01T11:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_002",
-    id_shelter: "shelter_001",
-    name: "Fundraising Event",
-    amount: 1200.0,
-    date: "2025-04-03T14:30:00",
-    type: "Fundraising",
-    note: "Annual charity event",
-    created_at: "2025-04-02T18:00:00",
-    created_by: "admin",
-    update_at: "2025-04-03T15:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_003",
-    id_shelter: "shelter_001",
-    name: "Local Government Grant",
-    amount: 3000.0,
-    date: "2025-04-05T09:00:00",
-    type: "Grant",
-    note: "Quarterly funding",
-    created_at: "2025-04-04T20:00:00",
-    created_by: "admin",
-    update_at: "2025-04-05T09:30:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_004",
-    id_shelter: "shelter_001",
-    name: "Private Donor Contribution",
-    amount: 750.5,
-    date: "2025-04-07T11:15:00",
-    type: "Donation",
-    note: "Anonymous donor",
-    created_at: "2025-04-06T10:00:00",
-    created_by: "admin",
-    update_at: "2025-04-07T11:30:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_005",
-    id_shelter: "shelter_001",
-    name: "Merchandise Sales",
-    amount: 250.0,
-    date: "2025-04-10T16:00:00",
-    type: "Sales",
-    note: "Sold T-shirts and mugs",
-    created_at: "2025-04-09T12:45:00",
-    created_by: "admin",
-    update_at: "2025-04-10T17:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_006",
-    id_shelter: "shelter_001",
-    name: "Online Campaign",
-    amount: 980.25,
-    date: "2025-04-12T13:45:00",
-    type: "Fundraising",
-    note: "Crowdfunding platform",
-    created_at: "2025-04-11T14:20:00",
-    created_by: "admin",
-    update_at: "2025-04-12T14:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_007",
-    id_shelter: "shelter_001",
-    name: "Corporate Sponsorship",
-    amount: 5000.0,
-    date: "2025-04-14T10:30:00",
-    type: "Sponsorship",
-    note: "Support from XYZ Corp.",
-    created_at: "2025-04-13T10:00:00",
-    created_by: "admin",
-    update_at: "2025-04-14T11:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_008",
-    id_shelter: "shelter_001",
-    name: "Pet Adoption Fees",
-    amount: 450.0,
-    date: "2025-04-16T15:00:00",
-    type: "Service Fee",
-    note: "5 pet adoptions",
-    created_at: "2025-04-15T13:10:00",
-    created_by: "admin",
-    update_at: "2025-04-16T15:20:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_009",
-    id_shelter: "shelter_001",
-    name: "Workshop Registration",
-    amount: 320.0,
-    date: "2025-04-18T09:30:00",
-    type: "Service Fee",
-    note: "Animal care workshop",
-    created_at: "2025-04-17T08:40:00",
-    created_by: "admin",
-    update_at: "2025-04-18T10:00:00",
-    update_by: "admin",
-  },
-  {
-    id_income: "inc_010",
-    id_shelter: "shelter_001",
-    name: "Veterinary Services",
-    amount: 670.75,
-    date: "2025-04-20T17:20:00",
-    type: "Service Fee",
-    note: "Vaccination and treatment",
-    created_at: "2025-04-19T16:00:00",
-    created_by: "admin",
-    update_at: "2025-04-20T18:00:00",
-    update_by: "admin",
-  },
-];
-const Salaries = [
-  {
-    id_salary: "sal_001",
-    id_shelter: "shelter_001",
-    id_employee: "emp_001",
-    name: "April Salary - John",
-    cost: 3000000,
-    date: "2025-04-01T09:00:00",
-    note: "Full-time staff",
-    created_at: "2025-04-01T08:45:00",
-    created_by: "admin",
-    updated_at: "2025-04-01T10:00:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_002",
-    id_shelter: "shelter_001",
-    id_employee: "emp_002",
-    name: "April Salary - Alice",
-    cost: 2800000,
-    date: "2025-04-02T10:30:00",
-    note: "Veterinarian",
-    created_at: "2025-04-01T17:30:00",
-    created_by: "admin",
-    updated_at: "2025-04-02T11:00:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_003",
-    id_shelter: "shelter_001",
-    id_employee: "emp_003",
-    name: "April Salary - Bob",
-    cost: 2500000,
-    date: "2025-04-03T08:00:00",
-    note: "Caretaker",
-    created_at: "2025-04-02T19:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-03T08:15:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_004",
-    id_shelter: "shelter_001",
-    id_employee: "emp_004",
-    name: "April Salary - Sarah",
-    cost: 2700000,
-    date: "2025-04-04T14:20:00",
-    note: "Admin staff",
-    created_at: "2025-04-04T09:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-04T14:45:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_005",
-    id_shelter: "shelter_001",
-    id_employee: "emp_005",
-    name: "April Salary - Kevin",
-    cost: 2600000,
-    date: "2025-04-05T12:00:00",
-    note: "Driver",
-    created_at: "2025-04-05T08:20:00",
-    created_by: "admin",
-    updated_at: "2025-04-05T12:15:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_006",
-    id_shelter: "shelter_001",
-    id_employee: "emp_006",
-    name: "April Salary - Emma",
-    cost: 3100000,
-    date: "2025-04-06T11:10:00",
-    note: "Operations",
-    created_at: "2025-04-06T09:00:00",
-    created_by: "admin",
-    updated_at: "2025-04-06T11:30:00",
-    updated_by: "admin",
-  },
-  {
-    id_salary: "sal_007",
-    id_shelter: "shelter_001",
-    id_employee: "emp_007",
-    name: "April Salary - Michael",
-    cost: 2950000,
-    date: "2025-04-07T13:45:00",
-    note: "Finance officer",
-    created_at: "2025-04-07T10:15:00",
-    created_by: "admin",
-    updated_at: "2025-04-07T14:00:00",
-    updated_by: "admin",
-  },
-];
-const Employees = [
-  {
-    id_employee: "emp_001",
-    id_shelter: "shelter_001",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    password: "hashed_password_123", // ganti dengan hash saat insert ke db
-    role: "staff",
-    gender: "Male",
-    shelter_name: "Hope Shelter",
-    phone_number: "081234567890",
-    address: "Jl. Kebajikan No. 12, Jakarta",
-    created_at: "2025-04-01T08:00:00",
-    status: "active",
-  },
-  {
-    id_employee: "emp_002",
-    id_shelter: "shelter_001",
-    name: "Alice Smith",
-    email: "alice.smith@example.com",
-    password: "hashed_password_456",
-    role: "veterinarian",
-    gender: "Female",
-    shelter_name: "Hope Shelter",
-    phone_number: "082233445566",
-    address: "Jl. Mawar No. 45, Bandung",
-    created_at: "2025-04-02T09:30:00",
-    status: "active",
-  },
-  {
-    id_employee: "emp_003",
-    id_shelter: "shelter_001",
-    name: "Michael Lee",
-    email: "michael.lee@example.com",
-    password: "hashed_password_789",
-    role: "finance",
-    gender: "Male",
-    shelter_name: "Hope Shelter",
-    phone_number: "081998877665",
-    address: "Jl. Merdeka No. 8, Surabaya",
-    created_at: "2025-04-03T11:15:00",
-    status: "active",
-  },
-];
+// const Salaries = [
+//   {
+//     id_salary: "sal_001",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_001",
+//     name: "April Salary - John",
+//     cost: 3000000,
+//     date: "2025-04-01T09:00:00",
+//     note: "Full-time staff",
+//     created_at: "2025-04-01T08:45:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-01T10:00:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_002",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_002",
+//     name: "April Salary - Alice",
+//     cost: 2800000,
+//     date: "2025-04-02T10:30:00",
+//     note: "Veterinarian",
+//     created_at: "2025-04-01T17:30:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-02T11:00:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_003",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_003",
+//     name: "April Salary - Bob",
+//     cost: 2500000,
+//     date: "2025-04-03T08:00:00",
+//     note: "Caretaker",
+//     created_at: "2025-04-02T19:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-03T08:15:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_004",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_004",
+//     name: "April Salary - Sarah",
+//     cost: 2700000,
+//     date: "2025-04-04T14:20:00",
+//     note: "Admin staff",
+//     created_at: "2025-04-04T09:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-04T14:45:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_005",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_005",
+//     name: "April Salary - Kevin",
+//     cost: 2600000,
+//     date: "2025-04-05T12:00:00",
+//     note: "Driver",
+//     created_at: "2025-04-05T08:20:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-05T12:15:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_006",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_006",
+//     name: "April Salary - Emma",
+//     cost: 3100000,
+//     date: "2025-04-06T11:10:00",
+//     note: "Operations",
+//     created_at: "2025-04-06T09:00:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-06T11:30:00",
+//     updated_by: "admin",
+//   },
+//   {
+//     id_salary: "sal_007",
+//     id_shelter: "shelter_001",
+//     id_employee: "emp_007",
+//     name: "April Salary - Michael",
+//     cost: 2950000,
+//     date: "2025-04-07T13:45:00",
+//     note: "Finance officer",
+//     created_at: "2025-04-07T10:15:00",
+//     created_by: "admin",
+//     updated_at: "2025-04-07T14:00:00",
+//     updated_by: "admin",
+//   },
+// ];
+// const Employees = [
+//   {
+//     id_employee: "emp_001",
+//     id_shelter: "shelter_001",
+//     name: "John Doe",
+//     email: "john.doe@example.com",
+//     password: "hashed_password_123", // ganti dengan hash saat insert ke db
+//     role: "staff",
+//     gender: "Male",
+//     shelter_name: "Hope Shelter",
+//     phone_number: "081234567890",
+//     address: "Jl. Kebajikan No. 12, Jakarta",
+//     created_at: "2025-04-01T08:00:00",
+//     status: "active",
+//   },
+//   {
+//     id_employee: "emp_002",
+//     id_shelter: "shelter_001",
+//     name: "Alice Smith",
+//     email: "alice.smith@example.com",
+//     password: "hashed_password_456",
+//     role: "veterinarian",
+//     gender: "Female",
+//     shelter_name: "Hope Shelter",
+//     phone_number: "082233445566",
+//     address: "Jl. Mawar No. 45, Bandung",
+//     created_at: "2025-04-02T09:30:00",
+//     status: "active",
+//   },
+//   {
+//     id_employee: "emp_003",
+//     id_shelter: "shelter_001",
+//     name: "Michael Lee",
+//     email: "michael.lee@example.com",
+//     password: "hashed_password_789",
+//     role: "finance",
+//     gender: "Male",
+//     shelter_name: "Hope Shelter",
+//     phone_number: "081998877665",
+//     address: "Jl. Merdeka No. 8, Surabaya",
+//     created_at: "2025-04-03T11:15:00",
+//     status: "active",
+//   },
+// ];
 const Expenses = [
   {
     id_expenses: "EXP-003",
@@ -710,17 +578,31 @@ const medicals = [
     id_animal: "animal_002",
   },
 ];
-const finance = {
-  id_finance: "FNC-001",
-  id_shelter: "Shelter01",
-  total_balance: 5000000,
-  created_at: "2025-04-10T07:30:00.000Z",
+// const finance = {
+//   id_finance: "FNC-001",
+//   id_shelter: "Shelter01",
+//   total_balance: -5000000,
+//   created_at: "2025-04-10T07:30:00.000Z",
+// };
+const user = {
+  id_shelter: "SHELTER-f0db8d37-f8a4-42aa-9a34-70d6d0f41850",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  phone_number: "081238697341",
+  address: "jln jalan",
 };
 //#endregion
 
 export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;
+  const [Incomes, setIncomes] = useState([]);
+  const [Employees, setEmployees] = useState([]);
+  const [Salaries, setSalaries] = useState([]);
+  const [Finance, setFinance] = useState({});
+  const [getLoss, setLoss] = useState(0);
+  const [getProfit, setProfit] = useState(0);
 
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
@@ -749,12 +631,123 @@ export default function FinancePage() {
     expensesStartIndex + itemsPerPage
   );
 
-  const SalaryTotalPages = Math.ceil(Salaries.length / itemsPerPage);
+  const SalaryTotalPages =
+    Salaries && Salaries.length ? Math.ceil(Salaries.length / itemsPerPage) : 1;
+
   const SalaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
-  const currentSalaries = Salaries.slice(
-    SalaryStartIndex,
-    SalaryStartIndex + itemsPerPage
-  );
+
+  const currentSalaries =
+    Salaries && Salaries.length
+      ? Salaries.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
+      : [];
+
+  const fetchIncomeData = async () => {
+    try {
+      const incomesRes = await fetch(
+        `http://localhost:3000/api/income/getIncome/${user.id_shelter}`
+      );
+      const incomesData = await incomesRes.json();
+
+      if (!incomesRes.ok || incomesData.error) {
+        throw new Error(incomesData.message || "Failed to fetch incomes");
+      }
+      setIncomes(incomesData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+  const fetchSalaryData = async () => {
+    try {
+      const SalaryRes = await fetch(
+        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
+      );
+      if (SalaryRes.status === 404) {
+        setSalaries(null);
+        return;
+      }
+      const SalaryData = await SalaryRes.json();
+      if (!SalaryRes.ok || SalaryData.error) {
+        throw new Error(SalaryData.message || "Failed to fetch Salary");
+      }
+
+      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
+    } catch (error) {
+      console.error("Error fetching salary data:", error);
+    }
+  };
+
+  const fetchEmployeeData = async () => {
+    try {
+      const EmployeeRes = await fetch(
+        `http://localhost:3000/api/employees/getEmployeeData/${user.id_shelter}`
+      );
+      const employeeData = await EmployeeRes.json();
+
+      if (!EmployeeRes.ok || employeeData.error) {
+        throw new Error(employeeData.message || "Failed to fetch incomes");
+      }
+      setEmployees(employeeData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+  const fetchFinanceData = async () => {
+    fetchIncomeData();
+    fetchSalaryData();
+    try {
+      const FinanceRes = await fetch(
+        `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
+      );
+
+      const ProfitRes = await fetch(
+        `http://localhost:3000/api/finance/getPorfit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_shelter: user.id_shelter,
+          }),
+        }
+      );
+      const LossRes = await fetch(`http://localhost:3000/api/finance/getLoss`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_shelter: user.id_shelter,
+        }),
+      });
+      const FinanceData = await FinanceRes.json();
+
+      const ProfitData = await ProfitRes.json();
+      const LossData = await LossRes.json();
+      if (!FinanceRes.ok || FinanceData.error) {
+        throw new Error(FinanceData.message || "Failed to fetch Fiannce");
+      }
+
+      if (!ProfitRes.ok || ProfitRes.error) {
+        throw new Error(ProfitRes.message || "Failed to fetch Profit");
+      }
+      if (!LossRes.ok || LossRes.error) {
+        throw new Error(LossRes.message || "Failed to fetch Loss");
+      }
+      setFinance(FinanceData.data?.[0] ?? "No data");
+      setLoss(LossData);
+      setProfit(ProfitData);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFinanceData();
+    fetchIncomeData();
+    fetchEmployeeData();
+    fetchSalaryData();
+  }, []);
 
   const handleIncomePageChange = (page) => {
     if (page >= 1 && page <= incomeTotalPages) {
@@ -792,7 +785,7 @@ export default function FinancePage() {
     <Layout>
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
         <Label className="lg:text-3xl text-2xl font-bold self-start">
-          Inventory Management
+          Finance Management
         </Label>
         <div className="w-full flex justify-center items-center ">
           <Card className="lg:min-w-lg w-lg">
@@ -800,18 +793,38 @@ export default function FinancePage() {
               <CardTitle className="text-center">Saldo saat ini</CardTitle>
             </CardHeader>
             <CardContent className="flex w-full justify-center items-center ">
-              <Label className={"lg:text-3xl text-2xl"}>
-                {typeof finance.total_balance === "number"
+              <Label
+                className={`lg:text-3xl text-2xl ${
+                  Finance.total_balance < 0 ? "text-red-700" : ""
+                }`}
+              >
+                {typeof Finance.total_balance === "number"
                   ? new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
-                    }).format(finance.total_balance)
-                  : finance.total_balance}
+                    }).format(Finance.total_balance)
+                  : Finance.total_balance}
               </Label>
             </CardContent>
             <CardFooter className="flex w-full justify-between items-center ">
-              <p>Profit:</p>
-              <p>Cost:</p>
+              <p className="flex">
+                Profit:
+                <span className="text-green-600">
+                  {" +"}
+                  {typeof getProfit === "number"
+                    ? new Intl.NumberFormat("id-ID").format(getProfit)
+                    : getProfit}
+                </span>
+              </p>
+              <p className="flex">
+                Loss:
+                <span className="text-red-600">
+                  {" -"}
+                  {typeof getLoss === "number"
+                    ? new Intl.NumberFormat("id-ID").format(getLoss)
+                    : getLoss}
+                </span>
+              </p>
             </CardFooter>
           </Card>
         </div>
@@ -828,16 +841,21 @@ export default function FinancePage() {
         <InsertIncomeDialog
           open={addIncomeDialogOpen}
           onOpenChange={setAddIncomeDialogOpen}
+          User={user}
+          fetchData={fetchFinanceData}
         />
         <EditIncomeDialog
           open={editIncomeDialogOpen}
           onOpenChange={setEditIncomeDialogOpen}
           incomeData={selectedIncome}
+          User={user}
+          fetchData={fetchFinanceData}
         />
         <DeleteIncomeDialog
           open={deleteIncomeDialogOpen}
           onOpenChange={setDeleteIncomeDialogOpen}
-          food={selectedIncome}
+          income={selectedIncome}
+          fetchData={fetchFinanceData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -849,8 +867,6 @@ export default function FinancePage() {
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-center">Date</TableHead>
                 <TableHead className="text-center">Note</TableHead>
-                <TableHead className="text-center">Updated By</TableHead>
-                <TableHead className="text-center">Updated Date</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -872,12 +888,7 @@ export default function FinancePage() {
                     {new Date(income.date).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-center">{income.note}</TableCell>
-                  <TableCell className="text-center">
-                    {income.update_by}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(income.update_at).toLocaleDateString()}
-                  </TableCell>
+
                   <TableCell className="flex gap-1 justify-center">
                     <Button
                       className="text-sm"
@@ -967,7 +978,7 @@ export default function FinancePage() {
                 let date = "-";
                 let note = "-";
 
-                if (exp.id_salary) {
+                if (exp.id_salary && Array.isArray(Salaries)) {
                   const salary = Salaries.find(
                     (s) => s.id_salary === exp.id_salary
                   );
@@ -1025,7 +1036,7 @@ export default function FinancePage() {
                       {expensesStartIndex + index + 1}
                     </TableCell>
                     <TableCell className="text-center">{name}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       {typeof cost === "number"
                         ? new Intl.NumberFormat("id-ID", {
                             style: "currency",
@@ -1101,12 +1112,15 @@ export default function FinancePage() {
         <InsertSalaryDialog
           open={addSalaryDialogOpen}
           onOpenChange={setAddSalaryDialogOpen}
+          fetchDataSalary={fetchFinanceData}
+          User={user}
           EmployeeData={Employees}
         />
         <DeleteSalaryDialog
           open={deleteSalaryDialogOpen}
           onOpenChange={setDeleteSalaryDialogOpen}
           SalaryData={selectedSalary}
+          fetchData={fetchFinanceData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -1117,46 +1131,49 @@ export default function FinancePage() {
                 <TableHead className="text-center">Amount</TableHead>
                 <TableHead className="text-center">Date</TableHead>
                 <TableHead className="text-center">Note</TableHead>
-                <TableHead className="text-center">Updated By</TableHead>
-                <TableHead className="text-center">Updated At</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentSalaries.map((Salary, index) => (
-                <TableRow key={Salary.id_salary}>
-                  <TableCell className="text-center">
-                    {SalaryStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">{Salary.name}</TableCell>
-                  <TableCell className="text-right">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(Salary.cost)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(Salary.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-center">{Salary.note}</TableCell>
-                  <TableCell className="text-center">
-                    {Salary.updated_by}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(Salary.updated_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteSalaryClick(Salary)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+              {currentSalaries.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No salary data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentSalaries.map((Salary, index) => (
+                  <TableRow key={Salary.id_salary}>
+                    <TableCell className="text-center">
+                      {SalaryStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">{Salary.name}</TableCell>
+                    <TableCell className="text-center">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(Salary.cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Date(Salary.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-center">{Salary.note}</TableCell>
+                    <TableCell className="flex gap-1 justify-center">
+                      <Button
+                        className="text-sm"
+                        variant="alert"
+                        onClick={() => handleDeleteSalaryClick(Salary)}
+                      >
+                        <Trash className="size-4" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">

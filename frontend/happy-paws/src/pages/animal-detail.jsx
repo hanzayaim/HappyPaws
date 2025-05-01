@@ -1,10 +1,12 @@
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PencilLine, Trash } from "lucide-react";
-import { AnimalEditDialog } from "../components/pages-components/animalDialog";
+import {
+  AnimalEditDialog,
+  DeleteAnimalDialog,
+} from "../components/pages-components/animalDialog";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { AlertDialogDelete } from "../components/pages-components/AnimalAlert";
 import Layout from "../app/layout";
 import { AnimalData, determineAnimalStatus } from "./animal-management";
 import { medicalData } from "./medical-management";
@@ -51,7 +53,11 @@ export default function AnimalDetail() {
           onOpenChange={setOpenEdit}
           animalData={animal}
         />
-        <AlertDialogDelete open={isAlert} onOpenChange={setAlert} />
+        <DeleteAnimalDialog
+          open={isAlert}
+          onOpenChange={setAlert}
+          animal={animal}
+        />
         <div className="w-full bg-[#FAF7F2] shadow-lg min-h-fit flex flex-col p-5 mt-5 gap-5 rounded-xl">
           <div className="flex flex-col lg:flex-row gap-5">
             {/* Gambar */}
