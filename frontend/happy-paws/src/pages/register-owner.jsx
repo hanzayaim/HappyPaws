@@ -10,6 +10,9 @@ import { Input } from "../components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import SuccessDialog from "../components/pages-components/RegisterSuccessDialog";
+import { useState } from "react";
 
 const ownerSchema = z
   .object({
@@ -29,118 +32,170 @@ const ownerSchema = z
   });
 
 export default function RegisterOwner() {
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(ownerSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data:", data);
-    reset();
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/shelters/insertShelter",
+        {
+          owner_name: data.shelterOwnerName,
+          email: data.email,
+          password: data.password,
+          shelter_name: data.shelterName,
+          phone_number: data.shelterPhoneNumber,
+          address: data.shelterAddress,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to create account");
+      }
+
+      setShowSuccess(true);
+      reset();
+    } catch (error) {
+      console.error("Error creating shelter:", error);
+      const message =
+        error?.response?.data?.message || error?.message || "Unknown error";
+
+      if (message.includes("email")) {
+        setError("email", {
+          type: "manual",
+          message: "Email is already registered.",
+        });
+      } else if (message.includes("phone_number")) {
+        setError("shelterPhoneNumber", {
+          type: "manual",
+          message: "Phone Number is already registered.",
+        });
+      } else if (message.includes("shelter_name")) {
+        setError("shelterName", {
+          type: "manual",
+          message: "Shelter name is already taken.",
+        });
+      } else {
+        setError("email", {
+          type: "manual",
+          message: "Terjadi kesalahan, silakan coba lagi.",
+        });
+      }
+    }
   };
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">
-                Register Owner Shelter
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-2">
-                  <Input {...register("email")} placeholder="Email" />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">
-                      {errors.email.message}
-                    </p>
-                  )}
+    <>
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <div className="w-full max-w-sm">
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl text-center">
+                  Register Owner Shelter
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="flex flex-col gap-2">
+                    <Input {...register("email")} placeholder="Email" />
+                    {errors.email && (
+                      <p className="text-sm text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
 
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password")}
-                  />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">
-                      {errors.password.message}
-                    </p>
-                  )}
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      {...register("password")}
+                    />
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password.message}
+                      </p>
+                    )}
 
-                  <Input
-                    type="password"
-                    placeholder="Confirm Password"
-                    {...register("confirmPassword")}
-                  />
-                  {errors.confirmPassword && (
-                    <p className="text-sm text-destructive">
-                      {errors.confirmPassword.message}
-                    </p>
-                  )}
+                    <Input
+                      type="password"
+                      placeholder="Confirm Password"
+                      {...register("confirmPassword")}
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-sm text-destructive">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
 
-                  <Input
-                    placeholder="Shelter Name"
-                    {...register("shelterName")}
-                  />
-                  {errors.shelterName && (
-                    <p className="text-sm text-destructive">
-                      {errors.shelterName.message}
-                    </p>
-                  )}
+                    <Input
+                      placeholder="Shelter Name"
+                      {...register("shelterName")}
+                    />
+                    {errors.shelterName && (
+                      <p className="text-sm text-destructive">
+                        {errors.shelterName.message}
+                      </p>
+                    )}
 
-                  <Input
-                    placeholder="Owner Name"
-                    {...register("shelterOwnerName")}
-                  />
-                  {errors.shelterOwnerName && (
-                    <p className="text-sm text-destructive">
-                      {errors.shelterOwnerName.message}
-                    </p>
-                  )}
+                    <Input
+                      placeholder="Owner Name"
+                      {...register("shelterOwnerName")}
+                    />
+                    {errors.shelterOwnerName && (
+                      <p className="text-sm text-destructive">
+                        {errors.shelterOwnerName.message}
+                      </p>
+                    )}
 
-                  <Input
-                    placeholder="Phone Number (ex: 08XXXXXXX)"
-                    inputMode="numeric"
-                    {...register("shelterPhoneNumber")}
-                  />
-                  {errors.shelterPhoneNumber && (
-                    <p className="text-sm text-destructive">
-                      {errors.shelterPhoneNumber.message}
-                    </p>
-                  )}
+                    <Input
+                      placeholder="Phone Number (ex: 08XXXXXXX)"
+                      inputMode="numeric"
+                      {...register("shelterPhoneNumber")}
+                    />
+                    {errors.shelterPhoneNumber && (
+                      <p className="text-sm text-destructive">
+                        {errors.shelterPhoneNumber.message}
+                      </p>
+                    )}
 
-                  <Input
-                    placeholder="Shelter Address"
-                    {...register("shelterAddress")}
-                  />
-                  {errors.shelterAddress && (
-                    <p className="text-sm text-destructive">
-                      {errors.shelterAddress.message}
-                    </p>
-                  )}
+                    <Input
+                      placeholder="Shelter Address"
+                      {...register("shelterAddress")}
+                    />
+                    {errors.shelterAddress && (
+                      <p className="text-sm text-destructive">
+                        {errors.shelterAddress.message}
+                      </p>
+                    )}
 
-                  <Button type="submit" className="w-full mt-2">
-                    Register
-                  </Button>
+                    <Button type="submit" className="w-full mt-2">
+                      Register
+                    </Button>
+                  </div>
+                </form>
+                <div className="text-sm flex mt-2 items-center justify-center gap-1">
+                  Already have an account?
+                  <Link to="/login" className="text-orange-500 hover:underline">
+                    Login
+                  </Link>
                 </div>
-              </form>
-              <div className="text-sm flex mt-2 items-center justify-center gap-1">
-                Already have an account ?
-                <Link to="/login" className="text-orange-500 hover:underline">
-                  Login
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+      <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />
+    </>
   );
 }

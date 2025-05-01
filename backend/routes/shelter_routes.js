@@ -80,8 +80,32 @@ router.post("/insertShelter", async (req, res) => {
       address
     );
     res.status(200).json(result);
-  } catch {
-    res.status(500).json({ error: true, message: "failed to insert data" });
+  } catch (error) {
+    if (error.code === "23505") {
+      const constraint = error.constraint;
+
+      if (constraint === "shelter_email_key") {
+        return res
+          .status(400)
+          .json({ error: true, message: "email already exists" });
+      }
+
+      if (constraint === "shelter_phone_number_key") {
+        return res
+          .status(400)
+          .json({ error: true, message: "phone_number already exists" });
+      }
+
+      if (constraint === "shelter_shelter_name_key") {
+        return res
+          .status(400)
+          .json({ error: true, message: "shelter_name already exists" });
+      }
+
+      return res.status(400).json({ error: true, message: "duplicate key" });
+    }
+
+    res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
 
