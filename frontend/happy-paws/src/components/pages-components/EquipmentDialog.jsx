@@ -16,8 +16,8 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import EquipmentTypeCombobox from "./EquipmentCombobox";
-import EquipmentDate from "./EquipmentDatepicker";
 import { Label } from "../ui/label";
+import DatePicker from "./DatePicker";
 
 const equipmentSchema = z.object({
   equipmentName: z.string().min(1, "Name is required"),
@@ -29,9 +29,11 @@ const equipmentSchema = z.object({
       message: "Expired date is required",
     }),
   equipmentCost: z.coerce
-    .number()
+    .number({ required_error: "Cost is required" })
     .min(0, "Cost must be 0 or more")
-    .or(z.literal("").transform(() => 0)),
+    .refine((val) => val !== null && val !== undefined, {
+      message: "Cost is required",
+    }),
   equipmentNote: z.string().optional(),
 });
 
@@ -51,7 +53,7 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
       equipmentName: "",
       equipmentType: "",
       equipmentDate: null,
-      equipmentCost: null,
+      equipmentCost: "",
       equipmentNote: "",
     },
   });
@@ -115,7 +117,7 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <EquipmentDate
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -134,7 +136,7 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
                 step="0.01"
                 min="0"
                 placeholder="Input Cost..."
-                {...register("equipmentCost")}
+                {...register("equipmentCost", { required: true })}
               />
               {errors.equipmentCost && (
                 <p className="text-destructive text-sm">
@@ -185,7 +187,7 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
       equipmentName: "",
       equipmentType: "",
       equipmentDate: null,
-      equipmentCost: null,
+      equipmentCost: "",
       equipmentNote: "",
     },
   });
@@ -256,7 +258,7 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
                 step="0.01"
                 min="0"
                 placeholder="Input Cost..."
-                {...register("equipmentCost")}
+                {...register("equipmentCost", { required: true })}
               />
               {errors.equipmentCost && (
                 <p className="text-destructive text-sm">
@@ -270,7 +272,7 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <EquipmentDate
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
