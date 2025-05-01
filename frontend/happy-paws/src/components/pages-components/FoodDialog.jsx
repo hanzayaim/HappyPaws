@@ -158,7 +158,7 @@ export function InsertFoodDialog({ open, onOpenChange }) {
                 control={control}
                 name="foodExpiredDate"
                 render={({ field }) => (
-                  <Datepi
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -191,7 +191,7 @@ export function InsertFoodDialog({ open, onOpenChange }) {
                 control={control}
                 name="foodDate"
                 render={({ field }) => (
-                  <FoodDate value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.foodDate && (

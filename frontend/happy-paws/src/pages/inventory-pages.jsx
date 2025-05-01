@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,6 +18,13 @@ import {
   PaginationNext,
   PaginationLink,
 } from "../components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import {
   InsertFoodDialog,
   EditFoodDialog,
@@ -35,67 +43,97 @@ const foods = [
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
     name: "Whiskas1",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Dry Food",
+    type: "Donation",
     exp_date: "2025-04-15T00:00:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
     name: "Whiskas2",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Wet Food",
+    type: "Purchase",
     exp_date: "2025-04-10T07:30:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
     name: "Whiskas3",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Dry Food",
+    type: "Donation",
     exp_date: "2025-04-10T07:30:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
     name: "Whiskas4",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Wet Food",
+    type: "Purchase",
     exp_date: "2025-04-10T07:30:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
     name: "Whiskas5",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Dry Food",
+    type: "Donation",
     exp_date: "2025-04-10T07:30:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
     name: "Whiskas6",
     quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
+    category: "Wet Food",
+    type: "Purchase",
     exp_date: "2025-04-10T07:30:00.000Z",
     cost: 150000,
     date: "2025-04-10T07:30:00.000Z",
     note: "Dikasih orang",
+    created_at: "2025-04-22T07:37:09.232Z",
+    created_by: "Bima",
+    updated_at: "2025-04-22T07:37:09.232Z",
+    updated_by: "Bima",
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
 ];
 
@@ -103,50 +141,80 @@ const equipments = [
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
     name: "Pagar1",
-    type: "Beli",
+    type: "Purchase",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
     name: "Pagar2",
-    type: "Beli",
+    type: "Donation",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
     name: "Pagar3",
-    type: "Beli",
+    type: "Purchase",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
     name: "Pagar4",
-    type: "Beli",
+    type: "Donation",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
     name: "Pagar5",
-    type: "Beli",
+    type: "Purchase",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
   {
     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
     name: "Pagar6",
-    type: "Beli",
+    type: "Donation",
     date: "2025-04-10T07:30:00.000Z",
     cost: 50000,
     note: "Beli untuk kandang baru",
+    created_at: "2025-04-24T07:16:33.591Z",
+    created_by: "Bima",
+    updated_at: "2025-04-24T07:16:33.591Z",
+    updated_by: null,
+    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
   },
 ];
 
@@ -155,6 +223,13 @@ export default function InventoryPages() {
 
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
+
+  const [foodSearchQuery, setFoodSearchQuery] = useState("");
+  const [foodCategoryFilter, setFoodCategoryFilter] = useState("");
+  const [foodTypeFilter, setFoodTypeFilter] = useState("");
+
+  const [equipmentSearchQuery, setEquipmentSearchQuery] = useState("");
+  const [equipmentTypeFilter, setEquipmentTypeFilter] = useState("");
 
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false);
   const [editFoodDialogOpen, setEditFoodDialogOpen] = useState(false);
@@ -168,19 +243,61 @@ export default function InventoryPages() {
   const [selectedFood, setSelectedFood] = useState(null);
   const [selectedEquipment, setSelectedEquipment] = useState(null);
 
-  const foodTotalPages = Math.ceil(foods.length / itemsPerPage);
+  const filteredFoods = useMemo(() => {
+    return foods.filter(food => {
+      const matchesSearch = food.name.toLowerCase().includes(foodSearchQuery.toLowerCase());
+      const matchesCategory = !foodCategoryFilter || food.category === foodCategoryFilter;
+      const matchesType = !foodTypeFilter || food.type === foodTypeFilter;
+      return matchesSearch && matchesCategory && matchesType;
+    });
+  }, [foods, foodSearchQuery, foodCategoryFilter, foodTypeFilter]);
+
+  const filteredEquipments = useMemo(() => {
+    return equipments.filter(equipment => {
+      const matchesSearch = equipment.name.toLowerCase().includes(equipmentSearchQuery.toLowerCase());
+      const matchesType = !equipmentTypeFilter || equipment.type === equipmentTypeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [equipments, equipmentSearchQuery, equipmentTypeFilter]);
+
+  const foodTotalPages = Math.ceil(filteredFoods.length / itemsPerPage);
   const foodStartIndex = (foodCurrentPage - 1) * itemsPerPage;
-  const currentFoods = foods.slice(
+  const currentFoods = filteredFoods.slice(
     foodStartIndex,
     foodStartIndex + itemsPerPage
   );
 
-  const equipmentTotalPages = Math.ceil(equipments.length / itemsPerPage);
+  const equipmentTotalPages = Math.ceil(filteredEquipments.length / itemsPerPage);
   const equipmentStartIndex = (equipmentCurrentPage - 1) * itemsPerPage;
-  const currentEquipments = equipments.slice(
+  const currentEquipments = filteredEquipments.slice(
     equipmentStartIndex,
     equipmentStartIndex + itemsPerPage
   );
+
+  const handleFoodSearchChange = (e) => {
+    setFoodSearchQuery(e.target.value);
+    setFoodCurrentPage(1);
+  };
+
+  const handleFoodCategoryFilterChange = (value) => {
+    setFoodCategoryFilter(value);
+    setFoodCurrentPage(1);
+  };
+
+  const handleFoodTypeFilterChange = (value) => {
+    setFoodTypeFilter(value);
+    setFoodCurrentPage(1);
+  };
+
+  const handleEquipmentSearchChange = (e) => {
+    setEquipmentSearchQuery(e.target.value);
+    setEquipmentCurrentPage(1);
+  };
+
+  const handleEquipmentTypeFilterChange = (value) => {
+    setEquipmentTypeFilter(value);
+    setEquipmentCurrentPage(1);
+  };
 
   const handleFoodPageChange = (page) => {
     if (page >= 1 && page <= foodTotalPages) {
@@ -220,8 +337,40 @@ export default function InventoryPages() {
         <Label className="text-3xl font-bold self-start">
           Inventory Management
         </Label>
-        <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Food</Label>
+        <Label className="text-2xl font-medium">Food</Label>
+        <div className="flex justify-between items-center w-full mt-4">
+          <div className="flex flex-wrap gap-2 items-center">
+            <Input
+              type="text"
+              placeholder="Search by food name"
+              value={foodSearchQuery}
+              onChange={handleFoodSearchChange}
+              className="w-full sm:w-64"
+            />
+            <Select
+              onValueChange={handleFoodCategoryFilterChange}
+              value={foodCategoryFilter}
+            >
+              <SelectTrigger className="w-full sm:w-50">
+                <SelectValue placeholder="Filter Food Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All</SelectItem>
+                <SelectItem value="Wet Food">Wet Food</SelectItem>
+                <SelectItem value="Dry Food">Dry Food</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select onValueChange={handleFoodTypeFilterChange} value={foodTypeFilter}>
+              <SelectTrigger className="w-full sm:w-50">
+                <SelectValue placeholder="Filter Food Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All</SelectItem>
+                <SelectItem value="Donation">Donation</SelectItem>
+                <SelectItem value="Purchase">Purchase</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddFoodDialogOpen(true)}
@@ -344,8 +493,30 @@ export default function InventoryPages() {
             </Pagination>
           </div>
         </div>
-        <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Equipment</Label>
+        <Label className="text-2xl font-medium">Equipment</Label>
+        <div className="flex justify-between items-center w-full mt-4">
+          <div className="flex flex-wrap gap-2 items-center">
+            <Input
+              type="text"
+              placeholder="Search by equipment name"
+              value={equipmentSearchQuery}
+              onChange={handleEquipmentSearchChange}
+              className="w-full sm:w-64"
+            />
+            <Select
+              onValueChange={handleEquipmentTypeFilterChange}
+              value={equipmentTypeFilter}
+            >
+              <SelectTrigger className="w-full sm:w-50">
+                <SelectValue placeholder="Filter Equipment Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All</SelectItem>
+                <SelectItem value="Donation">Donation</SelectItem>
+                <SelectItem value="Purchase">Purchase</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddEquipmentDialogOpen(true)}
