@@ -9,25 +9,31 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo-hp.png";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const forgotPasswordLinkSchema = z
+  .object({
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    path: ["confirmNewPassword"],
+    message: "Passwords do not match",
+  });
 
 export default function ForgotPasswordLink() {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(forgotPasswordLinkSchema),
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setConfirmNewPasswordError(false);
-
-    let hasError = false;
-
-    if (confirmNewPassword !== newPassword) {
-      setConfirmNewPasswordError(true);
-      hasError = true;
-    }
-
-    if (hasError) return;
+  const onSubmit = (data) => {
+    console.log("Submitted: ", data);
   };
 
   return (
@@ -44,30 +50,31 @@ export default function ForgotPasswordLink() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
                   <div className="grid gap-2">
                     <Input
                       id="newPassword"
                       type="password"
                       placeholder="New Password"
-                      required
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      {...register("newPassword")}
                     />
+                    {errors.newPassword && (
+                      <p className="text-sm text-destructive">
+                        {errors.newPassword.message}
+                      </p>
+                    )}
                   </div>
                   <div className="grid gap-2">
                     <Input
                       id="confirmNewPassword"
                       type="password"
                       placeholder="Confirm New Password"
-                      required
-                      value={confirmNewPassword}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      {...register("confirmNewPassword")}
                     />
-                    {confirmNewPasswordError && (
-                      <p className="text-sm text-red-500">
-                        Passwords do not match.
+                    {errors.confirmNewPassword && (
+                      <p className="text-sm text-destructive">
+                        {errors.confirmNewPassword.message}
                       </p>
                     )}
                   </div>
