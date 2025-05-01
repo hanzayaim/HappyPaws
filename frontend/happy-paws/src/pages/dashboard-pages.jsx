@@ -123,6 +123,55 @@ export default function Dashboard() {
             Daftar Hewan Shelter
           </Label>
         </div>
+        <div className="flex pt-3 lg:px-15 md:px-10 justify-center min-h-svh w-full">
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full max-w-7xl"
+          >
+            <CarouselContent>
+              {Array.from({ length: Math.ceil(AnimalData.length / 2) }).map(
+                (_, i) => {
+                  const animal1 = AnimalData[i * 2];
+                  const animal2 = AnimalData[i * 2 + 1];
+
+                  return (
+                    <CarouselItem
+                      key={i}
+                      className="sm:basis-1 md:basis-1/2 lg:basis-1/4"
+                    >
+                      <div className="grid grid-rows-2 gap-4 p-2">
+                        {animal1 && (
+                          <AnimalCard
+                            name={animal1.animal_name}
+                            imageUrl={animal1.animal_img}
+                            status={animal1.animal_status}
+                            jenis={animal1.animal_type}
+                            umur={animal1.animal_age}
+                            detailLink={`/animal-management/animal-detail/${animal1.id_animal}`}
+                          />
+                        )}
+                        {animal2 && (
+                          <AnimalCard
+                            name={animal2.animal_name}
+                            imageUrl={animal2.animal_img}
+                            status={animal2.animal_status}
+                            jenis={animal2.animal_type}
+                            umur={animal2.animal_age}
+                            detailLink={`/animal-management/animal-detail/${animal2.id_animal}`}
+                          />
+                        )}
+                      </div>
+                    </CarouselItem>
+                  );
+                }
+              )}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+          </Carousel>
+        </div>
       </div>
     </Layout>
   );

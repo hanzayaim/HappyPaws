@@ -13,7 +13,6 @@ import {
   DialogFooter,
   DialogDescription,
 } from "../ui/dialog";
-import { AnimalDateIn } from "./AnimalDatepicker";
 import {
   AnimalAdopterCombobox,
   AnimalGenderCombobox,
@@ -21,6 +20,7 @@ import {
 } from "./AnimalCombobox";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
+import DatePicker from "./DatePicker";
 
 const animalInSchema = z.object({
   animalName: z
@@ -147,7 +147,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <AnimalDateIn value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -440,7 +440,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 control={control}
                 name="animalDate"
                 render={({ field }) => (
-                  <AnimalDateIn value={field.value} onChange={field.onChange} />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.animalDate && (
@@ -506,6 +506,39 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
           </div>
           <DialogFooter>
             <Button type="submit">Edit</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+export function DeleteAnimalDialog({ open, onOpenChange, equipment }) {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Delete equipment with ID: ", equipment?.id_equipment);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild></DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Delete Animal</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="grid gap-2 py-2">
+          <DialogDescription>
+            Are you sure want to delete this Animal?
+          </DialogDescription>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="cancel">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" variant="alert">
+              Delete
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

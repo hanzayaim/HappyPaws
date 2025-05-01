@@ -1,6 +1,18 @@
-const { insertIncomeData, deleteIncomeData, getIncomeById, updateIncomeData } = require("../models/income_models.js");
-const { getFinance, increaseBalance,decreaseBalance, updateBalance } = require("../models/finance_models.js");
-const{  updateTotalBalance, updateProfit } = require("../controllers/finance_controller.js");
+const {
+  insertIncomeData,
+  deleteIncomeData,
+  updateIncomeData,
+} = require("../models/income_models.js");
+// const {
+//   getFinance,
+//   increaseBalance,
+//   decreaseBalance,
+//   updateBalance,
+// } = require("../models/finance_models.js");
+const {
+  updateTotalBalance,
+  updateProfit,
+} = require("../controllers/finance_controller.js");
 const generateId = require("../config/generate_id");
 
 /**
@@ -14,7 +26,7 @@ const insertIncome = async (
   date,
   type,
   note,
-  created_by,
+  created_by
 ) => {
   const id_income = "INCOME-" + generateId();
   try {
@@ -33,45 +45,41 @@ const insertIncome = async (
     return {
       error: false,
       message: "Income data created successfully",
-      data: result
+      data: result,
     };
-    } catch (error) {
-      return {
-        error: true,
-        message: "Failed to insert income data.",
-        result: null,
-      };
-    }
-  };
-  
-  const deleteIncome = async (
-    id_shelter,id_income
-  ) => {
-    try {
-      const result = await deleteIncomeData(
-        id_shelter,id_income
-      );
-      await updateTotalBalance(id_shelter);
-      return result
-    } catch (error) {
-      return {
-        error: true,
-        message: "Failed to delete income data.",
-        result: null,
-      };
-    }
-  };
-  
+  } catch (error) {
+    return {
+      error: true,
+      message: "Failed to insert income data.",
+      result: null,
+    };
+  }
+};
+
+const deleteIncome = async (id_shelter, id_income) => {
+  try {
+    const result = await deleteIncomeData(id_shelter, id_income);
+    await updateTotalBalance(id_shelter);
+    return result;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Failed to delete income data.",
+      result: null,
+    };
+  }
+};
+
 const updateIncome = async (
-    id_income,
-    id_shelter,
-    name,
-    amount,
-    date,
-    type,
-    note,
-    update_by
-) =>{
+  id_income,
+  id_shelter,
+  name,
+  amount,
+  date,
+  type,
+  note,
+  update_by
+) => {
   try {
     const result = await updateIncomeData(
       id_income,
@@ -86,7 +94,7 @@ const updateIncome = async (
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    return{
+    return {
       error: true,
       message: "Failed to update income data.",
       result: null,
@@ -95,5 +103,7 @@ const updateIncome = async (
 };
 
 module.exports = {
-  insertIncome,deleteIncome,updateIncome
+  insertIncome,
+  deleteIncome,
+  updateIncome,
 };
