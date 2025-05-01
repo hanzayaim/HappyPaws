@@ -86,11 +86,6 @@ export default function RegisterOwner() {
           type: "manual",
           message: "Shelter name is already taken.",
         });
-      } else {
-        setError("email", {
-          type: "manual",
-          message: "Terjadi kesalahan, silakan coba lagi.",
-        });
       }
     }
   };

@@ -151,11 +151,8 @@ async function insertEmployeeData(
       employee: rows[0],
     };
   } catch (error) {
-    return {
-      error: true,
-      message: "error creating employeeshelter",
-      data: null,
-    };
+    console.error(error);
+    throw error;
   }
 }
 
