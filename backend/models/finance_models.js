@@ -79,48 +79,7 @@ async function deleteFinanceData(id_shelter, id_finance) {
     };
   }
 }
-async function decreaseBalance(id_finance, id_shelter, amount) {
-  try {
-    const res = await pool.query(
-      `SELECT total_balance FROM finance WHERE id_shelter = $1 AND id_finance = $2`,
-      [id_shelter, id_finance]
-    );
-    const lastBalance = res.rows[0]?.total_balance ?? 0;
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount)) {
-      throw new Error("Amount is not a valid number");
-    }
-    const newBalance = lastBalance - parseFloat(amount);
-    return newBalance;
-  } catch (error) {
-    return {
-      error: true,
-      message: "Error decrease Balance data",
-      data: null,
-    };
-  }
-}
-async function increaseBalance(id_finance, id_shelter, amount) {
-  try {
-    const res = await pool.query(
-      `SELECT total_balance FROM finance WHERE id_shelter = $1 AND id_finance = $2`,
-      [id_shelter, id_finance]
-    );
-    const lastBalance = res.rows[0]?.total_balance ?? 0;
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount)) {
-      throw new Error("Amount is not a valid number");
-    }
-    const newBalance = lastBalance + parseFloat(amount);
-    return newBalance;
-  } catch (error) {
-    return {
-      error: true,
-      message: "Error increase Balance data",
-      data: null,
-    };
-  }
-}
+
 async function updateBalance(total_balance, id_finance, id_shelter) {
   try {
     const result = await pool.query(

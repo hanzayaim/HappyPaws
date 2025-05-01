@@ -15,7 +15,7 @@ async function getIncome(id_shelter) {
       };
     } else {
       return {
-        error: true,
+        error: false,
         message: "no data found",
         data: null,
       };

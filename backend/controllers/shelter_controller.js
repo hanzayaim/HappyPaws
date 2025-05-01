@@ -27,6 +27,7 @@ const insertNewShelter = async (
     );
     return result;
   } catch (error) {
+    console.log("masuk");
     return {
       error: true,
       message: "Failed to insert new shelter.",

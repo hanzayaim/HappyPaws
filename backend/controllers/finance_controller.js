@@ -1,9 +1,12 @@
-
-const { getFinance,updateBalance, insertFinanceData } = require("../models/finance_models.js");
-const { getIncome} = require("../models/income_models.js")
-const { getFoodData } = require("../models/food_models.js")
-const { getMedicalData } = require("../models/medical_models.js")
-const { getEquipmentData } = require("../models/equipment_models.js")
+const {
+  getFinance,
+  updateBalance,
+  insertFinanceData,
+} = require("../models/finance_models.js");
+const { getIncome } = require("../models/income_models.js");
+const { getFoodData } = require("../models/food_models.js");
+const { getMedicalData } = require("../models/medical_models.js");
+const { getEquipmentData } = require("../models/equipment_models.js");
 const { getSalary } = require("../models/salary_models.js");
 const generateId = require("../config/generate_id.js");
 
@@ -13,18 +16,28 @@ const getProfit = async (id_shelter) => {
   try {
     const incomeData = await getIncome(id_shelter);
     totalProfit = 0;
-    incomeData.data.forEach(item => {
-      totalProfit += item.amount;
-    });
-    return totalProfit;
+
+    if (incomeData?.data) {
+      incomeData.data.forEach((item) => {
+        totalProfit += item.amount;
+      });
+    }
+
+    // If you want to return the result from the backend structure, use this:
+    return {
+      error: false,
+      message: "Success",
+      result: totalProfit, // This is the calculated profit value
+    };
   } catch (error) {
-    return{
+    return {
       error: true,
       message: "Failed to get Profit",
-      result: null,
+      result: 0,
     };
   }
 };
+
 const getLoss = async (id_shelter) => {
   try {
     const foodData = await getFoodData(id_shelter);
@@ -32,27 +45,35 @@ const getLoss = async (id_shelter) => {
     const equipmentData = await getEquipmentData(id_shelter);
     const salaryData = await getSalary(id_shelter);
     totalLoss = 0;
-    (foodData?.data || []).forEach(item => {
+
+    (foodData?.data || []).forEach((item) => {
       totalLoss += item.cost;
     });
-    (medicalData?.data || []).forEach(item => {
+    (medicalData?.data || []).forEach((item) => {
       totalLoss += item.medical_cost;
     });
-    (equipmentData?.data || []).forEach(item => {
+    (equipmentData?.data || []).forEach((item) => {
       totalLoss += item.cost;
     });
-    (salaryData?.data || []).forEach(item => {
+    (salaryData?.data || []).forEach((item) => {
       totalLoss += item.cost;
     });
-    return totalLoss;
+
+    // Return the total loss as the result
+    return {
+      error: false,
+      message: "Success",
+      result: totalLoss, // This is the calculated loss value
+    };
   } catch (error) {
-    return{
+    return {
       error: true,
       message: "Failed to get Loss",
-      result: null,
-  };
+      result: 0,
+    };
   }
 };
+
 const insertFinance = async (id_shelter) => {
   try {
     const id_finance = "FINANCE-" + generateId();
@@ -62,38 +83,54 @@ const insertFinance = async (id_shelter) => {
       id_shelter,
       total_balance
     );
-    return result
+    return result;
   } catch (error) {
-    return{
+    return {
       error: true,
       message: "Failed to Insert Finance",
       result: null,
-  };
+    };
   }
 };
-const updateTotalBalance = async(id_shelter) =>{
+const updateTotalBalance = async (id_shelter) => {
   try {
     const finance = await getFinance(id_shelter);
-    const totalProfit = await getProfit(id_shelter);
-    const totalLoss = await getLoss(id_shelter);
-    const newBalance = totalProfit -  totalLoss;
+
+    // Get total profit, use result from the returned object
+    const profitResponse = await getProfit(id_shelter);
+    let totalProfit = profitResponse.result || 0; // Extract the result
+
+    // Get total loss, use result from the returned object
+    const lossResponse = await getLoss(id_shelter);
+    let totalLoss = lossResponse.result || 0; // Extract the result
+
+    // Calculate balance (can be negative)
+    const newBalance = totalProfit - totalLoss;
+
+    console.log("New Balance:", newBalance);
+
+    // Update balance in database or elsewhere
     const result = await updateBalance(
       newBalance,
       finance.data[0].id_finance,
-      id_shelter,
+      id_shelter
     );
-    
-    return result
+
+    return result;
   } catch (error) {
-    return{
+    return {
       error: true,
       message: "Failed to update balance data.",
       result: null,
-  };
+    };
   }
-}
+};
 
-  module.exports = {
-    updateTotalBalance,getLoss,getProfit,totalProfit,totalLoss,insertFinance
-  };
-  
+module.exports = {
+  updateTotalBalance,
+  getLoss,
+  getProfit,
+  totalProfit,
+  totalLoss,
+  insertFinance,
+};
