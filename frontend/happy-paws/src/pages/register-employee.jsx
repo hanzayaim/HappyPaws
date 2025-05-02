@@ -81,6 +81,14 @@ export default function RegisterEmployee() {
       const shelterId = matchedShelter.id_shelter;
       const shelterEmail = matchedShelter.email;
 
+      if (data.email === shelterEmail) {
+        setError("email", {
+          type: "manual",
+          message: "Email cannot be the same as the shelter owner's email.",
+        });
+        return;
+      }
+
       const response = await axios.post(
         "http://localhost:3000/api/employees/insertEmployee",
         {
