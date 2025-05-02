@@ -79,6 +79,7 @@ export default function RegisterEmployee() {
       }
 
       const shelterId = matchedShelter.id_shelter;
+      const shelterEmail = matchedShelter.email;
 
       const response = await axios.post(
         "http://localhost:3000/api/employees/insertEmployee",
@@ -92,6 +93,17 @@ export default function RegisterEmployee() {
           shelter_name: data.shelter,
           phone_number: data.employeePhoneNumber,
           address: data.employeeAddress,
+        }
+      );
+
+      await axios.post(" http://localhost:3000/api/email/email_register_all", {
+        email: data.email,
+      });
+
+      await axios.post(
+        " http://localhost:3000/api/email/email_register_employee",
+        {
+          email: shelterEmail,
         }
       );
 
