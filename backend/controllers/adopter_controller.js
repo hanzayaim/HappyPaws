@@ -12,12 +12,19 @@ const insertNewAdopter = async (
 ) => {
   try {
     const id_adopter = "Adopter-" + generateId();
+    const cleanBase64String = profile_img.replace(
+      /^data:image\/[a-zA-Z]+;base64,/,
+      ""
+    );
+    const profileImgBuffer = cleanBase64String
+      ? Buffer.from(cleanBase64String, "base64")
+      : null;
 
     const result = await insertAdopterData(
       id_shelter,
       id_adopter,
       adopter_name,
-      profile_img,
+      profileImgBuffer,
       gender,
       phone_number,
       address,

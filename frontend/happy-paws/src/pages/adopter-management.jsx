@@ -27,49 +27,6 @@ import {
 import { Input } from "../components/ui/input";
 
 import axios from "axios";
-// const adopterData = [
-//   {
-//     id_adopter: "ADOPTER-12345678-abcd-1234-abcd-1234567890ab",
-//     id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
-//     name: "Alya Rahma",
-//     profile_img:
-//       "https://tse1.mm.bing.net/th?id=OIP.QjynegEfQVPq5kIEuX9fWQHaFj&pid=Api&P=0&h=180",
-//     gender: "Perempuan",
-//     phone_number: "081234567890",
-//     address: "Jl. Mawar No.12, Bandung, Jawa Barat",
-//     created_at: "2025-04-10T08:00:00.000Z",
-//     created_by: "admin_shelter",
-//     updated_at: "2025-04-12T10:00:00.000Z",
-//     updated_by: "admin_shelter",
-//   },
-//   {
-//     id_adopter: "ADOPTER-22334455-bbcc-ddee-ffaa-112233445566",
-//     id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
-//     name: "Rizky Maulana",
-//     profile_img:
-//       "https://tse1.mm.bing.net/th?id=OIP.Udo-lD2pzYMhlHWiNy1KlwHaEK&pid=Api&P=0&h=180",
-//     gender: "Laki-laki",
-//     phone_number: "082112345678",
-//     address: "Perum Gading Asri Blok C2 No.5, Yogyakarta",
-//     created_at: "2025-04-15T09:30:00.000Z",
-//     created_by: "admin_shelter",
-//     updated_at: "2025-04-16T11:15:00.000Z",
-//     updated_by: "admin_shelter",
-//   },
-//   {
-//     id_adopter: "ADOPTER-dawn-ioiuby-126666",
-//     id_shelter: null,
-//     name: "Siti Nurhaliza",
-//     profile_img: null,
-//     gender: "Perempuan",
-//     phone_number: "085698745632",
-//     address: "Jl. Pahlawan No.9, Surabaya",
-//     created_at: "2025-04-18T12:00:00.000Z",
-//     created_by: "system",
-//     updated_at: "2025-04-19T13:00:00.000Z",
-//     updated_by: "system",
-//   },
-// ];
 
 const AnimalData = [
   {
@@ -263,17 +220,22 @@ export default function AdopterManagement() {
         <InsertAdopterDialog
           open={addAdopterDialogOpen}
           onOpenChange={setAddAdopterDialogOpen}
+          User={user}
+          fetchData={fetchAdopterData}
         />
         <EditAdopterDialog
           open={editAdopterDialogOpen}
           onOpenChange={setEditAdopterDialogOpen}
           AdopterData={selectedAdopter}
+          User={user}
+          fetchData={fetchAdopterData}
         />
 
         <DeleteAdopterDialog
           open={deleteAdopterDialogOpen}
           onOpenChange={setDeleteAdopterDialogOpen}
-          Adopter={selectedAdopter}
+          AdopterData={selectedAdopter}
+          fetchData={fetchAdopterData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -303,22 +265,23 @@ export default function AdopterManagement() {
                       {Adopter.name}
                     </TableCell>
                     <TableCell className="items-center flex justify-center">
-                      {Adopter.profile_img ? (
-                        <img
-                          src={Adopter.profile_img}
-                          alt="Preview"
-                          className="lg:max-w-24 lg:max-h-24 object-cover"
-                        />
-                      ) : (
-                        <div className="w-24 h-24 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                      <div className="w-24 h-24 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                        {Adopter.profile_img ? (
+                          <img
+                            src={`data:image/jpeg;base64,${Adopter.profile_img}`}
+                            alt="Adopter Profile"
+                            className="lg:max-w-24 lg:max-h-24 object-cover"
+                          />
+                        ) : (
                           <CircleUser
                             color="#b0b0b0"
                             className="w-16 h-16"
                             strokeWidth={1}
                           />
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </TableCell>
+
                     <TableCell className="text-center">
                       {Adopter.phone_number}
                     </TableCell>
