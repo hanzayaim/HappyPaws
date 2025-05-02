@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import axios from "axios";
 import {
   Dialog,
   DialogTrigger,
@@ -56,34 +57,28 @@ export function InsertSalaryDialog({
   });
 
   const onSubmit = async (data) => {
-    console.log(data.SalaryName);
     if (!data.SalaryName) {
       console.log("Employee is required");
       return;
     }
+
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/salary/insertSalaryData",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_shelter: User.id_shelter,
-            id_employee: data.SalaryName.id_employee,
-            name: `Salary Month - ${data.SalaryName.name}`,
-            cost: data.SalaryAmount,
-            date: data.SalaryDate.toISOString().split("T")[0],
-            note: data.SalaryNote || "",
-            created_by: "admin",
-          }),
+          id_shelter: User.id_shelter,
+          id_employee: data.SalaryName.id_employee,
+          name: `Salary Month - ${data.SalaryName.name}`,
+          cost: data.SalaryAmount,
+          date: data.SalaryDate.toISOString().split("T")[0],
+          note: data.SalaryNote || "",
+          created_by: "admin",
         }
       );
 
-      const result = await response.json();
+      const result = response.data;
 
-      if (!response.ok || result.error) {
+      if (result.error) {
         throw new Error(result.message || "Failed to insert Salary data");
       }
 
@@ -210,29 +205,27 @@ export function DeleteSalaryDialog({
 }) {
   const onSubmit = async (data) => {
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/salary/deleteSalaryData",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_shelter: SalaryData.id_shelter,
-            id_salary: SalaryData.id_salary,
-          }),
+          id_shelter: SalaryData.id_shelter,
+          id_salary: SalaryData.id_salary,
         }
       );
-      const result = await response.json();
-      if (!response.ok || result.error) {
-        throw new Error(result.message || "Failed to insert Salary data");
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete Salary data");
       }
+
       data.preventDefault();
       console.log("Delete Salary with ID: ", SalaryData?.id_salary);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting Salary:", error.message);
     }
+
     fetchData();
   };
 

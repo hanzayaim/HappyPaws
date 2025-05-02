@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
@@ -18,6 +18,7 @@ import {
   PaginationLink,
 } from "../components/ui/pagination";
 
+import axios from "axios";
 import { Plus, Pencil, Trash } from "lucide-react";
 import Layout from "../app/layout";
 import {
@@ -36,516 +37,15 @@ import {
   DeleteSalaryDialog,
   InsertSalaryDialog,
 } from "../components/pages-components/SalaryDialog";
+import { Input } from "../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 //#region Dummy
-// const Salaries = [
-//   {
-//     id_salary: "sal_001",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_001",
-//     name: "April Salary - John",
-//     cost: 3000000,
-//     date: "2025-04-01T09:00:00",
-//     note: "Full-time staff",
-//     created_at: "2025-04-01T08:45:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-01T10:00:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_002",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_002",
-//     name: "April Salary - Alice",
-//     cost: 2800000,
-//     date: "2025-04-02T10:30:00",
-//     note: "Veterinarian",
-//     created_at: "2025-04-01T17:30:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-02T11:00:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_003",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_003",
-//     name: "April Salary - Bob",
-//     cost: 2500000,
-//     date: "2025-04-03T08:00:00",
-//     note: "Caretaker",
-//     created_at: "2025-04-02T19:00:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-03T08:15:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_004",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_004",
-//     name: "April Salary - Sarah",
-//     cost: 2700000,
-//     date: "2025-04-04T14:20:00",
-//     note: "Admin staff",
-//     created_at: "2025-04-04T09:00:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-04T14:45:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_005",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_005",
-//     name: "April Salary - Kevin",
-//     cost: 2600000,
-//     date: "2025-04-05T12:00:00",
-//     note: "Driver",
-//     created_at: "2025-04-05T08:20:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-05T12:15:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_006",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_006",
-//     name: "April Salary - Emma",
-//     cost: 3100000,
-//     date: "2025-04-06T11:10:00",
-//     note: "Operations",
-//     created_at: "2025-04-06T09:00:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-06T11:30:00",
-//     updated_by: "admin",
-//   },
-//   {
-//     id_salary: "sal_007",
-//     id_shelter: "shelter_001",
-//     id_employee: "emp_007",
-//     name: "April Salary - Michael",
-//     cost: 2950000,
-//     date: "2025-04-07T13:45:00",
-//     note: "Finance officer",
-//     created_at: "2025-04-07T10:15:00",
-//     created_by: "admin",
-//     updated_at: "2025-04-07T14:00:00",
-//     updated_by: "admin",
-//   },
-// ];
-// const Employees = [
-//   {
-//     id_employee: "emp_001",
-//     id_shelter: "shelter_001",
-//     name: "John Doe",
-//     email: "john.doe@example.com",
-//     password: "hashed_password_123", // ganti dengan hash saat insert ke db
-//     role: "staff",
-//     gender: "Male",
-//     shelter_name: "Hope Shelter",
-//     phone_number: "081234567890",
-//     address: "Jl. Kebajikan No. 12, Jakarta",
-//     created_at: "2025-04-01T08:00:00",
-//     status: "active",
-//   },
-//   {
-//     id_employee: "emp_002",
-//     id_shelter: "shelter_001",
-//     name: "Alice Smith",
-//     email: "alice.smith@example.com",
-//     password: "hashed_password_456",
-//     role: "veterinarian",
-//     gender: "Female",
-//     shelter_name: "Hope Shelter",
-//     phone_number: "082233445566",
-//     address: "Jl. Mawar No. 45, Bandung",
-//     created_at: "2025-04-02T09:30:00",
-//     status: "active",
-//   },
-//   {
-//     id_employee: "emp_003",
-//     id_shelter: "shelter_001",
-//     name: "Michael Lee",
-//     email: "michael.lee@example.com",
-//     password: "hashed_password_789",
-//     role: "finance",
-//     gender: "Male",
-//     shelter_name: "Hope Shelter",
-//     phone_number: "081998877665",
-//     address: "Jl. Merdeka No. 8, Surabaya",
-//     created_at: "2025-04-03T11:15:00",
-//     status: "active",
-//   },
-// ];
-const Expenses = [
-  {
-    id_expenses: "EXP-003",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:20:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T08:50:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-009",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
-    id_salary: null,
-    created_at: "2025-04-26T09:20:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T09:50:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-001",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:00:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T08:30:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-014",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_002",
-    created_at: "2025-04-26T10:10:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T10:40:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-008",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
-    id_salary: null,
-    created_at: "2025-04-26T09:10:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T09:40:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-020",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: "MEDICAL-001",
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T11:10:00.000Z",
-    created_by: "vet01",
-    updated_at: "2025-04-26T11:40:00.000Z",
-    updated_by: "vet01",
-  },
-  {
-    id_expenses: "EXP-005",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:40:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T09:10:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-017",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_005",
-    created_at: "2025-04-26T10:40:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T11:10:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-007",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
-    id_salary: null,
-    created_at: "2025-04-26T09:00:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T09:30:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-002",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:10:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T08:40:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-018",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_006",
-    created_at: "2025-04-26T10:50:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T11:20:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-012",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
-    id_salary: null,
-    created_at: "2025-04-26T09:50:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T10:20:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-006",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:50:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T09:20:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-016",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_004",
-    created_at: "2025-04-26T10:30:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T11:00:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-021",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: "MEDICAL-002",
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T11:20:00.000Z",
-    created_by: "vet01",
-    updated_at: "2025-04-26T11:50:00.000Z",
-    updated_by: "vet01",
-  },
-  {
-    id_expenses: "EXP-010",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
-    id_salary: null,
-    created_at: "2025-04-26T09:30:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T10:00:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-011",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
-    id_salary: null,
-    created_at: "2025-04-26T09:40:00.000Z",
-    created_by: "staff01",
-    updated_at: "2025-04-26T10:10:00.000Z",
-    updated_by: "staff01",
-  },
-  {
-    id_expenses: "EXP-004",
-    id_shelter: "shelter_001",
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
-    id_medical: null,
-    id_equipment: null,
-    id_salary: null,
-    created_at: "2025-04-26T08:30:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T09:00:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-015",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_003",
-    created_at: "2025-04-26T10:20:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T10:50:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-013",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_001",
-    created_at: "2025-04-26T10:00:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T10:30:00.000Z",
-    updated_by: "admin",
-  },
-  {
-    id_expenses: "EXP-019",
-    id_shelter: "shelter_001",
-    id_food: null,
-    id_medical: null,
-    id_equipment: null,
-    id_salary: "sal_007",
-    created_at: "2025-04-26T11:00:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-04-26T11:30:00.000Z",
-    updated_by: "admin",
-  },
-];
-const foods = [
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
-    name: "Whiskas1",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
-    name: "Whiskas2",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
-    name: "Whiskas3",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
-    name: "Whiskas4",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
-    name: "Whiskas5",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
-    name: "Whiskas6",
-    quantity: 20,
-    category: "Makanan Basah",
-    type: "Donasi",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-  },
-];
-const equipments = [
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
-    name: "Pagar1",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
-    name: "Pagar2",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
-    name: "Pagar3",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
-    name: "Pagar4",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
-    name: "Pagar5",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
-    name: "Pagar6",
-    type: "Beli",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-  },
-];
 const medicals = [
   {
     id_medical: "MEDICAL-001",
@@ -578,14 +78,8 @@ const medicals = [
     id_animal: "animal_002",
   },
 ];
-// const finance = {
-//   id_finance: "FNC-001",
-//   id_shelter: "Shelter01",
-//   total_balance: -5000000,
-//   created_at: "2025-04-10T07:30:00.000Z",
-// };
 const user = {
-  id_shelter: "SHELTER-f0db8d37-f8a4-42aa-9a34-70d6d0f41850",
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
   owner_name: "Dimas",
   email: "shelter001@gmail.com",
   shelter_name: "Happy Paws Shelter",
@@ -598,15 +92,26 @@ export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;
   const [Incomes, setIncomes] = useState([]);
-  const [Employees, setEmployees] = useState([]);
+  const [Expenses, setExpenses] = useState([]);
   const [Salaries, setSalaries] = useState([]);
   const [Finance, setFinance] = useState({});
   const [getLoss, setLoss] = useState(0);
   const [getProfit, setProfit] = useState(0);
+  const [Employees, setEmployees] = useState([]);
+  const [Foods, setFoods] = useState([]);
+  const [Equipments, setEquipments] = useState([]);
+
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [statusFilter, setStatusFilter] = useState("");
 
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
   const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
+
+  const [IncomeSearchQuery, setIncomeSearchQuery] = useState("");
+  const [IncomeTypeFilter, setIncomeTypeFilter] = useState("");
+
+  const [SalarySearchQuery, setSalarySearchQuery] = useState("");
 
   const [addIncomeDialogOpen, setAddIncomeDialogOpen] = useState(false);
   const [editIncomeDialogOpen, setEditIncomeDialogOpen] = useState(false);
@@ -618,37 +123,61 @@ export default function FinancePage() {
   const [selectedIncome, setSelectedIncome] = useState(null);
   const [selectedSalary, setSelectedSalary] = useState(null);
 
-  const incomeTotalPages = Math.ceil(Incomes.length / itemsPerPage);
+  const filteredIncomes = useMemo(() => {
+    return Incomes.filter((inc) => {
+      const matchesSearch = inc.name
+        .toLowerCase()
+        .includes(IncomeSearchQuery.toLowerCase());
+      const matchesType = !IncomeTypeFilter || inc.type === IncomeTypeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [Incomes, IncomeSearchQuery, IncomeTypeFilter]);
+
+  const filteredSalary = useMemo(() => {
+    return Salaries.filter((salary) => {
+      const matchesSearch = salary.name
+        .toLowerCase()
+        .includes(SalarySearchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [Salaries, SalarySearchQuery]);
+
+  const incomeTotalPages =
+    Incomes && Incomes.length
+      ? Math.ceil(filteredIncomes.length / itemsPerPage)
+      : 1;
   const incomeStartIndex = (incomeCurrentPage - 1) * itemsPerPage;
-  const currentIncomes = Incomes.slice(
-    incomeStartIndex,
-    incomeStartIndex + itemsPerPage
-  );
-  const expensesTotalPages = Math.ceil(Expenses.length / itemsPerPage);
+  const currentIncomes =
+    filteredIncomes && filteredIncomes.length
+      ? filteredIncomes.slice(incomeStartIndex, incomeStartIndex + itemsPerPage)
+      : [];
+
+  const expensesTotalPages =
+    Expenses && Expenses.length ? Math.ceil(Expenses.length / itemsPerPage) : 1;
   const expensesStartIndex = (expensesCurrentPage - 1) * itemsPerPage;
-  const currentExpenses = Expenses.slice(
-    expensesStartIndex,
-    expensesStartIndex + itemsPerPage
-  );
+  const currentExpenses =
+    Expenses && Expenses.length
+      ? Expenses.slice(expensesStartIndex, expensesStartIndex + itemsPerPage)
+      : [];
 
   const SalaryTotalPages =
-    Salaries && Salaries.length ? Math.ceil(Salaries.length / itemsPerPage) : 1;
-
-  const SalaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
-
-  const currentSalaries =
     Salaries && Salaries.length
-      ? Salaries.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
+      ? Math.ceil(filteredSalary.length / itemsPerPage)
+      : 1;
+  const SalaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
+  const currentSalaries =
+    filteredSalary && filteredSalary.length
+      ? filteredSalary.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
       : [];
 
   const fetchIncomeData = async () => {
     try {
-      const incomesRes = await fetch(
+      const incomesRes = await axios.get(
         `http://localhost:3000/api/income/getIncome/${user.id_shelter}`
       );
-      const incomesData = await incomesRes.json();
+      const incomesData = incomesRes.data;
 
-      if (!incomesRes.ok || incomesData.error) {
+      if (incomesData.error) {
         throw new Error(incomesData.message || "Failed to fetch incomes");
       }
       setIncomes(incomesData.data || []);
@@ -656,17 +185,32 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
+  const fetchExpensesData = async () => {
+    try {
+      const expensesRes = await axios.get(
+        `http://localhost:3000/api/expenses/getExpenses/${user.id_shelter}`
+      );
+      const expensesData = expensesRes.data;
+
+      if (expensesData.error) {
+        throw new Error(expensesData.message || "Failed to fetch incomes");
+      }
+      setExpenses(expensesData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
   const fetchSalaryData = async () => {
     try {
-      const SalaryRes = await fetch(
+      const SalaryRes = await axios.get(
         `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
       );
       if (SalaryRes.status === 404) {
         setSalaries(null);
         return;
       }
-      const SalaryData = await SalaryRes.json();
-      if (!SalaryRes.ok || SalaryData.error) {
+      const SalaryData = SalaryRes.data;
+      if (SalaryData.error) {
         throw new Error(SalaryData.message || "Failed to fetch Salary");
       }
 
@@ -675,15 +219,46 @@ export default function FinancePage() {
       console.error("Error fetching salary data:", error);
     }
   };
+  const fetchFoodsData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/food/getFoodData/${user.id_shelter}`
+      );
 
+      const foodsData = response.data;
+
+      if (foodsData.error) {
+        throw new Error(foodsData.message || "Failed to fetch foods");
+      }
+
+      setFoods(foodsData.data || []);
+    } catch (error) {
+      console.error("Error fetching food data", error);
+    }
+  };
+  const fetchEquipmentsData = async () => {
+    try {
+      const equipmentRes = await axios.get(
+        `http://localhost:3000/api/equipment/getEquipmentData/${user.id_shelter}`
+      );
+      const equipmentData = equipmentRes.data;
+
+      if (equipmentData.error) {
+        throw new Error(equipmentData.message || "Failed to fetch incomes");
+      }
+      setEquipments(equipmentData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
   const fetchEmployeeData = async () => {
     try {
-      const EmployeeRes = await fetch(
+      const EmployeeRes = await axios.get(
         `http://localhost:3000/api/employees/getEmployeeData/${user.id_shelter}`
       );
-      const employeeData = await EmployeeRes.json();
+      const employeeData = EmployeeRes.data;
 
-      if (!EmployeeRes.ok || employeeData.error) {
+      if (employeeData.error) {
         throw new Error(employeeData.message || "Failed to fetch incomes");
       }
       setEmployees(employeeData.data || []);
@@ -694,61 +269,62 @@ export default function FinancePage() {
   const fetchFinanceData = async () => {
     fetchIncomeData();
     fetchSalaryData();
+    fetchExpensesData();
     try {
-      const FinanceRes = await fetch(
+      const FinanceRes = await axios.get(
         `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
       );
-
-      const ProfitRes = await fetch(
+      const ProfitRes = await axios.post(
         `http://localhost:3000/api/finance/getPorfit`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_shelter: user.id_shelter,
-          }),
+          id_shelter: user.id_shelter,
         }
       );
-      const LossRes = await fetch(`http://localhost:3000/api/finance/getLoss`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const LossRes = await axios.post(
+        `http://localhost:3000/api/finance/getLoss`,
+        {
           id_shelter: user.id_shelter,
-        }),
-      });
-      const FinanceData = await FinanceRes.json();
-
-      const ProfitData = await ProfitRes.json();
-      const LossData = await LossRes.json();
-      if (!FinanceRes.ok || FinanceData.error) {
-        throw new Error(FinanceData.message || "Failed to fetch Fiannce");
+        }
+      );
+      const FinanceData = FinanceRes.data;
+      const ProfitData = ProfitRes.data;
+      const LossData = LossRes.data;
+      if (FinanceData.error) {
+        throw new Error(FinanceData.message || "Failed to fetch Finance");
       }
-
-      if (!ProfitRes.ok || ProfitRes.error) {
-        throw new Error(ProfitRes.message || "Failed to fetch Profit");
+      if (ProfitData.error) {
+        throw new Error(ProfitData.message || "Failed to fetch Profit");
       }
-      if (!LossRes.ok || LossRes.error) {
-        throw new Error(LossRes.message || "Failed to fetch Loss");
+      if (LossData.error) {
+        throw new Error(LossData.message || "Failed to fetch Loss");
       }
       setFinance(FinanceData.data?.[0] ?? "No data");
-      setLoss(LossData);
-      setProfit(ProfitData);
+      setLoss(LossData.result ?? 0);
+      setProfit(ProfitData.result ?? 0);
     } catch (error) {
       console.error("Error fetching data", error);
     }
   };
-
   useEffect(() => {
     fetchFinanceData();
-    fetchIncomeData();
     fetchEmployeeData();
-    fetchSalaryData();
+    fetchEquipmentsData();
+    fetchFoodsData();
   }, []);
+  const handleIncomeSearchChange = (e) => {
+    setIncomeSearchQuery(e.target.value);
+    setIncomeCurrentPage(1);
+  };
 
+  const handleIncomeTypeFilterChange = (value) => {
+    setIncomeTypeFilter(value);
+    setIncomeCurrentPage(1);
+  };
+
+  const handleSalarySearchChange = (e) => {
+    setSalarySearchQuery(e.target.value);
+    setSalaryCurrentPage(1);
+  };
   const handleIncomePageChange = (page) => {
     if (page >= 1 && page <= incomeTotalPages) {
       setIncomeCurrentPage(page);
@@ -759,20 +335,17 @@ export default function FinancePage() {
       setExpensesCurrentPage(page);
     }
   };
-
   const handleEquipmentPageChange = (page) => {
     if (page >= 1 && page <= SalaryTotalPages) {
       setSalaryCurrentPage(page);
     }
   };
-
-  const handleEditIncomeClick = (food) => {
-    setSelectedIncome(food);
+  const handleEditIncomeClick = (income) => {
+    setSelectedIncome(income);
     setEditIncomeDialogOpen(true);
   };
-
-  const handleDeleteIncomeClick = (food) => {
-    setSelectedIncome(food);
+  const handleDeleteIncomeClick = (income) => {
+    setSelectedIncome(income);
     setDeleteIncomeDialogOpen(true);
   };
 
@@ -806,7 +379,7 @@ export default function FinancePage() {
                   : Finance.total_balance}
               </Label>
             </CardContent>
-            <CardFooter className="flex w-full justify-between items-center ">
+            <CardFooter className="flex lg:flex-row flex-col w-full justify-between items-center ">
               <p className="flex">
                 Profit:
                 <span className="text-green-600">
@@ -828,8 +401,31 @@ export default function FinancePage() {
             </CardFooter>
           </Card>
         </div>
-        <div className="flex justify-between items-center w-full">
-          <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+        <div className="flex lg:flex-row flex-col md:flex-row gap-2 justify-between items-center w-full">
+          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
+            <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+            <Input
+              type="text"
+              placeholder="Search by food name"
+              value={IncomeSearchQuery}
+              onChange={handleIncomeSearchChange}
+              className="md:w-full sm:w-64"
+            />
+
+            <Select
+              onValueChange={handleIncomeTypeFilterChange}
+              value={IncomeTypeFilter}
+            >
+              <SelectTrigger className="md:w-full sm:w-50">
+                <SelectValue placeholder="Filter Income Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All</SelectItem>
+                <SelectItem value="Donasi">Donasi</SelectItem>
+                <SelectItem value="Non Donasi">Non Donasi</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddIncomeDialogOpen(true)}
@@ -992,7 +588,7 @@ export default function FinancePage() {
                     note = salary.note ?? "-";
                   }
                 } else if (exp.id_food) {
-                  const food = foods.find((f) => f.id_food === exp.id_food);
+                  const food = Foods.find((f) => f.id_food === exp.id_food);
                   if (food) {
                     name = food.name ?? "-";
                     cost = food.cost ?? "-";
@@ -1003,7 +599,7 @@ export default function FinancePage() {
                     note = food.note ?? "-";
                   }
                 } else if (exp.id_equipment) {
-                  const equipment = equipments.find(
+                  const equipment = Equipments.find(
                     (e) => e.id_equipment === exp.id_equipment
                   );
                   if (equipment) {
@@ -1098,9 +694,18 @@ export default function FinancePage() {
         </div>
 
         <div className="flex justify-between items-center w-full">
-          <Label className="lg:text-2xl text-xl font-medium">
-            Employee Salary
-          </Label>
+          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
+            <Label className="lg:text-2xl min-w-fit text-xl font-medium">
+              Employee Salary
+            </Label>
+            <Input
+              type="text"
+              placeholder="Search by Salary name"
+              value={SalarySearchQuery}
+              onChange={handleSalarySearchChange}
+              className="md:w-full sm:w-64"
+            />
+          </div>
           <Button
             className="flex items-center gap-1 "
             onClick={() => setAddSalaryDialogOpen(true)}

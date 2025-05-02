@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import axios from "axios";
 import {
   Dialog,
   DialogTrigger,
@@ -47,28 +48,22 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/income/insertIncomeData",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_shelter: User.id_shelter,
-            name: data.incomeName,
-            amount: data.incomeAmount,
-            date: data.incomeDate.toISOString().split("T")[0], // send as 'YYYY-MM-DD'
-            type: data.incomeType,
-            note: data.incomeNote || "",
-            created_by: "admin",
-          }),
+          id_shelter: User.id_shelter,
+          name: data.incomeName,
+          amount: data.incomeAmount,
+          date: data.incomeDate.toISOString().split("T")[0], // 'YYYY-MM-DD'
+          type: data.incomeType,
+          note: data.incomeNote || "",
+          created_by: "admin",
         }
       );
 
-      const result = await response.json();
+      const result = response.data;
 
-      if (!response.ok || result.error) {
+      if (result.error) {
         throw new Error(result.message || "Failed to insert income data");
       }
 
@@ -223,40 +218,30 @@ export function EditIncomeDialog({
   }, [incomeData, open, reset, setValue]);
 
   const onSubmit = async (data) => {
-    console.log(data);
-    console.log(incomeData.id_income);
-    console.log(User.id_shelter);
-
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/income/updateIncomeData",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_income: incomeData.id_income,
-            id_shelter: User.id_shelter,
-            name: data.incomeName,
-            amount: data.incomeAmount,
-            date: data.incomeDate.toISOString().split("T")[0],
-            type: data.incomeType,
-            note: data.incomeNote,
-            update_by: "admin",
-          }),
+          id_income: incomeData.id_income,
+          id_shelter: User.id_shelter,
+          name: data.incomeName,
+          amount: data.incomeAmount,
+          date: data.incomeDate.toISOString().split("T")[0],
+          type: data.incomeType,
+          note: data.incomeNote,
+          update_by: "admin",
         }
       );
 
-      const result = await response.json();
+      const result = response.data;
 
-      if (!response.ok || result.error) {
-        throw new Error(result.message || "Failed to update income data"); // ✅ fixed message
+      if (result.error) {
+        throw new Error(result.message || "Failed to update income data");
       }
 
       reset();
-      onOpenChange(false);
       fetchData();
+      onOpenChange(false);
     } catch (error) {
       console.error("Error updating income:", error.message);
     }
@@ -359,29 +344,27 @@ export function EditIncomeDialog({
 export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
   const onSubmit = async (data) => {
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3000/api/income/deleteIncomeData",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_shelter: income.id_shelter,
-            id_income: income.id_income,
-          }),
+          id_shelter: income.id_shelter,
+          id_income: income.id_income,
         }
       );
-      const result = await response.json();
-      if (!response.ok || result.error) {
-        throw new Error(result.message || "Failed to Delete Income data");
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete income data");
       }
+
       data.preventDefault();
       console.log("Delete Income with ID: ", income?.id_income);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting Income:", error.message);
     }
+
     fetchData();
   };
 

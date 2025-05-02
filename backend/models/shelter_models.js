@@ -142,11 +142,7 @@ async function insertShelterData(
     };
   } catch (error) {
     console.error(error);
-    return {
-      error: true,
-      message: "error creating shelter",
-      data: null,
-    };
+    throw error;
   }
 }
 
