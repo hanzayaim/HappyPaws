@@ -94,8 +94,27 @@ router.post("/insertEmployee", async (req, res) => {
       address
     );
     res.status(200).json(result);
-  } catch {
-    res.status(500).json({ error: true, message: "failed to insert data" });
+  } catch (error) {
+    console.error(error);
+    if (error.code === "23505") {
+      const constraint = error.constraint;
+
+      if (constraint === "employee_shelter_email_key") {
+        return res
+          .status(400)
+          .json({ error: true, message: "email already exists" });
+      }
+
+      if (constraint === "employee_shelter_phone_number_key") {
+        return res
+          .status(400)
+          .json({ error: true, message: "phone_number already exists" });
+      }
+
+      return res.status(400).json({ error: true, message: "duplicate key" });
+    }
+
+    res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
 

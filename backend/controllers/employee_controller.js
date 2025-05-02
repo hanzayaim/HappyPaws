@@ -33,11 +33,7 @@ const insertNewEmployee = async (
     );
     return result;
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed to insert new employee.",
-      result: null,
-    };
+    throw error;
   }
 };
 
