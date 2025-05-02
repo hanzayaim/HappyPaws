@@ -26,49 +26,50 @@ import {
 } from "../components/pages-components/AdopterDialog";
 import { Input } from "../components/ui/input";
 
-const adopterData = [
-  {
-    id_adopter: "ADOPTER-12345678-abcd-1234-abcd-1234567890ab",
-    id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
-    name: "Alya Rahma",
-    profile_img:
-      "https://tse1.mm.bing.net/th?id=OIP.QjynegEfQVPq5kIEuX9fWQHaFj&pid=Api&P=0&h=180",
-    gender: "Perempuan",
-    phone_number: "081234567890",
-    address: "Jl. Mawar No.12, Bandung, Jawa Barat",
-    created_at: "2025-04-10T08:00:00.000Z",
-    created_by: "admin_shelter",
-    updated_at: "2025-04-12T10:00:00.000Z",
-    updated_by: "admin_shelter",
-  },
-  {
-    id_adopter: "ADOPTER-22334455-bbcc-ddee-ffaa-112233445566",
-    id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
-    name: "Rizky Maulana",
-    profile_img:
-      "https://tse1.mm.bing.net/th?id=OIP.Udo-lD2pzYMhlHWiNy1KlwHaEK&pid=Api&P=0&h=180",
-    gender: "Laki-laki",
-    phone_number: "082112345678",
-    address: "Perum Gading Asri Blok C2 No.5, Yogyakarta",
-    created_at: "2025-04-15T09:30:00.000Z",
-    created_by: "admin_shelter",
-    updated_at: "2025-04-16T11:15:00.000Z",
-    updated_by: "admin_shelter",
-  },
-  {
-    id_adopter: "ADOPTER-dawn-ioiuby-126666",
-    id_shelter: null,
-    name: "Siti Nurhaliza",
-    profile_img: null,
-    gender: "Perempuan",
-    phone_number: "085698745632",
-    address: "Jl. Pahlawan No.9, Surabaya",
-    created_at: "2025-04-18T12:00:00.000Z",
-    created_by: "system",
-    updated_at: "2025-04-19T13:00:00.000Z",
-    updated_by: "system",
-  },
-];
+import axios from "axios";
+// const adopterData = [
+//   {
+//     id_adopter: "ADOPTER-12345678-abcd-1234-abcd-1234567890ab",
+//     id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
+//     name: "Alya Rahma",
+//     profile_img:
+//       "https://tse1.mm.bing.net/th?id=OIP.QjynegEfQVPq5kIEuX9fWQHaFj&pid=Api&P=0&h=180",
+//     gender: "Perempuan",
+//     phone_number: "081234567890",
+//     address: "Jl. Mawar No.12, Bandung, Jawa Barat",
+//     created_at: "2025-04-10T08:00:00.000Z",
+//     created_by: "admin_shelter",
+//     updated_at: "2025-04-12T10:00:00.000Z",
+//     updated_by: "admin_shelter",
+//   },
+//   {
+//     id_adopter: "ADOPTER-22334455-bbcc-ddee-ffaa-112233445566",
+//     id_shelter: "SHELTER-00112233-aabb-ccdd-eeff-001122334455",
+//     name: "Rizky Maulana",
+//     profile_img:
+//       "https://tse1.mm.bing.net/th?id=OIP.Udo-lD2pzYMhlHWiNy1KlwHaEK&pid=Api&P=0&h=180",
+//     gender: "Laki-laki",
+//     phone_number: "082112345678",
+//     address: "Perum Gading Asri Blok C2 No.5, Yogyakarta",
+//     created_at: "2025-04-15T09:30:00.000Z",
+//     created_by: "admin_shelter",
+//     updated_at: "2025-04-16T11:15:00.000Z",
+//     updated_by: "admin_shelter",
+//   },
+//   {
+//     id_adopter: "ADOPTER-dawn-ioiuby-126666",
+//     id_shelter: null,
+//     name: "Siti Nurhaliza",
+//     profile_img: null,
+//     gender: "Perempuan",
+//     phone_number: "085698745632",
+//     address: "Jl. Pahlawan No.9, Surabaya",
+//     created_at: "2025-04-18T12:00:00.000Z",
+//     created_by: "system",
+//     updated_at: "2025-04-19T13:00:00.000Z",
+//     updated_by: "system",
+//   },
+// ];
 
 const AnimalData = [
   {
@@ -167,18 +168,27 @@ const AnimalData = [
     updated_by: "admin002",
   },
 ];
-
+const user = {
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  phone_number: "081238697341",
+  role: "Owner",
+  address: "jln jalan",
+};
 export default function AdopterManagement() {
   const itemsPerPage = 5;
 
-  const [AdopterCurrentPage, setAdopterCurrentPage] = useState(1);
+  const [adopter, setAdopter] = useState([]);
 
+  const [AdopterCurrentPage, setAdopterCurrentPage] = useState(1);
   const [addAdopterDialogOpen, setAddAdopterDialogOpen] = useState(false);
   const [editAdopterDialogOpen, setEditAdopterDialogOpen] = useState(false);
   const [deleteAdopterDialogOpen, setDeleteAdopterDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAdopter, setSelectedAdopter] = useState(null);
-  const filteredAdopters = adopterData.filter(
+  const filteredAdopters = adopter.filter(
     (adopter) =>
       adopter.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       adopter.phone_number.includes(searchQuery)
@@ -189,6 +199,26 @@ export default function AdopterManagement() {
     AdopterStartIndex,
     AdopterStartIndex + itemsPerPage
   );
+  const fetchAdopterData = async () => {
+    try {
+      const adopterRes = await axios.get(
+        `http://localhost:3000/api/adopters/getAdopterData/${user.id_shelter}`
+      );
+      const adopterData = adopterRes.data;
+
+      if (adopterData.error) {
+        throw new Error(adopterData.message || "Failed to fetch adoapter data");
+      }
+      setAdopter(adopterData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdopterData();
+  }, []);
+
   useEffect(() => {
     setAdopterCurrentPage(1);
   }, [searchQuery]);
@@ -277,7 +307,7 @@ export default function AdopterManagement() {
                         <img
                           src={Adopter.profile_img}
                           alt="Preview"
-                          className="w-24 h-24 object-cover"
+                          className="lg:max-w-24 lg:max-h-24 object-cover"
                         />
                       ) : (
                         <div className="w-24 h-24 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">

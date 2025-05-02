@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import GenderCombobox from "./gender-combobox";
+import axios from "axios";
 
 const adopterSchema = z.object({
   AdopterName: z
@@ -30,7 +31,7 @@ const adopterSchema = z.object({
   AdopterPhoneNumber: z.string().min(1, "Phone Number is required"),
   AdopterAddress: z.string().min(1, "Address is required"),
 });
-export function InsertAdopterDialog({ open, onOpenChange }) {
+export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
   const {
     register,
     handleSubmit,
@@ -48,10 +49,33 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       AdopterAddress: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/adopters/insertAdopterData",
+        {
+          id_shelter: User.id_shelter,
+          adopter_name: data.AdopterName,
+          profile_img: data.AdopterProfile_img,
+          gender: data.AdopterGender,
+          phone_number: data.AdopterPhoneNumber,
+          address: data.AdopterAddress || "",
+          createdby: User.role,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert income data");
+      }
+
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error inserting income:", error.message);
+    }
   };
   const [previewUrl = null, setPreviewUrl] = useState(null);
   const watchFile = useWatch({
@@ -64,8 +88,6 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       if (file instanceof File) {
         const preview = URL.createObjectURL(file);
         setPreviewUrl(preview);
-
-        // cleanup URL object
         return () => URL.revokeObjectURL(preview);
       }
     }
