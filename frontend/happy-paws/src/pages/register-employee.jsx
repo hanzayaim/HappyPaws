@@ -79,6 +79,15 @@ export default function RegisterEmployee() {
       }
 
       const shelterId = matchedShelter.id_shelter;
+      const shelterEmail = matchedShelter.email;
+
+      if (data.email === shelterEmail) {
+        setError("email", {
+          type: "manual",
+          message: "Email cannot be the same as the shelter owner's email.",
+        });
+        return;
+      }
 
       const response = await axios.post(
         "http://localhost:3000/api/employees/insertEmployee",
@@ -92,6 +101,17 @@ export default function RegisterEmployee() {
           shelter_name: data.shelter,
           phone_number: data.employeePhoneNumber,
           address: data.employeeAddress,
+        }
+      );
+
+      await axios.post(" http://localhost:3000/api/email/email_register_all", {
+        email: data.email,
+      });
+
+      await axios.post(
+        " http://localhost:3000/api/email/email_register_employee",
+        {
+          email: shelterEmail,
         }
       );
 

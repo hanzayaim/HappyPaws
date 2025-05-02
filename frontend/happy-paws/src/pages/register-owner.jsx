@@ -58,6 +58,10 @@ export default function RegisterOwner() {
         }
       );
 
+      await axios.post(" http://localhost:3000/api/email/email_register_all", {
+        email: data.email,
+      });
+
       const result = response.data;
 
       if (result.error) {
