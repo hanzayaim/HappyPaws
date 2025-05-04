@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -11,6 +11,13 @@ import logo from "../assets/logo-hp.png";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { useState } from "react";
+import { TriangleAlert } from "lucide-react";
+
+const API_BASE_URL = "http://localhost:3000";
+axios.defaults.baseURL = API_BASE_URL;
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -20,6 +27,10 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -28,8 +39,59 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Login data:", data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post("/api/auth/login", data, {
+        withCredentials: true,
+      });
+
+      console.log("Login successful: ", response.data);
+
+      localStorage.setItem("userType", response.data.userType);
+      localStorage.setItem("userData", JSON.stringify(response.data.userData));
+
+      const userType = response.data.userType;
+      const userData = response.data.userData;
+
+      if (userType === "superuser" && userData.role === "Superuser") {
+        navigate("/shelter-management");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data.message;
+
+        if (status === 403 && error.response.data.status === "New") {
+          setError(
+            "Your account is pending activation. Please wait for administrator approval."
+          );
+        } else if (
+          status === 403 &&
+          error.response.data.status === "Inactive"
+        ) {
+          setError(
+            "Your account is inactive. Please contact the administrator."
+          );
+        } else {
+          setError(
+            message || "Failed to login. Please check your credentials."
+          );
+        }
+      } else if (error.request) {
+        setError("No response from server. Please try again later.");
+      } else {
+        setError("An error occured. Please try again.");
+      }
+      console.error("Login error: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,6 +106,14 @@ export default function LoginPage() {
               <CardTitle className="text-2xl text-center">Welcome !</CardTitle>
             </CardHeader>
             <CardContent>
+              {error && (
+                <Alert className="mb-4 bg-destructive text-white">
+                  <AlertDescription className="flex items-center gap-2">
+                    <TriangleAlert className="w-5 h-5 text-white shrink-0" />
+                    <span className="text-white">{error}</span>
+                  </AlertDescription>
+                </Alert>
+              )}
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
                   <div className="grid gap-2">
@@ -52,6 +122,7 @@ export default function LoginPage() {
                       type="email"
                       placeholder="Email"
                       {...register("email")}
+                      disabled={loading}
                     />
                     {errors.email && (
                       <p className="text-sm text-destructive">
@@ -65,6 +136,7 @@ export default function LoginPage() {
                       type="password"
                       placeholder="Password"
                       {...register("password")}
+                      disabled={loading}
                     />
                     {errors.password && (
                       <p className="text-sm text-destructive">
@@ -80,8 +152,13 @@ export default function LoginPage() {
                       Forgot Password ?
                     </Link>
                   </div>
-                  <Button variant="default" type="submit" className="w-full ">
-                    Login
+                  <Button
+                    variant="default"
+                    type="submit"
+                    className="w-full"
+                    disabled={loading}
+                  >
+                    {loading ? "Logging in..." : "Login"}
                   </Button>
                 </div>
               </form>
