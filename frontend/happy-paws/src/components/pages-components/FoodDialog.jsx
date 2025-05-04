@@ -18,6 +18,7 @@ import {
 import { FoodCategoryCombobox, FoodTypeCombobox } from "./FoodCombobox";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
+import axios from "axios";
 
 const foodSchema = z.object({
   foodName: z.string().min(1, "Name is required"),
@@ -43,7 +44,7 @@ const foodSchema = z.object({
     }),
 });
 
-export function InsertFoodDialog({ open, onOpenChange }) {
+export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
   const [foodCategory, setFoodCategory] = useState("");
   const [foodType, setFoodType] = useState("");
 
@@ -68,10 +69,34 @@ export function InsertFoodDialog({ open, onOpenChange }) {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/food/insertFoodData",
+        {
+          name: data.foodName,
+          quantity: data.foodQuantity,
+          category: data.foodCategory,
+          type: data.foodType,
+          exp_date: data.foodExpiredDate.toISOString().split("T")[0],
+          cost: data.foodCost,
+          date: data.foodDate,
+          note: data.foodNote,
+          created_by: User.role,
+          id_shelter: User.id_shelter,
+        }
+      );
+      const result = response.data;
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert Food data");
+      }
+
+      reset();
+      fetchData();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error insert income:", error.message);
+    }
   };
 
   const handleFoodCategoryChange = (value) => {
@@ -158,10 +183,7 @@ export function InsertFoodDialog({ open, onOpenChange }) {
                 control={control}
                 name="foodExpiredDate"
                 render={({ field }) => (
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.foodExpiredDate && (
@@ -224,7 +246,7 @@ export function InsertFoodDialog({ open, onOpenChange }) {
   );
 }
 
-export function EditFoodDialog({ open, onOpenChange, food }) {
+export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
   const [foodCategory, setFoodCategory] = useState("");
   const [foodType, setFoodType] = useState("");
 
@@ -266,10 +288,37 @@ export function EditFoodDialog({ open, onOpenChange, food }) {
     }
   }, [food, open, reset]);
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/food/updateFoodData",
+        {
+          name: data.foodName,
+          quantity: data.foodQuantity,
+          category: data.foodCategory,
+          type: data.foodType,
+          exp_date: data.foodExpiredDate.toISOString().split("T")[0],
+          cost: data.foodCost,
+          date: data.foodDate,
+          note: data.foodNote,
+          updated_by: User.role,
+          id_shelter: User.id_shelter,
+          id_food: food.id_food,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to update Food data");
+      }
+
+      reset();
+      fetchData();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating Food:", error.message);
+    }
   };
 
   const handleFoodCategoryChange = (value) => {
@@ -348,10 +397,7 @@ export function EditFoodDialog({ open, onOpenChange, food }) {
                 control={control}
                 name="foodExpiredDate"
                 render={({ field }) => (
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.foodExpiredDate && (
@@ -414,11 +460,31 @@ export function EditFoodDialog({ open, onOpenChange, food }) {
   );
 }
 
-export function DeleteFoodDialog({ open, onOpenChange, food }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete food with ID: ", food?.id_food);
-    onOpenChange(false);
+export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/food/deleteFoodData/",
+        {
+          id_shelter: food.id_shelter,
+          id_food: food.id_food,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete Food data");
+      }
+
+      data.preventDefault();
+      console.log("Delete Food with ID: ", food?.id_food);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error deleting Food:", error.message);
+    }
+
+    fetchData();
   };
 
   return (
