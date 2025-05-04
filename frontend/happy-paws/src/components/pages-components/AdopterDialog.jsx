@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import GenderCombobox from "./gender-combobox";
+import axios from "axios";
 
 const adopterSchema = z.object({
   AdopterName: z
@@ -30,7 +31,7 @@ const adopterSchema = z.object({
   AdopterPhoneNumber: z.string().min(1, "Phone Number is required"),
   AdopterAddress: z.string().min(1, "Address is required"),
 });
-export function InsertAdopterDialog({ open, onOpenChange }) {
+export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
   const {
     register,
     handleSubmit,
@@ -48,15 +49,52 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       AdopterAddress: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      let profileImgBase64 = null;
+
+      if (data.AdopterProfile_img && data.AdopterProfile_img[0]) {
+        const file = data.AdopterProfile_img[0];
+        profileImgBase64 = await convertFileToBase64(file); // helper function below
+      }
+      const response = await axios.post(
+        "http://localhost:3000/api/adopters/insertAdopterData",
+        {
+          id_shelter: User.id_shelter,
+          adopter_name: data.AdopterName,
+          profile_img: profileImgBase64,
+          gender: data.AdopterGender,
+          phone_number: data.AdopterPhoneNumber,
+          address: data.AdopterAddress || "",
+          createdby: User.role,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert adopter data");
+      }
+
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error inserting adopter:", error.message);
+    }
+  };
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
   const [previewUrl = null, setPreviewUrl] = useState(null);
   const watchFile = useWatch({
     control,
-    name: "AdopterImg",
+    name: "AdopterProfile_img",
   });
   useEffect(() => {
     if (watchFile && watchFile[0]) {
@@ -64,8 +102,6 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
       if (file instanceof File) {
         const preview = URL.createObjectURL(file);
         setPreviewUrl(preview);
-
-        // cleanup URL object
         return () => URL.revokeObjectURL(preview);
       }
     }
@@ -102,7 +138,7 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
             <div className="flex flex-col gap-2">
               <Label>Phone Number</Label>
               <Input
-                placeholder="Adopter Type"
+                placeholder="Phone number"
                 {...register("AdopterPhoneNumber")}
               />
               {errors.AdopterPhoneNumber && (
@@ -146,11 +182,11 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
                 id="picture"
                 type="file"
                 accept="image/*"
-                {...register("AdopterImg")}
+                {...register("AdopterProfile_img")}
               />
-              {errors.AdopterImg && (
+              {errors.AdopterProfile_img && (
                 <p className="text-destructive text-sm">
-                  {errors.AdopterImg.message}
+                  {errors.AdopterProfile_img.message}
                 </p>
               )}
               <Label>Preview image</Label>
@@ -174,7 +210,13 @@ export function InsertAdopterDialog({ open, onOpenChange }) {
   );
 }
 
-export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
+export function EditAdopterDialog({
+  open,
+  onOpenChange,
+  User,
+  AdopterData,
+  fetchData,
+}) {
   const {
     register,
     handleSubmit,
@@ -203,15 +245,53 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
       });
     }
   }, [AdopterData, open, reset]);
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      let profileImgBase64 = null;
+
+      if (data.AdopterProfile_img && data.AdopterProfile_img[0]) {
+        const file = data.AdopterProfile_img[0];
+        profileImgBase64 = await convertFileToBase64(file); // helper function below
+      }
+      const response = await axios.post(
+        "http://localhost:3000/api/adopters/updateAdopterData",
+        {
+          adopter_name: data.AdopterName,
+          profile_img: profileImgBase64,
+          gender: data.AdopterGender,
+          phone_number: data.AdopterPhoneNumber,
+          address: data.AdopterAddress || "",
+          updated_by: User.role,
+          id_shelter: User.id_shelter,
+          id_adopter: AdopterData.id_adopter,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to update Adopter data");
+      }
+
+      reset();
+      fetchData();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating Adopter:", error.message);
+    }
+  };
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
   const [previewUrl = null, setPreviewUrl] = useState(null);
   const watchFile = useWatch({
     control,
-    name: "AdopterImg",
+    name: "AdopterProfile_img",
   });
   useEffect(() => {
     if (watchFile && watchFile[0]) {
@@ -296,11 +376,11 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
                 id="picture"
                 type="file"
                 accept="image/*"
-                {...register("AdopterImg")}
+                {...register("AdopterProfile_img")}
               />
-              {errors.AdopterImg && (
+              {errors.AdopterProfile_img && (
                 <p className="text-destructive text-sm">
-                  {errors.AdopterImg.message}
+                  {errors.AdopterProfile_img.message}
                 </p>
               )}
               <Label>Preview image</Label>
@@ -324,11 +404,36 @@ export function EditAdopterDialog({ open, onOpenChange, AdopterData }) {
   );
 }
 
-export function DeleteAdopterDialog({ open, onOpenChange, AdopterData }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete Adopter with ID: ", AdopterData.id_Adopter);
-    onOpenChange(false);
+export function DeleteAdopterDialog({
+  open,
+  onOpenChange,
+  AdopterData,
+  fetchData,
+}) {
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/adopters/DeleteAdopterData",
+        {
+          id_shelter: AdopterData.id_shelter,
+          id_adopter: AdopterData.id_adopter,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete adopter data");
+      }
+
+      data.preventDefault();
+      console.log("Delete Adopter with ID: ", AdopterData?.id_adopter);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error deleting Adopter:", error.message);
+    }
+
+    fetchData();
   };
 
   return (

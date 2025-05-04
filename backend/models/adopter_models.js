@@ -36,6 +36,12 @@ async function getAdopterData(id_shelter) {
       [id_shelter]
     );
     if (rows.length > 0) {
+      rows.forEach((row) => {
+        if (row.profile_img) {
+          row.profile_img = row.profile_img.toString("base64");
+        }
+      });
+
       return {
         error: false,
         message: "data fetched successfully",
@@ -107,11 +113,18 @@ async function updateAdopterData(
   id_adopter
 ) {
   try {
+    const cleanBase64String = profile_img.replace(
+      /^data:image\/[a-zA-Z]+;base64,/,
+      ""
+    );
+    const profileImgBuffer = cleanBase64String
+      ? Buffer.from(cleanBase64String, "base64")
+      : null;
     const { rows } = await pool.query(
       "UPDATE adopter_profile SET name=$1, profile_img=$2, gender=$3, phone_number=$4, address=$5, updated_by=$6, updated_at=CURRENT_TIMESTAMP WHERE id_shelter = $7 and id_adopter = $8 RETURNING *",
       [
         adopter_name,
-        profile_img,
+        profileImgBuffer,
         gender,
         phone_number,
         address,

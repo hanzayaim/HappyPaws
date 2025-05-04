@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import {
@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationLink,
 } from "../components/ui/pagination";
+
 import axios from "axios";
 import { Plus, Pencil, Trash } from "lucide-react";
 import Layout from "../app/layout";
@@ -36,6 +37,14 @@ import {
   DeleteSalaryDialog,
   InsertSalaryDialog,
 } from "../components/pages-components/SalaryDialog";
+import { Input } from "../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 //#region Dummy
 const medicals = [
   {
@@ -92,9 +101,17 @@ export default function FinancePage() {
   const [Foods, setFoods] = useState([]);
   const [Equipments, setEquipments] = useState([]);
 
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [statusFilter, setStatusFilter] = useState("");
+
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
   const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
+
+  const [IncomeSearchQuery, setIncomeSearchQuery] = useState("");
+  const [IncomeTypeFilter, setIncomeTypeFilter] = useState("");
+
+  const [SalarySearchQuery, setSalarySearchQuery] = useState("");
 
   const [addIncomeDialogOpen, setAddIncomeDialogOpen] = useState(false);
   const [editIncomeDialogOpen, setEditIncomeDialogOpen] = useState(false);
@@ -106,20 +123,35 @@ export default function FinancePage() {
   const [selectedIncome, setSelectedIncome] = useState(null);
   const [selectedSalary, setSelectedSalary] = useState(null);
 
+  const filteredIncomes = useMemo(() => {
+    return Incomes.filter((inc) => {
+      const matchesSearch = inc.name
+        .toLowerCase()
+        .includes(IncomeSearchQuery.toLowerCase());
+      const matchesType = !IncomeTypeFilter || inc.type === IncomeTypeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [Incomes, IncomeSearchQuery, IncomeTypeFilter]);
+
+  const filteredSalary = useMemo(() => {
+    return Salaries.filter((salary) => {
+      const matchesSearch = salary.name
+        .toLowerCase()
+        .includes(SalarySearchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [Salaries, SalarySearchQuery]);
+
   const incomeTotalPages =
-    Incomes && Incomes.length ? Math.ceil(Incomes.length / itemsPerPage) : 1;
+    Incomes && Incomes.length
+      ? Math.ceil(filteredIncomes.length / itemsPerPage)
+      : 1;
   const incomeStartIndex = (incomeCurrentPage - 1) * itemsPerPage;
   const currentIncomes =
-    Incomes && Incomes.length
-      ? Incomes.slice(incomeStartIndex, incomeStartIndex + itemsPerPage)
+    filteredIncomes && filteredIncomes.length
+      ? filteredIncomes.slice(incomeStartIndex, incomeStartIndex + itemsPerPage)
       : [];
 
-  // const expensesTotalPages = Math.ceil(Expenses.length / itemsPerPage);
-  // const expensesStartIndex = (expensesCurrentPage - 1) * itemsPerPage;
-  // const currentExpenses = Expenses.slice(
-  //   expensesStartIndex,
-  //   expensesStartIndex + itemsPerPage
-  // );
   const expensesTotalPages =
     Expenses && Expenses.length ? Math.ceil(Expenses.length / itemsPerPage) : 1;
   const expensesStartIndex = (expensesCurrentPage - 1) * itemsPerPage;
@@ -129,11 +161,13 @@ export default function FinancePage() {
       : [];
 
   const SalaryTotalPages =
-    Salaries && Salaries.length ? Math.ceil(Salaries.length / itemsPerPage) : 1;
+    Salaries && Salaries.length
+      ? Math.ceil(filteredSalary.length / itemsPerPage)
+      : 1;
   const SalaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
   const currentSalaries =
-    Salaries && Salaries.length
-      ? Salaries.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
+    filteredSalary && filteredSalary.length
+      ? filteredSalary.slice(SalaryStartIndex, SalaryStartIndex + itemsPerPage)
       : [];
 
   const fetchIncomeData = async () => {
@@ -164,6 +198,25 @@ export default function FinancePage() {
       setExpenses(expensesData.data || []);
     } catch (error) {
       console.error("Error fetching data", error);
+    }
+  };
+  const fetchSalaryData = async () => {
+    try {
+      const SalaryRes = await axios.get(
+        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
+      );
+      if (SalaryRes.status === 404) {
+        setSalaries(null);
+        return;
+      }
+      const SalaryData = SalaryRes.data;
+      if (SalaryData.error) {
+        throw new Error(SalaryData.message || "Failed to fetch Salary");
+      }
+
+      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
+    } catch (error) {
+      console.error("Error fetching salary data:", error);
     }
   };
   const fetchFoodsData = async () => {
@@ -198,25 +251,6 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
-  const fetchSalaryData = async () => {
-    try {
-      const SalaryRes = await axios.get(
-        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
-      );
-      if (SalaryRes.status === 404) {
-        setSalaries(null);
-        return;
-      }
-      const SalaryData = SalaryRes.data;
-      if (SalaryData.error) {
-        throw new Error(SalaryData.message || "Failed to fetch Salary");
-      }
-
-      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
-    } catch (error) {
-      console.error("Error fetching salary data:", error);
-    }
-  };
   const fetchEmployeeData = async () => {
     try {
       const EmployeeRes = await axios.get(
@@ -240,25 +274,21 @@ export default function FinancePage() {
       const FinanceRes = await axios.get(
         `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
       );
-
       const ProfitRes = await axios.post(
         `http://localhost:3000/api/finance/getPorfit`,
         {
           id_shelter: user.id_shelter,
         }
       );
-
       const LossRes = await axios.post(
         `http://localhost:3000/api/finance/getLoss`,
         {
           id_shelter: user.id_shelter,
         }
       );
-
       const FinanceData = FinanceRes.data;
       const ProfitData = ProfitRes.data;
       const LossData = LossRes.data;
-
       if (FinanceData.error) {
         throw new Error(FinanceData.message || "Failed to fetch Finance");
       }
@@ -268,7 +298,6 @@ export default function FinancePage() {
       if (LossData.error) {
         throw new Error(LossData.message || "Failed to fetch Loss");
       }
-
       setFinance(FinanceData.data?.[0] ?? "No data");
       setLoss(LossData.result ?? 0);
       setProfit(ProfitData.result ?? 0);
@@ -276,14 +305,26 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
-
   useEffect(() => {
     fetchFinanceData();
     fetchEmployeeData();
     fetchEquipmentsData();
     fetchFoodsData();
   }, []);
+  const handleIncomeSearchChange = (e) => {
+    setIncomeSearchQuery(e.target.value);
+    setIncomeCurrentPage(1);
+  };
 
+  const handleIncomeTypeFilterChange = (value) => {
+    setIncomeTypeFilter(value);
+    setIncomeCurrentPage(1);
+  };
+
+  const handleSalarySearchChange = (e) => {
+    setSalarySearchQuery(e.target.value);
+    setSalaryCurrentPage(1);
+  };
   const handleIncomePageChange = (page) => {
     if (page >= 1 && page <= incomeTotalPages) {
       setIncomeCurrentPage(page);
@@ -294,18 +335,15 @@ export default function FinancePage() {
       setExpensesCurrentPage(page);
     }
   };
-
   const handleEquipmentPageChange = (page) => {
     if (page >= 1 && page <= SalaryTotalPages) {
       setSalaryCurrentPage(page);
     }
   };
-
   const handleEditIncomeClick = (income) => {
     setSelectedIncome(income);
     setEditIncomeDialogOpen(true);
   };
-
   const handleDeleteIncomeClick = (income) => {
     setSelectedIncome(income);
     setDeleteIncomeDialogOpen(true);
@@ -341,7 +379,7 @@ export default function FinancePage() {
                   : Finance.total_balance}
               </Label>
             </CardContent>
-            <CardFooter className="flex w-full justify-between items-center ">
+            <CardFooter className="flex lg:flex-row flex-col w-full justify-between items-center ">
               <p className="flex">
                 Profit:
                 <span className="text-green-600">
@@ -363,8 +401,31 @@ export default function FinancePage() {
             </CardFooter>
           </Card>
         </div>
-        <div className="flex justify-between items-center w-full">
-          <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+        <div className="flex lg:flex-row flex-col md:flex-row gap-2 justify-between items-center w-full">
+          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
+            <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+            <Input
+              type="text"
+              placeholder="Search by food name"
+              value={IncomeSearchQuery}
+              onChange={handleIncomeSearchChange}
+              className="md:w-full sm:w-64"
+            />
+
+            <Select
+              onValueChange={handleIncomeTypeFilterChange}
+              value={IncomeTypeFilter}
+            >
+              <SelectTrigger className="md:w-full sm:w-50">
+                <SelectValue placeholder="Filter Income Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All</SelectItem>
+                <SelectItem value="Donasi">Donasi</SelectItem>
+                <SelectItem value="Non Donasi">Non Donasi</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button
             className="flex items-center gap-1"
             onClick={() => setAddIncomeDialogOpen(true)}
@@ -633,9 +694,18 @@ export default function FinancePage() {
         </div>
 
         <div className="flex justify-between items-center w-full">
-          <Label className="lg:text-2xl text-xl font-medium">
-            Employee Salary
-          </Label>
+          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
+            <Label className="lg:text-2xl min-w-fit text-xl font-medium">
+              Employee Salary
+            </Label>
+            <Input
+              type="text"
+              placeholder="Search by Salary name"
+              value={SalarySearchQuery}
+              onChange={handleSalarySearchChange}
+              className="md:w-full sm:w-64"
+            />
+          </div>
           <Button
             className="flex items-center gap-1 "
             onClick={() => setAddSalaryDialogOpen(true)}
