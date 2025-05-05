@@ -35,11 +35,13 @@ const AnimalCard = ({ name, imageUrl, status, jenis, umur, detailLink }) => {
             : {status}
           </span>
 
-          <Label className="text-lg md:text-sm">Jenis</Label>
-          <span className="text-lg md:text-sm">: {jenis}</span>
+          <Label className="text-lg md:text-sm">Type</Label>
+          <span className="text-lg md:text-sm">
+            : {jenis ? jenis : "Unknown"}
+          </span>
 
-          <Label className="text-lg md:text-sm">Umur</Label>
-          <span className="text-lg md:text-sm">: {umur}</span>
+          <Label className="text-lg md:text-sm">Age</Label>
+          <span className="text-lg md:text-sm">: {umur ? umur : "No Age"}</span>
         </div>
         <Button className="w-auto mt-2 bg-[#F97316] hover:bg-[#EA580C] text-white">
           <Link
