@@ -37,6 +37,7 @@ export default function AnimalDetail() {
       const animalDataFetch = data.data;
 
       setAnimalData(animalDataFetch);
+      console.log(animalDataFetch);
     } catch (error) {
       console.error("error fetching data", error);
     } finally {
@@ -101,6 +102,7 @@ export default function AnimalDetail() {
           onOpenChange={setAlert}
           animal={animal}
         />
+
         <div className="w-full bg-[#FAF7F2] shadow-lg min-h-fit flex flex-col p-5 mt-5 gap-5 rounded-xl">
           <div className="flex flex-col lg:flex-row gap-5">
             {/* Gambar */}
@@ -108,7 +110,7 @@ export default function AnimalDetail() {
               <div className="relative w-4/5 h-64 bg-white rounded-xl overflow-hidden">
                 {animal.animal_img ? (
                   <img
-                    src={animal.animal_img}
+                    src={`data:image/jpeg;base64,${animal.animal_img}`}
                     alt="imgAnimal"
                     className="absolute top-1/2 left-1/2 w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 rounded-xl"
                   />

@@ -158,6 +158,7 @@ export default function AdopterManagement() {
           AdopterData={selectedAdopter}
           fetchData={fetchAdopterData}
         />
+
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
             <TableHeader>
