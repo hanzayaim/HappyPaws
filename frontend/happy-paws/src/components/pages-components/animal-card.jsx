@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { ChevronsRight } from "lucide-react";
+import { ChevronsRight, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
@@ -9,11 +9,17 @@ const AnimalCard = ({ name, imageUrl, status, jenis, umur, detailLink }) => {
   return (
     <Card className="w-full max-h-100 rounded-lg shadow-md bg-[#FAF7F2]">
       <CardHeader>
-        <img
-          src={imageUrl}
-          alt={name}
-          className="w-full h-40 object-cover rounded-t-xl"
-        />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt="imgAnimal"
+            className="w-full h-40 object-cover rounded-t-xl"
+          />
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <Image color="#b0b0b0" className="w-20 h-20" strokeWidth={1} />
+          </div>
+        )}
         <CardTitle className="text-xl text-center text-[#EC8C5B] font-semibold mt-2">
           {name}
         </CardTitle>

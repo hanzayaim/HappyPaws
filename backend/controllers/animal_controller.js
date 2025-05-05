@@ -16,11 +16,20 @@ const insertNewAnimal = async (
   try {
     const id_animal = "ANIMAL-" + generateId();
 
+    const cleanBase64String = animal_img.replace(
+      /^data:image\/[a-zA-Z]+;base64,/,
+      ""
+    );
+
+    const animalImgBuffer = cleanBase64String
+      ? Buffer.from(cleanBase64String, "base64")
+      : null;
+
     const result = await insertAnimalData(
       id_shelter,
       id_animal,
       animal_name,
-      animal_img,
+      animalImgBuffer,
       animal_gender,
       animal_type,
       animal_age,
