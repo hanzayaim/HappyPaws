@@ -105,22 +105,16 @@ async function insertAnimalData(
     };
   } catch (error) {
     console.log(error);
-    return {
-      error: true,
-      message: "error creating animal",
-      data: null,
-    };
+    throw error;
   }
 }
 
 async function updateAnimalData(
-  id_adopter,
   animal_name,
   animal_img,
   animal_gender,
   animal_type,
   animal_age,
-  animal_status,
   rescue_location,
   date,
   note,
@@ -129,29 +123,32 @@ async function updateAnimalData(
   id_animal
 ) {
   try {
+    const cleanBase64String = animal_img.replace(
+      /^data:image\/[a-zA-Z]+;base64,/,
+      ""
+    );
+    const profileImgBuffer = cleanBase64String
+      ? Buffer.from(cleanBase64String, "base64")
+      : null;
     const { rows } = await pool.query(
       `UPDATE animal SET 
-        id_adopter = $1,
-        animal_name = $2,
-        animal_img = $3,
-        animal_gender = $4,
-        animal_type = $5,
-        animal_age = $6,
-        animal_status = $7,
-        rescue_location = $8,
-        date = $9,
-        note = $10,
-        updated_by = $11,
-        updated_at = CURRENT_TIMESTAMP
-      WHERE id_shelter = $12 AND id_animal = $13 RETURNING *`,
+    animal_name = $1,
+    animal_img = $2,
+    animal_gender = $3,
+    animal_type = $4,
+    animal_age = $5,
+    rescue_location = $6,
+    date = $7,
+    note = $8,
+    updated_by = $9,
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id_shelter = $10 AND id_animal = $11 RETURNING *`,
       [
-        id_adopter,
         animal_name,
-        animal_img,
+        profileImgBuffer,
         animal_gender,
         animal_type,
         animal_age,
-        animal_status,
         rescue_location,
         date,
         note,
@@ -166,11 +163,32 @@ async function updateAnimalData(
       animal: rows[0],
     };
   } catch (error) {
+    throw error;
+  }
+}
+
+async function insertAdopterData(
+  id_adopter,
+  updated_by,
+  id_shelter,
+  id_animal
+) {
+  try {
+    const { rows } = await pool.query(
+      `UPDATE animal SET 
+      id_adopter = $1,
+    updated_by = $2,
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id_shelter = $3 AND id_animal = $14 RETURNING *`,
+      [id_adopter, updated_by, id_shelter, id_animal]
+    );
     return {
-      error: true,
-      message: "error updating animal",
-      data: null,
+      error: false,
+      message: "animal adopter updated successfully",
+      animal: rows[0],
     };
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -198,6 +216,7 @@ module.exports = {
   getAnimalDataById,
   getAnimalData,
   insertAnimalData,
+  insertAdopterData,
   updateAnimalData,
   deleteAnimalData,
 };

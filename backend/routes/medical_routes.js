@@ -66,7 +66,6 @@ router.post("/insertMedicalData", async (req, res) => {
     medical_status == null ||
     vaccin_status == null ||
     medical_date_in == null ||
-    medical_date_out == null ||
     medical_cost == null ||
     note == null ||
     created_by == null ||
@@ -123,9 +122,7 @@ router.post("/updateMedicalData", async (req, res) => {
     medical_status == null ||
     vaccin_status == null ||
     medical_date_in == null ||
-    medical_date_out == null ||
     medical_cost == null ||
-    note == null ||
     updated_by == null ||
     id_shelter == null ||
     id_animal == null ||
