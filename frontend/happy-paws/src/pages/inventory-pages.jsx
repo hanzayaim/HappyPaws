@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -37,189 +37,201 @@ import {
 } from "../components/pages-components/EquipmentDialog";
 import { Plus, Pencil, Trash } from "lucide-react";
 import Layout from "../app/layout";
+import axios from "axios";
 
-const foods = [
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
-    name: "Whiskas1",
-    quantity: 20,
-    category: "Dry Food",
-    type: "Donation",
-    exp_date: "2025-04-15T00:00:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
-    name: "Whiskas2",
-    quantity: 20,
-    category: "Wet Food",
-    type: "Purchase",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
-    name: "Whiskas3",
-    quantity: 20,
-    category: "Dry Food",
-    type: "Donation",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
-    name: "Whiskas4",
-    quantity: 20,
-    category: "Wet Food",
-    type: "Purchase",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
-    name: "Whiskas5",
-    quantity: 20,
-    category: "Dry Food",
-    type: "Donation",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
-    name: "Whiskas6",
-    quantity: 20,
-    category: "Wet Food",
-    type: "Purchase",
-    exp_date: "2025-04-10T07:30:00.000Z",
-    cost: 150000,
-    date: "2025-04-10T07:30:00.000Z",
-    note: "Dikasih orang",
-    created_at: "2025-04-22T07:37:09.232Z",
-    created_by: "Bima",
-    updated_at: "2025-04-22T07:37:09.232Z",
-    updated_by: "Bima",
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-];
+// const foods = [
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
+//     name: "Whiskas1",
+//     quantity: 20,
+//     category: "Dry Food",
+//     type: "Donation",
+//     exp_date: "2025-04-15T00:00:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
+//     name: "Whiskas2",
+//     quantity: 20,
+//     category: "Wet Food",
+//     type: "Purchase",
+//     exp_date: "2025-04-10T07:30:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
+//     name: "Whiskas3",
+//     quantity: 20,
+//     category: "Dry Food",
+//     type: "Donation",
+//     exp_date: "2025-04-10T07:30:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
+//     name: "Whiskas4",
+//     quantity: 20,
+//     category: "Wet Food",
+//     type: "Purchase",
+//     exp_date: "2025-04-10T07:30:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
+//     name: "Whiskas5",
+//     quantity: 20,
+//     category: "Dry Food",
+//     type: "Donation",
+//     exp_date: "2025-04-10T07:30:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
+//     name: "Whiskas6",
+//     quantity: 20,
+//     category: "Wet Food",
+//     type: "Purchase",
+//     exp_date: "2025-04-10T07:30:00.000Z",
+//     cost: 150000,
+//     date: "2025-04-10T07:30:00.000Z",
+//     note: "Dikasih orang",
+//     created_at: "2025-04-22T07:37:09.232Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-22T07:37:09.232Z",
+//     updated_by: "Bima",
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+// ];
 
-const equipments = [
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
-    name: "Pagar1",
-    type: "Purchase",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
-    name: "Pagar2",
-    type: "Donation",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
-    name: "Pagar3",
-    type: "Purchase",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
-    name: "Pagar4",
-    type: "Donation",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
-    name: "Pagar5",
-    type: "Purchase",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-  {
-    id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
-    name: "Pagar6",
-    type: "Donation",
-    date: "2025-04-10T07:30:00.000Z",
-    cost: 50000,
-    note: "Beli untuk kandang baru",
-    created_at: "2025-04-24T07:16:33.591Z",
-    created_by: "Bima",
-    updated_at: "2025-04-24T07:16:33.591Z",
-    updated_by: null,
-    id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-  },
-];
+// const equipments = [
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
+//     name: "Pagar1",
+//     type: "Purchase",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
+//     name: "Pagar2",
+//     type: "Donation",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
+//     name: "Pagar3",
+//     type: "Purchase",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
+//     name: "Pagar4",
+//     type: "Donation",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
+//     name: "Pagar5",
+//     type: "Purchase",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+//   {
+//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
+//     name: "Pagar6",
+//     type: "Donation",
+//     date: "2025-04-10T07:30:00.000Z",
+//     cost: 50000,
+//     note: "Beli untuk kandang baru",
+//     created_at: "2025-04-24T07:16:33.591Z",
+//     created_by: "Bima",
+//     updated_at: "2025-04-24T07:16:33.591Z",
+//     updated_by: null,
+//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
+//   },
+// ];
 
+const user = {
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  role: "Owner",
+  phone_number: "081238697341",
+  address: "jln jalan",
+};
 export default function InventoryPages() {
   const itemsPerPage = 5;
+  const [foods, setFoods] = useState([]);
+  const [equipments, setEquipments] = useState([]);
 
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
@@ -244,18 +256,24 @@ export default function InventoryPages() {
   const [selectedEquipment, setSelectedEquipment] = useState(null);
 
   const filteredFoods = useMemo(() => {
-    return foods.filter(food => {
-      const matchesSearch = food.name.toLowerCase().includes(foodSearchQuery.toLowerCase());
-      const matchesCategory = !foodCategoryFilter || food.category === foodCategoryFilter;
+    return foods.filter((food) => {
+      const matchesSearch = food.name
+        .toLowerCase()
+        .includes(foodSearchQuery.toLowerCase());
+      const matchesCategory =
+        !foodCategoryFilter || food.category === foodCategoryFilter;
       const matchesType = !foodTypeFilter || food.type === foodTypeFilter;
       return matchesSearch && matchesCategory && matchesType;
     });
   }, [foods, foodSearchQuery, foodCategoryFilter, foodTypeFilter]);
 
   const filteredEquipments = useMemo(() => {
-    return equipments.filter(equipment => {
-      const matchesSearch = equipment.name.toLowerCase().includes(equipmentSearchQuery.toLowerCase());
-      const matchesType = !equipmentTypeFilter || equipment.type === equipmentTypeFilter;
+    return equipments.filter((equipment) => {
+      const matchesSearch = equipment.name
+        .toLowerCase()
+        .includes(equipmentSearchQuery.toLowerCase());
+      const matchesType =
+        !equipmentTypeFilter || equipment.type === equipmentTypeFilter;
       return matchesSearch && matchesType;
     });
   }, [equipments, equipmentSearchQuery, equipmentTypeFilter]);
@@ -267,13 +285,51 @@ export default function InventoryPages() {
     foodStartIndex + itemsPerPage
   );
 
-  const equipmentTotalPages = Math.ceil(filteredEquipments.length / itemsPerPage);
+  const equipmentTotalPages = Math.ceil(
+    filteredEquipments.length / itemsPerPage
+  );
   const equipmentStartIndex = (equipmentCurrentPage - 1) * itemsPerPage;
   const currentEquipments = filteredEquipments.slice(
     equipmentStartIndex,
     equipmentStartIndex + itemsPerPage
   );
 
+  const fetchFoodsData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/food/getFoodData/${user.id_shelter}`
+      );
+
+      const foodsData = response.data;
+
+      if (foodsData.error) {
+        throw new Error(foodsData.message || "Failed to fetch foods");
+      }
+
+      setFoods(foodsData.data || []);
+    } catch (error) {
+      console.error("Error fetching food data", error);
+    }
+  };
+  const fetchEquipmentsData = async () => {
+    try {
+      const equipmentRes = await axios.get(
+        `http://localhost:3000/api/equipment/getEquipmentData/${user.id_shelter}`
+      );
+      const equipmentData = equipmentRes.data;
+
+      if (equipmentData.error) {
+        throw new Error(equipmentData.message || "Failed to fetch equipments");
+      }
+      setEquipments(equipmentData.data || []);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+  useEffect(() => {
+    fetchEquipmentsData();
+    fetchFoodsData();
+  }, []);
   const handleFoodSearchChange = (e) => {
     setFoodSearchQuery(e.target.value);
     setFoodCurrentPage(1);
@@ -338,7 +394,7 @@ export default function InventoryPages() {
           Inventory Management
         </Label>
         <Label className="text-2xl font-medium">Food</Label>
-        <div className="flex justify-between items-center w-full mt-4">
+        <div className="flex flex-col lg:flex-row md:flex-row gap-2 justify-between items-center w-full mt-4">
           <div className="flex flex-wrap gap-2 items-center">
             <Input
               type="text"
@@ -356,18 +412,21 @@ export default function InventoryPages() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>All</SelectItem>
-                <SelectItem value="Wet Food">Wet Food</SelectItem>
-                <SelectItem value="Dry Food">Dry Food</SelectItem>
+                <SelectItem value="Makanan Basah">Makanan Basah</SelectItem>
+                <SelectItem value="Makanan Kering">Makanan Kering</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={handleFoodTypeFilterChange} value={foodTypeFilter}>
+            <Select
+              onValueChange={handleFoodTypeFilterChange}
+              value={foodTypeFilter}
+            >
               <SelectTrigger className="w-full sm:w-50">
                 <SelectValue placeholder="Filter Food Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>All</SelectItem>
-                <SelectItem value="Donation">Donation</SelectItem>
-                <SelectItem value="Purchase">Purchase</SelectItem>
+                <SelectItem value="Donasi">Donasi</SelectItem>
+                <SelectItem value="Beli">Beli</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -382,16 +441,21 @@ export default function InventoryPages() {
         <InsertFoodDialog
           open={addFoodDialogOpen}
           onOpenChange={setAddFoodDialogOpen}
+          User={user}
+          fetchData={fetchFoodsData}
         />
         <EditFoodDialog
           open={editFoodDialogOpen}
           onOpenChange={setEditFoodDialogOpen}
           food={selectedFood}
+          User={user}
+          fetchData={fetchFoodsData}
         />
         <DeleteFoodDialog
           open={deleteFoodDialogOpen}
           onOpenChange={setDeleteFoodDialogOpen}
           food={selectedFood}
+          fetchData={fetchFoodsData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
@@ -494,7 +558,7 @@ export default function InventoryPages() {
           </div>
         </div>
         <Label className="text-2xl font-medium">Equipment</Label>
-        <div className="flex justify-between items-center w-full mt-4">
+        <div className="flex flex-col lg:flex-row gap-2 md:flex-row justify-between items-center w-full mt-4">
           <div className="flex flex-wrap gap-2 items-center">
             <Input
               type="text"
@@ -512,8 +576,8 @@ export default function InventoryPages() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>All</SelectItem>
-                <SelectItem value="Donation">Donation</SelectItem>
-                <SelectItem value="Purchase">Purchase</SelectItem>
+                <SelectItem value="Donasi">Donasi</SelectItem>
+                <SelectItem value="Beli">Beli</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -528,16 +592,21 @@ export default function InventoryPages() {
         <InsertEquipmentDialog
           open={addEquipmentDialogOpen}
           onOpenChange={setAddEquipmentDialogOpen}
+          User={user}
+          fetchData={fetchEquipmentsData}
         />
         <EditEquipmentDialog
           open={editEquipmentDialogOpen}
           onOpenChange={setEditEquipmentDialogOpen}
           equipment={selectedEquipment}
+          User={user}
+          fetchData={fetchEquipmentsData}
         />
         <DeleteEquipmentDialog
           open={deleteEquipmentDialogOpen}
           onOpenChange={setDeleteEquipmentDialogOpen}
           equipment={selectedEquipment}
+          fetchData={fetchEquipmentsData}
         />
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>

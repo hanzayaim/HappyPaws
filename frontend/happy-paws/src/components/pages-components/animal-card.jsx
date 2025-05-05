@@ -11,7 +11,7 @@ const AnimalCard = ({ name, imageUrl, status, jenis, umur, detailLink }) => {
       <CardHeader>
         {imageUrl ? (
           <img
-            src={imageUrl}
+            src={`data:image/jpeg;base64,${imageUrl}`}
             alt="imgAnimal"
             className="w-full h-40 object-cover rounded-t-xl"
           />

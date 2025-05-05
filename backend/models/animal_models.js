@@ -8,6 +8,11 @@ async function getAnimalDataById(id_shelter, id_animal) {
       [id_shelter, id_animal]
     );
     if (rows.length > 0) {
+      rows.forEach((row) => {
+        if (row.animal_img) {
+          row.animal_img = row.animal_img.toString("base64");
+        }
+      });
       return {
         error: false,
         message: "data fetched successfully",
@@ -36,6 +41,11 @@ async function getAnimalData(id_shelter) {
       [id_shelter]
     );
     if (rows.length > 0) {
+      rows.forEach((row) => {
+        if (row.animal_img) {
+          row.animal_img = row.animal_img.toString("base64");
+        }
+      });
       return {
         error: false,
         message: "data fetched successfully",

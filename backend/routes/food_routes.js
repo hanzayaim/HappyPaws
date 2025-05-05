@@ -73,7 +73,6 @@ router.post("/insertFoodData", async (req, res) => {
     exp_date == null ||
     cost == null ||
     date == null ||
-    note == null ||
     created_by == null ||
     id_shelter == null
   ) {
