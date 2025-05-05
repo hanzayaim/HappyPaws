@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+// import { useNavigate } from "react-router-dom";
 //#region Dummy
 const medicals = [
   {
@@ -78,16 +79,17 @@ const medicals = [
     id_animal: "animal_002",
   },
 ];
-const user = {
-  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-  owner_name: "Dimas",
-  email: "shelter001@gmail.com",
-  shelter_name: "Happy Paws Shelter",
-  phone_number: "081238697341",
-  address: "jln jalan",
-};
+// const user = {
+//   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+//   owner_name: "Dimas",
+//   email: "shelter001@gmail.com",
+//   shelter_name: "Happy Paws Shelter",
+//   phone_number: "081238697341",
+//   address: "jln jalan",
+// };
 //#endregion
-
+const API_BASE_URL = "http://localhost:3000";
+axios.defaults.baseURL = API_BASE_URL;
 export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;
@@ -100,10 +102,9 @@ export default function FinancePage() {
   const [Employees, setEmployees] = useState([]);
   const [Foods, setFoods] = useState([]);
   const [Equipments, setEquipments] = useState([]);
-
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [statusFilter, setStatusFilter] = useState("");
-
+  const [userType, setUserType] = useState(null);
+  const [userData, setUserData] = useState(null);
+  // const navigate = useNavigate();
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
   const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
@@ -173,7 +174,7 @@ export default function FinancePage() {
   const fetchIncomeData = async () => {
     try {
       const incomesRes = await axios.get(
-        `http://localhost:3000/api/income/getIncome/${user.id_shelter}`
+        `/api/income/getIncome/${userData.id_shelter}`
       );
       const incomesData = incomesRes.data;
 
@@ -188,7 +189,7 @@ export default function FinancePage() {
   const fetchExpensesData = async () => {
     try {
       const expensesRes = await axios.get(
-        `http://localhost:3000/api/expenses/getExpenses/${user.id_shelter}`
+        `/api/expenses/getExpenses/${userData.id_shelter}`
       );
       const expensesData = expensesRes.data;
 
@@ -203,7 +204,7 @@ export default function FinancePage() {
   const fetchSalaryData = async () => {
     try {
       const SalaryRes = await axios.get(
-        `http://localhost:3000/api/salary/getSalary/${user.id_shelter}`
+        `/api/salary/getSalary/${userData.id_shelter}`
       );
       if (SalaryRes.status === 404) {
         setSalaries(null);
@@ -222,7 +223,7 @@ export default function FinancePage() {
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/food/getFoodData/${user.id_shelter}`
+        `/api/food/getFoodData/${userData.id_shelter}`
       );
 
       const foodsData = response.data;
@@ -239,7 +240,7 @@ export default function FinancePage() {
   const fetchEquipmentsData = async () => {
     try {
       const equipmentRes = await axios.get(
-        `http://localhost:3000/api/equipment/getEquipmentData/${user.id_shelter}`
+        `/api/equipment/getEquipmentData/${userData.id_shelter}`
       );
       const equipmentData = equipmentRes.data;
 
@@ -254,7 +255,7 @@ export default function FinancePage() {
   const fetchEmployeeData = async () => {
     try {
       const EmployeeRes = await axios.get(
-        `http://localhost:3000/api/employees/getEmployeeData/${user.id_shelter}`
+        `/api/employees/getEmployeeData/${userData.id_shelter}`
       );
       const employeeData = EmployeeRes.data;
 
@@ -272,20 +273,14 @@ export default function FinancePage() {
     fetchExpensesData();
     try {
       const FinanceRes = await axios.get(
-        `http://localhost:3000/api/finance/getFinance/${user.id_shelter}`
+        `/api/finance/getFinance/${userData.id_shelter}`
       );
-      const ProfitRes = await axios.post(
-        `http://localhost:3000/api/finance/getPorfit`,
-        {
-          id_shelter: user.id_shelter,
-        }
-      );
-      const LossRes = await axios.post(
-        `http://localhost:3000/api/finance/getLoss`,
-        {
-          id_shelter: user.id_shelter,
-        }
-      );
+      const ProfitRes = await axios.post(`/api/finance/getPorfit`, {
+        id_shelter: userData.id_shelter,
+      });
+      const LossRes = await axios.post(`/api/finance/getLoss`, {
+        id_shelter: userData.id_shelter,
+      });
       const FinanceData = FinanceRes.data;
       const ProfitData = ProfitRes.data;
       const LossData = LossRes.data;
@@ -306,6 +301,13 @@ export default function FinancePage() {
     }
   };
   useEffect(() => {
+    const storedUserType = localStorage.getItem("userType");
+    const storedUserData = localStorage.getItem("userData");
+
+    if (storedUserType && storedUserData) {
+      setUserType(storedUserType);
+      setUserData(JSON.parse(storedUserData));
+    }
     fetchFinanceData();
     fetchEmployeeData();
     fetchEquipmentsData();
@@ -437,14 +439,14 @@ export default function FinancePage() {
         <InsertIncomeDialog
           open={addIncomeDialogOpen}
           onOpenChange={setAddIncomeDialogOpen}
-          User={user}
+          User={userData}
           fetchData={fetchFinanceData}
         />
         <EditIncomeDialog
           open={editIncomeDialogOpen}
           onOpenChange={setEditIncomeDialogOpen}
           incomeData={selectedIncome}
-          User={user}
+          User={userData}
           fetchData={fetchFinanceData}
         />
         <DeleteIncomeDialog
@@ -718,7 +720,7 @@ export default function FinancePage() {
           open={addSalaryDialogOpen}
           onOpenChange={setAddSalaryDialogOpen}
           fetchDataSalary={fetchFinanceData}
-          User={user}
+          User={userData}
           EmployeeData={Employees}
         />
         <DeleteSalaryDialog
