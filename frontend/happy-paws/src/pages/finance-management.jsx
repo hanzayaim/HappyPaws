@@ -102,7 +102,7 @@ export default function FinancePage() {
   const [Employees, setEmployees] = useState([]);
   const [Foods, setFoods] = useState([]);
   const [Equipments, setEquipments] = useState([]);
-  const [userType, setUserType] = useState(null);
+  // const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
   // const navigate = useNavigate();
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
@@ -267,6 +267,19 @@ export default function FinancePage() {
       console.error("Error fetching data", error);
     }
   };
+  const currentUser = async () => {
+    try {
+      const storedUserType = localStorage.getItem("userType");
+      const storedUserData = localStorage.getItem("userData");
+
+      if (storedUserType && storedUserData) {
+        // setUserType(storedUserType);
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error("Error user data", error);
+    }
+  };
   const fetchFinanceData = async () => {
     fetchIncomeData();
     fetchSalaryData();
@@ -301,18 +314,17 @@ export default function FinancePage() {
     }
   };
   useEffect(() => {
-    const storedUserType = localStorage.getItem("userType");
-    const storedUserData = localStorage.getItem("userData");
-
-    if (storedUserType && storedUserData) {
-      setUserType(storedUserType);
-      setUserData(JSON.parse(storedUserData));
-    }
-    fetchFinanceData();
-    fetchEmployeeData();
-    fetchEquipmentsData();
-    fetchFoodsData();
+    currentUser();
   }, []);
+  useEffect(() => {
+    if (userData && userData.id_shelter) {
+      fetchFinanceData();
+      fetchEmployeeData();
+      fetchEquipmentsData();
+      fetchFoodsData();
+    }
+  }, [userData]);
+
   const handleIncomeSearchChange = (e) => {
     setIncomeSearchQuery(e.target.value);
     setIncomeCurrentPage(1);

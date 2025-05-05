@@ -219,19 +219,20 @@ import axios from "axios";
 //   },
 // ];
 
-const user = {
-  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-  owner_name: "Dimas",
-  email: "shelter001@gmail.com",
-  shelter_name: "Happy Paws Shelter",
-  role: "Owner",
-  phone_number: "081238697341",
-  address: "jln jalan",
-};
+// const user = {
+//   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+//   owner_name: "Dimas",
+//   email: "shelter001@gmail.com",
+//   shelter_name: "Happy Paws Shelter",
+//   role: "Owner",
+//   phone_number: "081238697341",
+//   address: "jln jalan",
+// };
 export default function InventoryPages() {
   const itemsPerPage = 5;
   const [foods, setFoods] = useState([]);
   const [equipments, setEquipments] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
@@ -297,7 +298,7 @@ export default function InventoryPages() {
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/food/getFoodData/${user.id_shelter}`
+        `http://localhost:3000/api/food/getFoodData/${userData.id_shelter}`
       );
 
       const foodsData = response.data;
@@ -314,7 +315,7 @@ export default function InventoryPages() {
   const fetchEquipmentsData = async () => {
     try {
       const equipmentRes = await axios.get(
-        `http://localhost:3000/api/equipment/getEquipmentData/${user.id_shelter}`
+        `http://localhost:3000/api/equipment/getEquipmentData/${userData.id_shelter}`
       );
       const equipmentData = equipmentRes.data;
 
@@ -326,9 +327,27 @@ export default function InventoryPages() {
       console.error("Error fetching data", error);
     }
   };
+  const currentUser = async () => {
+    try {
+      const storedUserType = localStorage.getItem("userType");
+      const storedUserData = localStorage.getItem("userData");
+
+      if (storedUserType && storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error("Error user data", error);
+    }
+  };
+
   useEffect(() => {
-    fetchEquipmentsData();
-    fetchFoodsData();
+    currentUser();
+  }, []);
+  useEffect(() => {
+    if (userData && userData.id_shelter) {
+      fetchEquipmentsData();
+      fetchFoodsData();
+    }
   }, []);
   const handleFoodSearchChange = (e) => {
     setFoodSearchQuery(e.target.value);
@@ -441,14 +460,14 @@ export default function InventoryPages() {
         <InsertFoodDialog
           open={addFoodDialogOpen}
           onOpenChange={setAddFoodDialogOpen}
-          User={user}
+          User={userData}
           fetchData={fetchFoodsData}
         />
         <EditFoodDialog
           open={editFoodDialogOpen}
           onOpenChange={setEditFoodDialogOpen}
           food={selectedFood}
-          User={user}
+          User={userData}
           fetchData={fetchFoodsData}
         />
         <DeleteFoodDialog
@@ -592,14 +611,14 @@ export default function InventoryPages() {
         <InsertEquipmentDialog
           open={addEquipmentDialogOpen}
           onOpenChange={setAddEquipmentDialogOpen}
-          User={user}
+          User={userData}
           fetchData={fetchEquipmentsData}
         />
         <EditEquipmentDialog
           open={editEquipmentDialogOpen}
           onOpenChange={setEditEquipmentDialogOpen}
           equipment={selectedEquipment}
-          User={user}
+          User={userData}
           fetchData={fetchEquipmentsData}
         />
         <DeleteEquipmentDialog

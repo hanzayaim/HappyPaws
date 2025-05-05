@@ -69,7 +69,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
           date: data.equipmentDate.toISOString().split("T")[0],
           cost: data.equipmentCost,
           note: data.equipmentNote,
-          created_by: User.role,
+          created_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
         }
       );
@@ -240,7 +240,7 @@ export function EditEquipmentDialog({
           date: data.equipmentDate.toISOString().split("T")[0],
           cost: data.equipmentCost,
           note: data.equipmentNote,
-          updated_by: User.role,
+          updated_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
           id_equipment: equipment.id_equipment,
         }
