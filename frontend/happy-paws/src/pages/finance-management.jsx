@@ -406,7 +406,7 @@ export default function FinancePage() {
             <Label className="lg:text-2xl text-xl font-medium">Income</Label>
             <Input
               type="text"
-              placeholder="Search by food name"
+              placeholder="Search by income name"
               value={IncomeSearchQuery}
               onChange={handleIncomeSearchChange}
               className="md:w-full sm:w-64"

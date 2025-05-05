@@ -12,15 +12,14 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
+  DialogClose,
 } from "../ui/dialog";
-import {
-  AnimalAdopterCombobox,
-  AnimalGenderCombobox,
-  AnimalOutCombobox,
-} from "./AnimalCombobox";
+import { AnimalAdopterCombobox, AnimalOutCombobox } from "./AnimalCombobox";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import DatePicker from "./DatePicker";
+import GenderCombobox from "./gender-combobox";
+import axios from "axios";
 
 const animalInSchema = z.object({
   animalName: z
@@ -37,7 +36,7 @@ const animalInSchema = z.object({
   animalNote: z.string().optional(),
   animalImg: z.any().optional(),
 });
-export function AnimalInDialog({ open, onOpenChange }) {
+export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
   const {
     register,
     handleSubmit,
@@ -57,12 +56,59 @@ export function AnimalInDialog({ open, onOpenChange }) {
       animalImg: null,
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+
+  const onSubmit = async (data) => {
+    try {
+      let profileImgBase64 = null;
+      let userName = User.owner_name ? User.owner_name : User.username;
+
+      if (data.animalImg && data.animalImg[0]) {
+        const file = data.animalImg[0];
+        profileImgBase64 = await convertFileToBase64(file);
+      }
+
+      console.log(userName, User.id_shelter);
+
+      const response = await axios.post(
+        "http://localhost:3000/api/animals/insertAnimalData",
+        {
+          id_shelter: User.id_shelter,
+          animal_name: data.animalName,
+          animal_img: profileImgBase64,
+          animal_gender: data.animalGender,
+          animal_type: data.animalType,
+          animal_age: data.animalAge,
+          rescue_location: data.animalRescueLoc,
+          date: data.animalDate.toISOString().split("T")[0],
+          note: data.animalNote,
+          created_by: userName,
+        }
+      );
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert animal data");
+      }
+
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const [previewUrl = null, setPreviewUrl] = useState(null);
+
   const watchFile = useWatch({
     control,
     name: "animalImg",
@@ -74,11 +120,11 @@ export function AnimalInDialog({ open, onOpenChange }) {
         const preview = URL.createObjectURL(file);
         setPreviewUrl(preview);
 
-        // cleanup URL object
         return () => URL.revokeObjectURL(preview);
       }
     }
   }, [watchFile]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild></DialogTrigger>
@@ -142,7 +188,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
               )}
             </div>
             <div className="flex flex-col gap-2">
-              <Label>Date</Label>
+              <Label>Date In</Label>
               <Controller
                 control={control}
                 name="animalDate"
@@ -163,7 +209,7 @@ export function AnimalInDialog({ open, onOpenChange }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <AnimalGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
@@ -456,7 +502,7 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
                 name="animalGender"
                 render={({ field }) => (
                   <>
-                    <AnimalGenderCombobox
+                    <GenderCombobox
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}

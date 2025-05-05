@@ -32,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { AnimalData } from "./animal-management";
 
 export const medicalData = [
   {
@@ -112,8 +111,42 @@ export const medicalData = [
   },
 ];
 
+const user = {
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  phone_number: "081238697341",
+  role: "Owner",
+  address: "jln jalan",
+};
+
 export default function MedicalManagement() {
   const itemsPerPage = 5;
+  const [animalData, setAnimalData] = useState([]);
+
+  const fetchAnimalData = async () => {
+    try {
+      const animalRes = await axios.get(
+        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
+      );
+
+      const animalDataFetch = animalRes.data;
+
+      if (animalDataFetch.error) {
+        throw new Error(
+          animalDataFetch.message || "Failed to fetch animal data"
+        );
+      }
+      setAnimalData(animalDataFetch.data || []);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnimalData();
+  }, []);
 
   const [medicalCurrentPage, setMedicalCurrentPage] = useState(1);
   const [addMedicalDialogOpen, setAddMedicalDialogOpen] = useState(false);
@@ -125,7 +158,7 @@ export default function MedicalManagement() {
   const [selectedMedical, setSelectedMedical] = useState(null);
 
   const getAnimalName = (id_animal, id_shelter) => {
-    const animal = AnimalData.find(
+    const animal = animalData.find(
       (a) => a.id_animal === id_animal && a.id_shelter === id_shelter
     );
     return animal ? animal.animal_name : "Unknown";

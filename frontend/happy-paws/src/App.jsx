@@ -19,7 +19,6 @@ import ForgotPassword from "./pages/forgot-password";
 import ForgotPasswordLink from "./pages/forgot-password-link";
 import Dashboard from "./pages/dashboard-pages";
 
-
 function App() {
   return (
     <Router>
@@ -45,7 +44,7 @@ function App() {
         <Route path="/animal-management" element={<AnimalManagement />} />
         <Route path="/adopter-management" element={<AdopterManagement />} />
         <Route
-          path="/animal-management/animal-detail/:id"
+          path="/animal-management/animal-detail/:id_animal"
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />

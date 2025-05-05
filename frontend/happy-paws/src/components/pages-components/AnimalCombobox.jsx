@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Check, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -11,12 +11,6 @@ import {
   CommandEmpty,
 } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { AnimalData } from "../../pages/animal-management";
-
-const gender = [
-  { value: "Laki-laki", label: "Laki-Laki" },
-  { value: "Perempuan", label: "Perempuan" },
-];
 
 const AdopterData = [
   {
@@ -69,59 +63,44 @@ const AdopterData = [
   },
 ];
 
-export function AnimalGenderCombobox({ value, onChange }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="combobox"
-              className={cn(
-                "w-full justify-between text-left",
-                !value && "text-muted-foreground"
-              )}
-              onClick={() => setOpen(!open)}
-            >
-              {value || "Select Gender"}
-              <ChevronDown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 max-w-sm">
-            <Command>
-              <CommandList>
-                <CommandGroup>
-                  {gender.map((c) => (
-                    <CommandItem
-                      key={c.value}
-                      value={c.value}
-                      onSelect={(currentValue) => {
-                        onChange(currentValue === value ? "" : currentValue);
-                        setOpen(false);
-                      }}
-                    >
-                      {c.label}
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === c.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
-  );
-}
+const user = {
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  phone_number: "081238697341",
+  role: "Owner",
+  address: "jln jalan",
+};
+
 export function AnimalOutCombobox({ value, onChange }) {
   const [open, setOpen] = useState(false);
-  const selectedAnimal = AnimalData.find((a) => a.id_animal === value);
+  const [animalData, setAnimalData] = useState([]);
+
+  const fetchAnimalData = async () => {
+    try {
+      const animalRes = await axios.get(
+        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
+      );
+
+      const animalDataFetch = animalRes.data;
+
+      if (animalDataFetch.error) {
+        throw new Error(
+          animalDataFetch.message || "Failed to fetch animal data"
+        );
+      }
+      setAnimalData(animalDataFetch);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnimalData();
+  }, []);
+
+  const selectedAnimal = animalData.find((a) => a.id_animal === value);
 
   return (
     <div className="flex flex-col gap-4">
@@ -147,29 +126,29 @@ export function AnimalOutCombobox({ value, onChange }) {
               <CommandList>
                 <CommandEmpty>No animal found.</CommandEmpty>
                 <CommandGroup>
-                  {AnimalData.filter(
-                    (animal) => animal.animal_status == "Available"
-                  ).map((animal) => (
-                    <CommandItem
-                      key={animal.id_animal}
-                      onSelect={() => {
-                        onChange(
-                          animal.id_animal === value ? "" : animal.id_animal
-                        );
-                        setOpen(false);
-                      }}
-                    >
-                      {animal.animal_name}
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === animal.id_animal
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
+                  {animalData
+                    .filter((animal) => animal.animal_status == "Available")
+                    .map((animal) => (
+                      <CommandItem
+                        key={animal.id_animal}
+                        onSelect={() => {
+                          onChange(
+                            animal.id_animal === value ? "" : animal.id_animal
+                          );
+                          setOpen(false);
+                        }}
+                      >
+                        {animal.animal_name}
+                        <Check
+                          className={cn(
+                            "ml-auto",
+                            value === animal.id_animal
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
                 </CommandGroup>
               </CommandList>
             </Command>
@@ -182,7 +161,32 @@ export function AnimalOutCombobox({ value, onChange }) {
 
 export function AnimalNameCombobox({ value, onChange }) {
   const [open, setOpen] = useState(false);
-  const selectedAnimal = AnimalData.find((a) => a.id_animal === value);
+  const [animalData, setAnimalData] = useState([]);
+
+  const fetchAnimalData = async () => {
+    try {
+      const animalRes = await axios.get(
+        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
+      );
+
+      const animalDataFetch = animalRes.data;
+
+      if (animalDataFetch.error) {
+        throw new Error(
+          animalDataFetch.message || "Failed to fetch animal data"
+        );
+      }
+      setAnimalData(animalDataFetch);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnimalData();
+  }, []);
+
+  const selectedAnimal = animalData.find((a) => a.id_animal === value);
 
   return (
     <div className="flex flex-col gap-4">
@@ -208,7 +212,7 @@ export function AnimalNameCombobox({ value, onChange }) {
               <CommandList>
                 <CommandEmpty>No animal found.</CommandEmpty>
                 <CommandGroup>
-                  {AnimalData.map((animal) => (
+                  {animalData.map((animal) => (
                     <CommandItem
                       key={animal.id_animal}
                       onSelect={() => {
