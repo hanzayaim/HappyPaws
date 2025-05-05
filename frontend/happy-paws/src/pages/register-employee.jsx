@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -38,6 +38,7 @@ const employeeSchema = z
 
 export default function RegisterEmployee() {
   const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -262,7 +263,15 @@ export default function RegisterEmployee() {
           </div>
         </div>
       </div>
-      <SuccessDialog open={showSuccess} onOpenChange={setShowSuccess} />
+      <SuccessDialog
+        open={showSuccess}
+        onOpenChange={(open) => {
+          setShowSuccess(open);
+          if (!open) {
+            navigate("/login");
+          }
+        }}
+      />
     </>
   );
 }

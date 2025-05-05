@@ -18,45 +18,122 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CardLogin from "./card-login";
 import LogoFooter from "../../assets/logo-hp.png";
 import { SidebarFooter } from "../ui/sidebar";
-
-const items = [
-  {
-    title: "User Management",
-    url: "/user-management",
-    icon: UserRoundCog,
-  },
-  {
-    title: "Animal Management",
-    url: "/animal-management",
-    icon: PawPrint,
-  },
-  {
-    title: "Finance Management",
-    url: "/finance-management",
-    icon: Landmark,
-  },
-  {
-    title: "Medical Management",
-    url: "/medical-management",
-    icon: ClipboardPlus,
-  },
-  {
-    title: "Adopter Management",
-    url: "/adopter-management",
-    icon: HeartHandshake,
-  },
-  {
-    title: "Inventory Management",
-    url: "/inventory-management",
-    icon: Warehouse,
-  },
-];
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function AppSidebar() {
+  const navigate = useNavigate();
+  const [userType, setUserType] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const storedUserType = localStorage.getItem("userType");
+    const storedUserData = localStorage.getItem("userData");
+
+    if (storedUserType && storedUserData) {
+      setUserType(storedUserType);
+      setUserData(JSON.parse(storedUserData));
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.get("/api/auth/logout", { withCredentials: true });
+
+      localStorage.removeItem("userType");
+      localStorage.removeItem("userData");
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const getUserManagementUrl = () => {
+    if (userType === "shelter" && userData?.role === "Owner") {
+      return "/employee-management";
+    } else if (userType === "superuser" && userData?.role === "Superuser") {
+      return "/shelter-management";
+    }
+  };
+
+  const getMenuItems = () => {
+    const baseItems = [
+      {
+        title: "User Management",
+        url: getUserManagementUrl(),
+        icon: UserRoundCog,
+      },
+      {
+        title: "Animal Management",
+        url: "/animal-management",
+        icon: PawPrint,
+      },
+      {
+        title: "Finance Management",
+        url: "/finance-management",
+        icon: Landmark,
+      },
+      {
+        title: "Medical Management",
+        url: "/medical-management",
+        icon: ClipboardPlus,
+      },
+      {
+        title: "Adopter Management",
+        url: "/adopter-management",
+        icon: HeartHandshake,
+      },
+      {
+        title: "Inventory Management",
+        url: "/inventory-management",
+        icon: Warehouse,
+      },
+    ];
+
+    if (userType === "superuser" && userData?.role === "Superuser") {
+      return baseItems.filter((item) => item.title === "User Management");
+    }
+
+    if (userType === "shelter" && userData?.role === "Owner") {
+      return baseItems;
+    }
+
+    if (userType === "employee" && userData?.role === "Finance") {
+      return baseItems.filter((item) =>
+        [
+          "Medical Management",
+          "Finance Management",
+          "Inventory Management",
+        ].includes(item.title)
+      );
+    }
+
+    if (userType === "employee" && userData?.role === "Administration") {
+      return baseItems.filter((item) =>
+        [
+          "Animal Management",
+          "Adopter Management",
+          "Inventory Management",
+        ].includes(item.title)
+      );
+    }
+
+    if (userType === "employee" && userData?.role === "Medical") {
+      return baseItems.filter((item) =>
+        ["Medical Management", "Finance Management"].includes(item.title)
+      );
+    }
+
+    return [];
+  };
+
+  const menuItems = getMenuItems();
+
   return (
     <Sidebar>
       <SidebarContent className="flex flex-col justify-between h-full">
@@ -66,7 +143,7 @@ export default function AppSidebar() {
               <CardLogin />
             </div>
             <SidebarMenu className="mt-5">
-              {items.map((item) => (
+              {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link to={item.url}>
@@ -78,7 +155,11 @@ export default function AppSidebar() {
               ))}
             </SidebarMenu>
             <div>
-              <Button variant="alert" className="w-full justify-center mt-5">
+              <Button
+                variant="alert"
+                className="w-full justify-center mt-5"
+                onClick={handleLogout}
+              >
                 <LogOut />
                 Sign Out
               </Button>
