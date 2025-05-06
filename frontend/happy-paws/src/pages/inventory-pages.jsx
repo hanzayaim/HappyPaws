@@ -233,7 +233,6 @@ export default function InventoryPages() {
   const [foods, setFoods] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [userType, setUserType] = useState(null);
 
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
@@ -334,7 +333,6 @@ export default function InventoryPages() {
       const storedUserData = localStorage.getItem("userData");
 
       if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
