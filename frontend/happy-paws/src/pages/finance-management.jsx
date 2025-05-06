@@ -49,7 +49,8 @@ import {
   MonthFilterSelect,
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 // import { useNavigate } from "react-router-dom";
 //#region Dummy
 // const medicals = [
@@ -110,7 +111,7 @@ export default function FinancePage() {
   const [Equipments, setEquipments] = useState([]);
   const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
-  const navigate = useNavigate();
+
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
   const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
@@ -120,6 +121,7 @@ export default function FinancePage() {
 
   const [SalarySearchQuery, setSalarySearchQuery] = useState("");
 
+  const [openAlertUser, setOpenAlertUser] = useState(false);
   const [addIncomeDialogOpen, setAddIncomeDialogOpen] = useState(false);
   const [editIncomeDialogOpen, setEditIncomeDialogOpen] = useState(false);
   const [deleteIncomeDialogOpen, setDeleteIncomeDialogOpen] = useState(false);
@@ -341,11 +343,18 @@ export default function FinancePage() {
   }, []);
   useEffect(() => {
     if (userData && userData.id_shelter) {
-      fetchFinanceData();
-      fetchEmployeeData();
-      fetchEquipmentsData();
-      fetchFoodsData();
-      fetchMedicalsData();
+      if (
+        (userType === "employee" && userData?.role === "Finance") ||
+        (userType === "shelter" && userData?.role === "Owner")
+      ) {
+        fetchFinanceData();
+        fetchEmployeeData();
+        fetchEquipmentsData();
+        fetchFoodsData();
+        fetchMedicalsData();
+      } else {
+        setOpenAlertUser(true);
+      }
     }
   }, [userData]);
 
@@ -401,6 +410,13 @@ export default function FinancePage() {
         <Label className="lg:text-3xl text-2xl font-bold self-start">
           Finance Management
         </Label>
+        <AlertDialogUser
+          desc={
+            "This feature just can be access by Owner shelter or Finance Employe"
+          }
+          open={openAlertUser}
+          onOpenChange={setOpenAlertUser}
+        />
         <div className="w-full flex justify-center items-center ">
           <Card className="lg:min-w-lg w-lg">
             <CardHeader>

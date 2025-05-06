@@ -113,7 +113,7 @@ export default function AppSidebar() {
       );
     }
 
-    if (userType === "employee" && userData?.role === "Administration") {
+    if (userType === "employee" && userData?.role === "Administrator") {
       return baseItems.filter((item) =>
         [
           "Animal Management",

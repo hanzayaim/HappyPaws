@@ -233,6 +233,7 @@ export default function InventoryPages() {
   const [foods, setFoods] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [userType, setUserType] = useState(null);
 
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
@@ -333,6 +334,7 @@ export default function InventoryPages() {
       const storedUserData = localStorage.getItem("userData");
 
       if (storedUserType && storedUserData) {
+        setUserType(storedUserType);
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
@@ -345,8 +347,14 @@ export default function InventoryPages() {
   }, []);
   useEffect(() => {
     if (userData && userData.id_shelter) {
-      fetchEquipmentsData();
-      fetchFoodsData();
+      if (
+        (userType === "employee" && userData?.role === "Finance") ||
+        (userType === "shelter" && userData?.role === "Owner") ||
+        (userType === "employee" && userData?.role === "Administrator")
+      ) {
+        fetchEquipmentsData();
+        fetchFoodsData();
+      }
     }
   }, [userData]);
   const handleFoodSearchChange = (e) => {
