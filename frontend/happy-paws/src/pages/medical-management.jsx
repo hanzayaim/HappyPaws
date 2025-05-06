@@ -32,89 +32,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { AnimalData } from "./animal-management";
+import axios from "axios";
 
-export const medicalData = [
-  {
-    id_medical: "MED-001",
-    medical_status: "Died",
-    vaccin_status: "Not Vaccinated",
-    medical_date_in: "2025-04-25T00:00:00.000Z",
-    medical_date_out: null,
-    medical_cost: 120000,
-    note: "Meninggal pasca operasi",
-    created_at: "2025-04-25T00:00:00.000Z",
-    created_by: "staff1",
-    updated_at: "2025-04-28T00:00:00.000Z",
-    updated_by: "staff1",
-    id_shelter: "S001",
-    id_animal: "A001",
-  },
-  {
-    id_medical: "MED-002",
-    medical_status: "Healthy",
-    vaccin_status: "Vaccinated",
-    medical_date_in: "2025-03-05T00:00:00.000Z",
-    medical_date_out: "2025-03-15T00:00:00.000Z",
-    medical_cost: 180000,
-    note: "Vaksinasi lengkap",
-    created_at: "2025-03-05T00:00:00.000Z",
-    created_by: "staff4",
-    updated_at: "2025-03-15T00:00:00.000Z",
-    updated_by: "staff4",
-    id_shelter: "S001",
-    id_animal: "A002",
-  },
-  {
-    id_medical: "MED-003",
-    medical_status: "Sick",
-    vaccin_status: "Not Vaccinated",
-    medical_date_in: "2025-04-15T00:00:00.000Z",
-    medical_date_out: null,
-    medical_cost: 200000,
-    note: "Infeksi kulit",
-    created_at: "2025-04-15T00:00:00.000Z",
-    created_by: "staff3",
-    updated_at: "2025-04-20T00:00:00.000Z",
-    updated_by: "staff3",
-    id_shelter: "S001",
-    id_animal: "A003",
-  },
-  {
-    id_medical: "MED-004",
-    medical_status: "Healthy",
-    vaccin_status: "Vaccinated",
-    medical_date_in: "2025-02-20T00:00:00.000Z",
-    medical_date_out: "2025-03-01T00:00:00.000Z",
-    medical_cost: 0,
-    note: "Sterilisasi",
-    created_at: "2025-02-20T00:00:00.000Z",
-    created_by: "admin",
-    updated_at: "2025-03-01T00:00:00.000Z",
-    updated_by: "admin",
-    id_shelter: "S001",
-    id_animal: "A004",
-  },
-  {
-    id_medical: "MED-005",
-    medical_status: "Sick",
-    vaccin_status: "Not Vaccinated",
-    medical_date_in: "2025-04-01T00:00:00.000Z",
-    medical_date_out: null,
-    medical_cost: 100000,
-    note: "Perawatan luka kaki",
-    created_at: "2025-04-01T00:00:00.000Z",
-    created_by: "staff2",
-    updated_at: "2025-04-10T00:00:00.000Z",
-    updated_by: "staff2",
-    id_shelter: "S001",
-    id_animal: "A005",
-  },
-];
+const user = {
+  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
+  owner_name: "Dimas",
+  email: "shelter001@gmail.com",
+  shelter_name: "Happy Paws Shelter",
+  phone_number: "081238697341",
+  role: "Owner",
+  address: "jln jalan",
+};
 
 export default function MedicalManagement() {
   const itemsPerPage = 5;
-
+  const [animalData, setAnimalData] = useState([]);
+  const [medicalData, setMedicalData] = useState([]);
   const [medicalCurrentPage, setMedicalCurrentPage] = useState(1);
   const [addMedicalDialogOpen, setAddMedicalDialogOpen] = useState(false);
   const [editMedicalDialogOpen, setEditMedicalDialogOpen] = useState(false);
@@ -125,7 +58,7 @@ export default function MedicalManagement() {
   const [selectedMedical, setSelectedMedical] = useState(null);
 
   const getAnimalName = (id_animal, id_shelter) => {
-    const animal = AnimalData.find(
+    const animal = animalData.find(
       (a) => a.id_animal === id_animal && a.id_shelter === id_shelter
     );
     return animal ? animal.animal_name : "Unknown";
@@ -151,6 +84,48 @@ export default function MedicalManagement() {
     medicalStartIndex,
     medicalStartIndex + itemsPerPage
   );
+
+  const fetchAnimalData = async () => {
+    try {
+      const animalRes = await axios.get(
+        `api/animals/getAnimalData/${user.id_shelter}`
+      );
+
+      const animalDataFetch = animalRes.data;
+
+      if (animalDataFetch.error) {
+        throw new Error(
+          animalDataFetch.message || "Failed to fetch animal data"
+        );
+      }
+      setAnimalData(animalDataFetch.data || []);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  const fetchMedicalData = async () => {
+    try {
+      const medicalRes = await axios.get(
+        `/api/medical/getMedicalData/${user.id_shelter}`
+      );
+
+      const medicalDataFetch = medicalRes.data;
+
+      if (medicalDataFetch.error) {
+        setMedicalData([]);
+        console.error("Error fetching adopter data:", medicalRes.data.error);
+      }
+      setMedicalData(medicalDataFetch.data || []);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnimalData();
+    fetchMedicalData();
+  }, []);
 
   useEffect(() => {
     setMedicalCurrentPage(1);
@@ -225,18 +200,27 @@ export default function MedicalManagement() {
         <InsertMedicalDialog
           open={addMedicalDialogOpen}
           onOpenChange={setAddMedicalDialogOpen}
+          User={user}
+          fetchData={fetchMedicalData}
+          animalData={animalData}
         />
 
         <EditMedicalDialog
           open={editMedicalDialogOpen}
           onOpenChange={setEditMedicalDialogOpen}
           medical={selectedMedical}
+          User={user}
+          fetchData={fetchMedicalData}
+          animalData={animalData}
         />
 
         <DeleteMedicalDialog
           open={deleteMedicalDialogOpen}
           onOpenChange={setDeleteMedicalDialogOpen}
           medical={selectedMedical}
+          User={user}
+          fetchData={fetchMedicalData}
+          animalData={animalData}
         />
 
         <div className="p-4 bg-white rounded shadow-md overflow-auto">

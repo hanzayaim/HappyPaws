@@ -18,6 +18,7 @@ import {
 import EquipmentTypeCombobox from "./EquipmentCombobox";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
+import axios from "axios";
 
 const equipmentSchema = z.object({
   equipmentName: z.string().min(1, "Name is required"),
@@ -37,7 +38,7 @@ const equipmentSchema = z.object({
   equipmentNote: z.string().optional(),
 });
 
-export function InsertEquipmentDialog({ open, onOpenChange }) {
+export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
   const [equipmentType, setEquipmentType] = useState("");
 
   const {
@@ -58,10 +59,31 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/equipment/insertEquipmentData",
+        {
+          name: data.equipmentName,
+          type: data.equipmentType,
+          date: data.equipmentDate.toISOString().split("T")[0],
+          cost: data.equipmentCost,
+          note: data.equipmentNote,
+          created_by: User.role,
+          id_shelter: User.id_shelter,
+        }
+      );
+      const result = response.data;
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert Equipment data");
+      }
+
+      reset();
+      fetchData();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error insert Equipment:", error.message);
+    }
   };
 
   const handleEquipmentTypeChange = (value) => {
@@ -117,10 +139,7 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.equipmentDate && (
@@ -171,7 +190,13 @@ export function InsertEquipmentDialog({ open, onOpenChange }) {
   );
 }
 
-export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
+export function EditEquipmentDialog({
+  open,
+  onOpenChange,
+  equipment,
+  User,
+  fetchData,
+}) {
   const [equipmentType, setEquipmentType] = useState("");
 
   const {
@@ -205,10 +230,34 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
     }
   }, [equipment, open, reset]);
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/equipment/updateEquipmentData",
+        {
+          name: data.equipmentName,
+          type: data.equipmentType,
+          date: data.equipmentDate.toISOString().split("T")[0],
+          cost: data.equipmentCost,
+          note: data.equipmentNote,
+          updated_by: User.role,
+          id_shelter: User.id_shelter,
+          id_equipment: equipment.id_equipment,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to update Equipment data");
+      }
+
+      reset();
+      fetchData();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating Equipment:", error.message);
+    }
   };
 
   const handleEquipmentTypeChange = (value) => {
@@ -272,10 +321,7 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
                 control={control}
                 name="equipmentDate"
                 render={({ field }) => (
-                  <DatePicker
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 )}
               />
               {errors.equipmentDate && (
@@ -311,11 +357,36 @@ export function EditEquipmentDialog({ open, onOpenChange, equipment }) {
   );
 }
 
-export function DeleteEquipmentDialog({ open, onOpenChange, equipment }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete equipment with ID: ", equipment?.id_equipment);
-    onOpenChange(false);
+export function DeleteEquipmentDialog({
+  open,
+  onOpenChange,
+  equipment,
+  fetchData,
+}) {
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/equipment/deleteEquipmentData/",
+        {
+          id_shelter: equipment.id_shelter,
+          id_equipment: equipment.id_equipment,
+        }
+      );
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete equipment data");
+      }
+
+      data.preventDefault();
+      console.log("Delete equipment with ID: ", equipment?.id_equipment);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error deleting equipment:", error.message);
+    }
+
+    fetchData();
   };
 
   return (

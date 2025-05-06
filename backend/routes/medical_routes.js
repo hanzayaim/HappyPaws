@@ -15,11 +15,6 @@ router.get("/getMedicalData/:id_shelter", async (req, res) => {
 
   try {
     const result = await getMedicalData(id_shelter);
-
-    if (result.error) {
-      return res.status(400).json(result);
-    }
-
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({
@@ -66,7 +61,6 @@ router.post("/insertMedicalData", async (req, res) => {
     medical_status == null ||
     vaccin_status == null ||
     medical_date_in == null ||
-    medical_date_out == null ||
     medical_cost == null ||
     note == null ||
     created_by == null ||
@@ -123,9 +117,7 @@ router.post("/updateMedicalData", async (req, res) => {
     medical_status == null ||
     vaccin_status == null ||
     medical_date_in == null ||
-    medical_date_out == null ||
     medical_cost == null ||
-    note == null ||
     updated_by == null ||
     id_shelter == null ||
     id_animal == null ||

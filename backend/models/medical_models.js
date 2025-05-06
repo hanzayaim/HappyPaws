@@ -116,6 +116,7 @@ async function insertMedicalData(
       medical: result.rows[0],
     };
   } catch (error) {
+    console.error(error);
     return {
       error: true,
       message: "Error creating medical.",

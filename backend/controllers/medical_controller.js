@@ -50,17 +50,9 @@ const insertMedical = async (
       );
     }
 
-    const animal_status =
-      medical_status === "Healthy" ? "Available" : "Not Available";
-    const resultAnimalStatus = await updateAnimalStatus(
-      animal_status,
-      created_by,
-      id_shelter,
-      id_animal
-    );
-
-    return { resultMedical, resultExpenses, resultAnimalStatus };
+    return { resultMedical, resultExpenses };
   } catch (error) {
+    console.error("Error inserting medical:", error);
     return {
       error: true,
       message: "Failed to insert medical.",
