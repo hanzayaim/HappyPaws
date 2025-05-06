@@ -141,9 +141,10 @@ export default function ShelterManagementPages() {
 
   const updateShelterStatus = async (id, status) => {
     try {
-      const response = await axios.post("/api/shelter/updateShelterStatus", {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
         id_shelter: id,
         status: status,
+        email: selectedUser.email,
       });
 
       if (!response.data.error) {
@@ -165,7 +166,7 @@ export default function ShelterManagementPages() {
 
   const deleteShelter = async (id) => {
     try {
-      const response = await axios.post("/api/shelter/deleteShelterData", {
+      const response = await axios.post("/api/shelters/deleteShelterData", {
         id_shelter: id,
       });
 
@@ -366,7 +367,7 @@ export default function ShelterManagementPages() {
                           )}
                           <Button
                             className="text-sm w-28"
-                            variant="success"
+                            variant="blue"
                             onClick={() => handleEditUserClick(user)}
                           >
                             <Pencil className="size-4" />
@@ -399,7 +400,7 @@ export default function ShelterManagementPages() {
                             </Button>
                             <Button
                               className="text-sm w-28"
-                              variant="success"
+                              variant="blue"
                               onClick={() => handleEditUserClick(user)}
                             >
                               <Pencil className="size-4" />

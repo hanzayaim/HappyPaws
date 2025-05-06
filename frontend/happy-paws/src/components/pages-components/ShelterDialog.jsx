@@ -16,19 +16,17 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
+import axios from "axios";
 
 const shelterSchema = z.object({
   owner_name: z.string().min(1, "Name is required"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-    shelter_name: z.string().min(1, "Shelter name is required"),
-    phone_number: z.string().min(10, "Phone number is required"),
-    address: z.string().min(1, "Address is required"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  shelter_name: z.string().min(1, "Shelter name is required"),
+  phone_number: z.string().min(10, "Phone number is required"),
+  address: z.string().min(1, "Address is required"),
 });
 
-export function EditShelterDialog({ open, onOpenChange, user }) {
+export function EditShelterDialog({ open, onOpenChange, user, onSuccess }) {
   const {
     register,
     handleSubmit,
@@ -57,10 +55,19 @@ export function EditShelterDialog({ open, onOpenChange, user }) {
     }
   }, [user, open, reset]);
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
+        id_shelter: user.id_shelter,
+        ...data,
+      });
+
+      if (response.data && !response.data.error) {
+        onSuccess({ ...user, ...data });
+      }
+    } catch (error) {
+      console.error("Error updating shelter:", error);
+    }
   };
 
   return (
@@ -75,10 +82,7 @@ export function EditShelterDialog({ open, onOpenChange, user }) {
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
               <Label>Owner Name</Label>
-              <Input
-                placeholder="Input Name..."
-                {...register("owner_name")}
-              />
+              <Input placeholder="Input Name..." {...register("owner_name")} />
               {errors.owner_name && (
                 <p className="text-destructive text-sm">
                   {errors.owner_name.message}
@@ -89,10 +93,7 @@ export function EditShelterDialog({ open, onOpenChange, user }) {
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
               <Label>Email</Label>
-              <Input
-                placeholder="Input Email..."
-                {...register("email")}
-              />
+              <Input placeholder="Input Email..." {...register("email")} />
               {errors.email && (
                 <p className="text-destructive text-sm">
                   {errors.email.message}
@@ -190,10 +191,22 @@ export function DeleteShelterDialog({ open, onOpenChange, user }) {
   );
 }
 
-export function ApproveShelterDialog({ open, onOpenChange, user }) {
-  const onSubmit = (e) => {
+export function ApproveShelterDialog({ open, onOpenChange, user, onConfirm }) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("Approve shelter with ID: ", user?.id_shelter);
+    try {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
+        id_shelter: user.id_shelter,
+        status: "Active",
+        email: user.email,
+      });
+
+      if (response.data && !response.data.error) {
+        onConfirm();
+      }
+    } catch (error) {
+      console.error("Error approving shelter:", error);
+    }
     onOpenChange(false);
   };
 
@@ -224,10 +237,22 @@ export function ApproveShelterDialog({ open, onOpenChange, user }) {
   );
 }
 
-export function RejectShelterDialog({ open, onOpenChange, user }) {
-  const onSubmit = (e) => {
+export function RejectShelterDialog({ open, onOpenChange, user, onConfirm }) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("Reject shelter with ID: ", user?.id_shelter);
+    try {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
+        id_shelter: user.id_shelter,
+        status: "Inactive",
+        email: user.email,
+      });
+
+      if (response.data && !response.data.error) {
+        onConfirm();
+      }
+    } catch (error) {
+      console.error("Error rejecting shelter:", error);
+    }
     onOpenChange(false);
   };
 
@@ -258,10 +283,22 @@ export function RejectShelterDialog({ open, onOpenChange, user }) {
   );
 }
 
-export function ActivateShelterDialog({ open, onOpenChange, user }) {
-  const onSubmit = (e) => {
+export function ActivateShelterDialog({ open, onOpenChange, user, onConfirm }) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("Activate shelter with ID: ", user?.id_shelter);
+    try {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
+        id_shelter: user.id_shelter,
+        status: "Active",
+        email: user.email,
+      });
+
+      if (response.data && !response.data.error) {
+        onConfirm();
+      }
+    } catch (error) {
+      console.error("Error activating shelter:", error);
+    }
     onOpenChange(false);
   };
 
@@ -292,10 +329,27 @@ export function ActivateShelterDialog({ open, onOpenChange, user }) {
   );
 }
 
-export function DeactivateShelterDialog({ open, onOpenChange, user }) {
-  const onSubmit = (e) => {
+export function DeactivateShelterDialog({
+  open,
+  onOpenChange,
+  user,
+  onConfirm,
+}) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("Deactivate shelter with ID: ", user?.id_shelter);
+    try {
+      const response = await axios.post("/api/shelters/updateShelterStatus", {
+        id_shelter: user.id_shelter,
+        status: "Inactive",
+        email: user.email,
+      });
+
+      if (response.data && !response.data.error) {
+        onConfirm();
+      }
+    } catch (error) {
+      console.error("Error deactivating shelter:", error);
+    }
     onOpenChange(false);
   };
 
