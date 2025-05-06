@@ -16,8 +16,6 @@ import {
   AnimalInDialog,
   AnimalOutDialog,
 } from "../components/pages-components/animalDialog";
-import { medicalData } from "./medical-management";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const user = {
@@ -35,14 +33,9 @@ export function determineAnimalStatus(
   vaccinateStatus,
   adopterId
 ) {
-  if (adopterId) {
-    return "Adopted";
-  }
-
-  if (medicalStatus === "Healthy" && vaccinateStatus === "Vaccinated") {
+  if (adopterId) return "Adopted";
+  if (medicalStatus === "Healthy" && vaccinateStatus === "Vaccinated")
     return "Available";
-  }
-
   return "Not Available";
 }
 
@@ -53,20 +46,41 @@ export default function AnimalManagement() {
 
   const fetchAnimalData = async () => {
     try {
-      const animalRes = await axios.get(
-        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
-      );
+      const [animalRes, medicalRes] = await Promise.allSettled([
+        axios.get(`/api/animals/getAnimalData/${user.id_shelter}`),
+        axios.get(`/api/medical/getMedicalData/${user.id_shelter}`),
+      ]);
 
-      const animalDataFetch = animalRes.data;
-
-      if (animalDataFetch.error) {
-        throw new Error(
-          animalDataFetch.message || "Failed to fetch animal data"
-        );
+      if (animalRes.status !== "fulfilled") {
+        throw new Error("Failed to fetch animal data");
       }
-      setAnimalData(animalDataFetch.data || []);
+
+      const animalDataFetch = animalRes.value.data;
+      const medicalDataFetch =
+        medicalRes.status === "fulfilled"
+          ? medicalRes.value.data
+          : { data: [] };
+
+      const enrichedAnimalData = (animalDataFetch.data || []).map((animal) => {
+        const medical = (medicalDataFetch.data || []).find(
+          (m) => m.id_animal === animal.id_animal
+        );
+
+        const animal_status = determineAnimalStatus(
+          medical?.medical_status,
+          medical?.vaccin_status,
+          animal.id_adopter
+        );
+
+        return {
+          ...animal,
+          animal_status,
+        };
+      });
+
+      setAnimalData(enrichedAnimalData);
     } catch (error) {
-      console.error("error fetching data", error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -105,42 +119,16 @@ export default function AnimalManagement() {
           <AnimalOutDialog
             open={openAnimalOut}
             onOpenChange={setOpenAnimalOut}
+            animalData={animalData}
           />
         </div>
         <div className="flex pt-3 lg:px-15 md:px-10 justify-center min-h-svh w-full">
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="w-full max-w-7xl"
-          >
+          <Carousel opts={{ align: "start" }} className="w-full max-w-7xl">
             <CarouselContent>
               {Array.from({ length: Math.ceil(animalData.length / 2) }).map(
                 (_, i) => {
                   const animal1 = animalData[i * 2];
                   const animal2 = animalData[i * 2 + 1];
-
-                  const medical1 = medicalData?.find(
-                    (md) => md.id_animal === animal1?.id_animal
-                  );
-                  const medical2 = medicalData?.find(
-                    (md) => md.id_animal === animal2?.id_animal
-                  );
-                  const status1 = animal1
-                    ? determineAnimalStatus(
-                        medical1?.medical_status,
-                        medical1?.vaccin_status,
-                        animal1.id_adopter
-                      )
-                    : null;
-
-                  const status2 = animal2
-                    ? determineAnimalStatus(
-                        medical2?.medical_status,
-                        medical2?.vaccin_status,
-                        animal2.id_adopter
-                      )
-                    : null;
 
                   return (
                     <CarouselItem
@@ -152,7 +140,8 @@ export default function AnimalManagement() {
                           <AnimalCard
                             name={animal1.animal_name}
                             imageUrl={animal1.animal_img}
-                            status={status1}
+                            status={animal1.animal_status}
+                            gender={animal1.animal_gender}
                             jenis={animal1.animal_type}
                             umur={animal1.animal_age}
                             detailLink={`/animal-management/animal-detail/${animal1.id_animal}`}
@@ -162,7 +151,8 @@ export default function AnimalManagement() {
                           <AnimalCard
                             name={animal2.animal_name}
                             imageUrl={animal2.animal_img}
-                            status={status2}
+                            status={animal2.animal_status}
+                            gender={animal2.animal_gender}
                             jenis={animal2.animal_type}
                             umur={animal2.animal_age}
                             detailLink={`/animal-management/animal-detail/${animal2.id_animal}`}

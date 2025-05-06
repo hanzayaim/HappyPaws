@@ -22,6 +22,7 @@ import {
   VaccineStatusCombobox,
 } from "./MedicalCombobox";
 import { AnimalNameCombobox } from "./AnimalCombobox";
+import axios from "axios";
 
 const medicalSchema = z.object({
   animalName: z.string().min(1, "Animal is required"),
@@ -40,7 +41,13 @@ const medicalSchema = z.object({
   medicalNote: z.string().optional(),
 });
 
-export function InsertMedicalDialog({ open, onOpenChange }) {
+export function InsertMedicalDialog({
+  open,
+  onOpenChange,
+  animalData,
+  User,
+  fetchData,
+}) {
   const [medicalStatus, setMedicalStatus] = useState("");
   const [vaccineStatus, setVaccineStatus] = useState("");
   const [animalName, setAnimalName] = useState("");
@@ -59,15 +66,38 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
       medicalStatus: "",
       vaccineStatus: "",
       medicalDate: null,
+      medicalDateOut: null,
       medicalCost: null,
       medicalNote: "",
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      let userName = User.owner_name ? User.owner_name : User.name;
+
+      const response = await axios.post("/api/medical/insertMedicalData", {
+        medical_status: medicalStatus,
+        vaccin_status: vaccineStatus,
+        medical_date_in: data.medicalDate,
+        medical_date_out: data.medicalDateOut,
+        medical_cost: data.medicalCost,
+        note: data.medicalNote,
+        created_by: userName,
+        id_shelter: User.id_shelter,
+        id_animal: animalName,
+      });
+      const result = response.data;
+      console.log(response.data);
+      if (result.error) {
+        throw new Error(result.message || "Failed to insert animal data");
+      }
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleMedicalStatusChange = (value) => {
@@ -110,6 +140,7 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
                 className="w-full"
                 value={animalName}
                 onChange={handleAnimalNameChange}
+                animal={animalData}
               />
               {errors.animalName && (
                 <p className="text-destructive text-sm">
@@ -210,7 +241,14 @@ export function InsertMedicalDialog({ open, onOpenChange }) {
   );
 }
 
-export function EditMedicalDialog({ open, onOpenChange, medical }) {
+export function EditMedicalDialog({
+  open,
+  onOpenChange,
+  medical,
+  animalData,
+  User,
+  fetchData,
+}) {
   const [medicalStatus, setMedicalStatus] = useState("");
   const [vaccineStatus, setVaccinStatus] = useState("");
   const [animalName, setAnimalName] = useState("");
@@ -254,10 +292,33 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
     }
   }, [medical, open, reset]);
 
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      let userName = User.owner_name ? User.owner_name : User.name;
+
+      const response = await axios.post("/api/medical/updateMedicalData", {
+        medical_status: medicalStatus,
+        vaccin_status: vaccineStatus,
+        medical_date_in: data.medicalDate.toISOString().split("T")[0],
+        medical_date_out: data.medicalDateOut,
+        medical_cost: data.medicalCost,
+        note: data.medicalNote,
+        updated_by: userName,
+        id_shelter: User.id_shelter,
+        id_animal: animalName,
+        id_medical: medical.id_medical,
+      });
+      const result = response.data;
+      console.log(response.data);
+      if (result.error) {
+        throw new Error(result.message || "Failed to update animal data");
+      }
+      reset();
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleMedicalStatusChange = (value) => {
@@ -275,6 +336,12 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
     setValue("animalName", value);
   };
 
+  console.log(animalData);
+
+  const displayAnimalName =
+    animalData.find((animal) => animal.id_animal === animalName)?.animal_name ||
+    "";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild />
@@ -286,19 +353,14 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
           <DialogDescription>Edit data medical below.</DialogDescription>
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
-              <Label>Select Animal</Label>
-              <AnimalNameCombobox
-                className="w-full"
-                value={animalName}
-                onChange={handleAnimalNameChange}
-              />
-              {errors.animalName && (
-                <p className="text-destructive text-sm">
-                  {errors.animalName.message}
-                </p>
-              )}
+              <Label htmlFor="animal-name">Animal Name</Label>
+              <div
+                id="animal-name"
+                className="rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground"
+              >
+                {displayAnimalName || "-"}
+              </div>
             </div>
-
             <div className="flex flex-col gap-2">
               <Label>Medical Status</Label>
               <MedicalStatusCombobox
@@ -397,10 +459,33 @@ export function EditMedicalDialog({ open, onOpenChange, medical }) {
   );
 }
 
-export function DeleteMedicalDialog({ open, onOpenChange, medical }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    onOpenChange(false);
+export function DeleteMedicalDialog({
+  open,
+  onOpenChange,
+  medical,
+  User,
+  fetchData,
+}) {
+  const onSubmit = async (data) => {
+    try {
+      data.preventDefault();
+
+      const response = await axios.post("/api/medical/deleteMedicalData", {
+        id_shelter: User.id_shelter,
+        id_medical: medical.id_medical,
+        id_animal: medical.id_animal,
+      });
+
+      const result = response.data;
+
+      if (result.error) {
+        throw new Error(result.message || "Failed to delete adopter data");
+      }
+      onOpenChange(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting medical:", error.message);
+    }
   };
 
   return (

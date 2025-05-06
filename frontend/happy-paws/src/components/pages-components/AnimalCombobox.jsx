@@ -11,6 +11,7 @@ import {
   CommandEmpty,
 } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import axios from "axios";
 
 const AdopterData = [
   {
@@ -73,33 +74,9 @@ const user = {
   address: "jln jalan",
 };
 
-export function AnimalOutCombobox({ value, onChange }) {
+export function AnimalOutCombobox({ value, onChange, animal }) {
   const [open, setOpen] = useState(false);
-  const [animalData, setAnimalData] = useState([]);
-
-  const fetchAnimalData = async () => {
-    try {
-      const animalRes = await axios.get(
-        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
-      );
-
-      const animalDataFetch = animalRes.data;
-
-      if (animalDataFetch.error) {
-        throw new Error(
-          animalDataFetch.message || "Failed to fetch animal data"
-        );
-      }
-      setAnimalData(animalDataFetch);
-    } catch (error) {
-      console.error("error fetching data", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAnimalData();
-  }, []);
-
+  const animalData = animal;
   const selectedAnimal = animalData.find((a) => a.id_animal === value);
 
   return (
@@ -159,32 +136,14 @@ export function AnimalOutCombobox({ value, onChange }) {
   );
 }
 
-export function AnimalNameCombobox({ value, onChange }) {
+export function AnimalNameCombobox({ value, onChange, animal, disabled }) {
   const [open, setOpen] = useState(false);
   const [animalData, setAnimalData] = useState([]);
 
-  const fetchAnimalData = async () => {
-    try {
-      const animalRes = await axios.get(
-        ` http://localhost:3000/api/animals/getAnimalData/${user.id_shelter}`
-      );
-
-      const animalDataFetch = animalRes.data;
-
-      if (animalDataFetch.error) {
-        throw new Error(
-          animalDataFetch.message || "Failed to fetch animal data"
-        );
-      }
-      setAnimalData(animalDataFetch);
-    } catch (error) {
-      console.error("error fetching data", error);
-    }
-  };
-
   useEffect(() => {
-    fetchAnimalData();
-  }, []);
+    const availableAnimals = animal.filter((a) => !a.id_adopter);
+    setAnimalData(availableAnimals);
+  }, [animal]);
 
   const selectedAnimal = animalData.find((a) => a.id_animal === value);
 
@@ -201,6 +160,7 @@ export function AnimalNameCombobox({ value, onChange }) {
                 "w-full justify-between text-left",
                 !value && "text-muted-foreground"
               )}
+              disabled={disabled}
             >
               {selectedAnimal ? selectedAnimal.animal_name : "Select Animal..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />

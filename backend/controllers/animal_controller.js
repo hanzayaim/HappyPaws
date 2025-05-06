@@ -40,11 +40,7 @@ const insertNewAnimal = async (
     );
     return result;
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed to insert new Animal.",
-      result: null,
-    };
+    throw error;
   }
 };
 

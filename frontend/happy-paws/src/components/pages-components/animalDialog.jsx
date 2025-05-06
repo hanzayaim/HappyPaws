@@ -20,6 +20,8 @@ import { Label } from "@/components/ui/label";
 import DatePicker from "./DatePicker";
 import GenderCombobox from "./gender-combobox";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { SuccessInsertDialog, SuccessUpdateDialog } from "./SuccessDialog";
 
 const animalInSchema = z.object({
   animalName: z
@@ -37,9 +39,12 @@ const animalInSchema = z.object({
   animalImg: z.any().optional(),
 });
 export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [insertedAnimalName, setInsertedAnimalName] = useState("");
   const {
     register,
     handleSubmit,
+    setError,
     control,
     formState: { errors },
     reset,
@@ -60,30 +65,25 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
   const onSubmit = async (data) => {
     try {
       let profileImgBase64 = null;
-      let userName = User.owner_name ? User.owner_name : User.username;
+      let userName = User.owner_name ? User.owner_name : User.name;
 
       if (data.animalImg && data.animalImg[0]) {
         const file = data.animalImg[0];
         profileImgBase64 = await convertFileToBase64(file);
       }
 
-      console.log(userName, User.id_shelter);
-
-      const response = await axios.post(
-        "http://localhost:3000/api/animals/insertAnimalData",
-        {
-          id_shelter: User.id_shelter,
-          animal_name: data.animalName,
-          animal_img: profileImgBase64,
-          animal_gender: data.animalGender,
-          animal_type: data.animalType,
-          animal_age: data.animalAge,
-          rescue_location: data.animalRescueLoc,
-          date: data.animalDate.toISOString().split("T")[0],
-          note: data.animalNote,
-          created_by: userName,
-        }
-      );
+      const response = await axios.post("/api/animals/insertAnimalData", {
+        id_shelter: User.id_shelter,
+        animal_name: data.animalName,
+        animal_img: profileImgBase64,
+        animal_gender: data.animalGender,
+        animal_type: data.animalType,
+        animal_age: data.animalAge,
+        rescue_location: data.animalRescueLoc,
+        date: data.animalDate.toISOString().split("T")[0],
+        note: data.animalNote,
+        created_by: userName,
+      });
       const result = response.data;
 
       if (result.error) {
@@ -92,9 +92,21 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
 
       reset();
       onOpenChange(false);
+      setInsertedAnimalName(data.animalName);
+      setShowSuccessDialog(true);
       fetchData();
     } catch (error) {
       console.error("Error submitting form:", error);
+      const message =
+        error?.response?.data?.message || error?.message || "Unknown error";
+
+      if (message.toLowerCase().includes("animal name")) {
+        setError("animalName", {
+          type: "manual",
+          message:
+            "Animal name is already taken. Please choose a different name.",
+        });
+      }
     }
   };
 
@@ -125,143 +137,156 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
     }
   }, [watchFile]);
 
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Animal In</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Insert new animal below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Animal Name</Label>
-              <Controller
-                control={control}
-                name="animalName"
-                render={({ field }) => (
-                  <Input {...field} placeholder="Animal Name" />
-                )}
-              />
-              {errors.animalName && (
-                <p className="text-destructive text-sm">
-                  {errors.animalName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <Input placeholder="Animal Type" {...register("animalType")} />
-              {errors.animalType && (
-                <p className="text-destructive text-sm">
-                  {errors.animalType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Age</Label>
-              <Input
-                type="number"
-                step="1"
-                min="1"
-                max="99"
-                placeholder="Age"
-                {...register("animalAge")}
-              />
-              {errors.animalAge && (
-                <p className="text-destructive text-sm">
-                  {errors.animalAge.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Rescue Location</Label>
-              <Input
-                placeholder="Rescue Location"
-                {...register("animalRescueLoc")}
-              />
-              {errors.animalRescueLoc && (
-                <p className="text-destructive text-sm">
-                  {errors.animalRescueLoc.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date In</Label>
-              <Controller
-                control={control}
-                name="animalDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
-                )}
-              />
-              {errors.animalDate && (
-                <p className="text-destructive text-sm">
-                  {errors.animalDate.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Gender</Label>
-              <Controller
-                control={control}
-                name="animalGender"
-                render={({ field }) => (
-                  <>
-                    <GenderCombobox
-                      className="w-full"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                    {errors.animalGender && (
-                      <p className="text-destructive text-sm">
-                        {errors.animalGender.message}
-                      </p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea placeholder="Note" {...register("animalNote")} />
-              {errors.animalNote && (
-                <p className="text-destructive text-sm">
-                  {errors.animalNote.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Input
-                id="picture"
-                type="file"
-                accept="image/*"
-                {...register("animalImg")}
-              />
-              {errors.animalImg && (
-                <p className="text-destructive text-sm">
-                  {errors.animalImg.message}
-                </p>
-              )}
-              <Label>Preview image</Label>
-              {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
+    <>
+      <SuccessInsertDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={insertedAnimalName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Animal In</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Insert new animal below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Animal Name</Label>
+                <Controller
+                  control={control}
+                  name="animalName"
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Animal Name" />
+                  )}
                 />
-              ) : (
-                <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden"></div>
-              )}
+                {errors.animalName && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalName.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <Input placeholder="Animal Type" {...register("animalType")} />
+                {errors.animalType && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalType.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Age</Label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="99"
+                  placeholder="Age"
+                  {...register("animalAge")}
+                />
+                {errors.animalAge && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalAge.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Rescue Location</Label>
+                <Input
+                  placeholder="Rescue Location"
+                  {...register("animalRescueLoc")}
+                />
+                {errors.animalRescueLoc && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalRescueLoc.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date In</Label>
+                <Controller
+                  control={control}
+                  name="animalDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.animalDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Gender</Label>
+                <Controller
+                  control={control}
+                  name="animalGender"
+                  render={({ field }) => (
+                    <>
+                      <GenderCombobox
+                        className="w-full"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                      {errors.animalGender && (
+                        <p className="text-destructive text-sm">
+                          {errors.animalGender.message}
+                        </p>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea placeholder="Note" {...register("animalNote")} />
+                {errors.animalNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalNote.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Input
+                  id="picture"
+                  type="file"
+                  accept="image/*"
+                  {...register("animalImg")}
+                />
+                {errors.animalImg && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalImg.message}
+                  </p>
+                )}
+                <Label>Preview image</Label>
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden"></div>
+                )}
+              </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Add</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <Button type="submit">Add</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -269,7 +294,7 @@ const animalOutSchema = z.object({
   animalName: z.string().min(1, "Animal Name is required"),
   animalAdopter: z.string().min(1, "Animal Adopter is required"),
 });
-export function AnimalOutDialog({ open, onOpenChange }) {
+export function AnimalOutDialog({ open, onOpenChange, animalData }) {
   const {
     handleSubmit,
     control,
@@ -308,6 +333,7 @@ export function AnimalOutDialog({ open, onOpenChange }) {
                       className="w-full"
                       value={field.value}
                       onChange={field.onChange}
+                      animal={animalData}
                     />
                     {errors.animalName && (
                       <p className="text-destructive text-sm">
@@ -363,11 +389,23 @@ const animalEditSchema = z.object({
   animalNote: z.string().optional(),
   animalImg: z.any().optional(),
 });
-export function AnimalEditDialog({ open, onOpenChange, animalData }) {
+
+export function AnimalEditDialog({
+  open,
+  onOpenChange,
+  animalData,
+  User,
+  fetchData,
+  id_animal,
+}) {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [editAnimalName, setEditAnimalName] = useState("");
+
   const {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors },
     reset,
   } = useForm({
@@ -397,11 +435,66 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
       });
     }
   }, [animalData, open, reset]);
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+
+  const onSubmit = async (data) => {
+    try {
+      let profileImgBase64 = null;
+      let userName = User.owner_name ? User.owner_name : User.name;
+
+      if (data.animalImg && data.animalImg[0]) {
+        const file = data.animalImg[0];
+        profileImgBase64 = await convertFileToBase64(file);
+      }
+
+      const response = await axios.post("/api/animals/updateAnimalData", {
+        animal_name: data.animalName,
+        animal_img: profileImgBase64,
+        animal_gender: data.animalGender,
+        animal_type: data.animalType,
+        animal_age: data.animalAge,
+        rescue_location: data.animalRescueLoc,
+        date: data.animalDate.toISOString().split("T")[0],
+        note: data.animalNote,
+        updated_by: userName,
+        id_shelter: User.id_shelter,
+        id_animal: id_animal,
+      });
+
+      const result = response.data;
+
+      if (result.error) {
+        console.log(response.data);
+      }
+
+      reset();
+      onOpenChange(false);
+      setEditAnimalName(data.animalName);
+      setShowSuccessDialog(true);
+      fetchData();
+    } catch (error) {
+      console.error(error);
+      const message =
+        error?.response?.data?.message || error?.message || "Unknown error";
+
+      if (message.toLowerCase().includes("animal name")) {
+        setError("animalName", {
+          type: "manual",
+          message:
+            "Animal name is already taken. Please choose a different name.",
+        });
+      }
+    }
   };
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const [previewUrl = null, setPreviewUrl] = useState(null);
   const watchFile = useWatch({
     control,
@@ -419,150 +512,180 @@ export function AnimalEditDialog({ open, onOpenChange, animalData }) {
     }
   }, [watchFile]);
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit Animal</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Edit animal below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Animal Name</Label>
-              <Controller
-                control={control}
-                name="animalName"
-                render={({ field }) => (
-                  <Input {...field} placeholder="Animal Name" />
+    <>
+      <SuccessUpdateDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={editAnimalName}
+      />
+
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Animal</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Edit animal below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Animal Name</Label>
+                <Controller
+                  control={control}
+                  name="animalName"
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Animal Name" />
+                  )}
+                />
+                {errors.animalName && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalName.message}
+                  </p>
                 )}
-              />
-              {errors.animalName && (
-                <p className="text-destructive text-sm">
-                  {errors.animalName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <Input placeholder="Animal Type" {...register("animalType")} />
-              {errors.animalType && (
-                <p className="text-destructive text-sm">
-                  {errors.animalType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Age</Label>
-              <Input
-                type="number"
-                step="1"
-                min="1"
-                max="99"
-                placeholder="Age"
-                {...register("animalAge")}
-              />
-              {errors.animalAge && (
-                <p className="text-destructive text-sm">
-                  {errors.animalAge.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Rescue Location</Label>
-              <Input
-                placeholder="Rescue Location"
-                {...register("animalRescueLoc")}
-              />
-              {errors.animalRescueLoc && (
-                <p className="text-destructive text-sm">
-                  {errors.animalRescueLoc.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date In</Label>
-              <Controller
-                control={control}
-                name="animalDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <Input placeholder="Animal Type" {...register("animalType")} />
+                {errors.animalType && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalType.message}
+                  </p>
                 )}
-              />
-              {errors.animalDate && (
-                <p className="text-destructive text-sm">
-                  {errors.animalDate.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Gender</Label>
-              <Controller
-                control={control}
-                name="animalGender"
-                render={({ field }) => (
-                  <>
-                    <GenderCombobox
-                      className="w-full"
-                      value={field.value}
-                      onChange={field.onChange}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Age</Label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="99"
+                  placeholder="Age"
+                  {...register("animalAge")}
+                />
+                {errors.animalAge && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalAge.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Rescue Location</Label>
+                <Input
+                  placeholder="Rescue Location"
+                  {...register("animalRescueLoc")}
+                />
+                {errors.animalRescueLoc && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalRescueLoc.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date In</Label>
+                <Controller
+                  control={control}
+                  name="animalDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.animalDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Gender</Label>
+                <Controller
+                  control={control}
+                  name="animalGender"
+                  render={({ field }) => (
+                    <>
+                      <GenderCombobox
+                        className="w-full"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                      {errors.animalGender && (
+                        <p className="text-destructive text-sm">
+                          {errors.animalGender.message}
+                        </p>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea placeholder="Note" {...register("animalNote")} />
+                {errors.animalNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalNote.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Choose image</Label>
+                <Input
+                  id="picture"
+                  type="file"
+                  accept="image/*"
+                  {...register("animalImg")}
+                />
+                {errors.animalImg && (
+                  <p className="text-destructive text-sm">
+                    {errors.animalImg.message}
+                  </p>
+                )}
+                <Label>Preview image</Label>
+                <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
                     />
-                    {errors.animalGender && (
-                      <p className="text-destructive text-sm">
-                        {errors.animalGender.message}
-                      </p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea placeholder="Note" {...register("animalNote")} />
-              {errors.animalNote && (
-                <p className="text-destructive text-sm">
-                  {errors.animalNote.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Choose image</Label>
-              <Input
-                id="picture"
-                type="file"
-                accept="image/*"
-                {...register("animalImg")}
-              />
-              {errors.animalImg && (
-                <p className="text-destructive text-sm">
-                  {errors.animalImg.message}
-                </p>
-              )}
-              <Label>Preview image</Label>
-              <div className="w-32 h-32 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
-                {previewUrl ? (
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : null}
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Edit</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <Button type="submit">Edit</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
-export function DeleteAnimalDialog({ open, onOpenChange, equipment }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Delete equipment with ID: ", equipment?.id_equipment);
-    onOpenChange(false);
+
+export function DeleteAnimalDialog({
+  open,
+  onOpenChange,
+  id_animal,
+  User,
+  fetchData,
+}) {
+  const navigate = useNavigate();
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post("/api/animals/deleteAnimalData", {
+        id_shelter: User.id_shelter,
+        id_animal: id_animal,
+      });
+
+      const result = response.data;
+      if (result.error) {
+        throw new Error(result.error || "Failed to delete animal");
+      }
+      onOpenChange(false);
+      fetchData();
+      navigate("/animal-management");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

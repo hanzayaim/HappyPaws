@@ -8,7 +8,6 @@ import {
 import { useParams } from "react-router-dom";
 import Layout from "../app/layout";
 import { determineAnimalStatus } from "./animal-management";
-import { medicalData } from "./medical-management";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -28,16 +27,35 @@ export default function AnimalDetail() {
   const [isAlert, setAlert] = useState(false);
   const [animal, setAnimalData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [medicalData, setMedicalData] = useState([]);
+
+  const fetchMedicalData = async () => {
+    try {
+      const medicalRes = await axios.get(
+        `/api/medical/getMedicalData/${user.id_shelter}`
+      );
+
+      const medicalDataFetch = medicalRes.data;
+
+      if (medicalDataFetch.error) {
+        throw new Error(
+          medicalDataFetch.message || "Failed to fetch animal data"
+        );
+      }
+      setMedicalData(medicalDataFetch.data || []);
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
 
   const fetchAnimalData = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/api/animals/getAnimalDataById/${user.id_shelter}/${id_animal}`
+        `/api/animals/getAnimalDataById/${user.id_shelter}/${id_animal}`
       );
       const animalDataFetch = data.data;
 
       setAnimalData(animalDataFetch);
-      console.log(animalDataFetch);
     } catch (error) {
       console.error("error fetching data", error);
     } finally {
@@ -47,6 +65,7 @@ export default function AnimalDetail() {
 
   useEffect(() => {
     fetchAnimalData();
+    fetchMedicalData();
   }, [id_animal]);
 
   if (loading) {
@@ -96,11 +115,16 @@ export default function AnimalDetail() {
           open={openEdit}
           onOpenChange={setOpenEdit}
           animalData={animal}
+          User={user}
+          fetchData={fetchAnimalData}
+          id_animal={id_animal}
         />
         <DeleteAnimalDialog
           open={isAlert}
           onOpenChange={setAlert}
-          animal={animal}
+          User={user}
+          fetchData={fetchAnimalData}
+          id_animal={id_animal}
         />
 
         <div className="w-full bg-[#FAF7F2] shadow-lg min-h-fit flex flex-col p-5 mt-5 gap-5 rounded-xl">
@@ -139,7 +163,14 @@ export default function AnimalDetail() {
                 >
                   {status}
                 </span>
-                <Label className="font-medium text-sm">Jenis</Label>
+                <Label className="font-medium text-sm">Gender</Label>
+                <span className="text-sm">
+                  {" "}
+                  {animal?.animal_gender !== null
+                    ? animal.animal_gender
+                    : "No Gender"}
+                </span>
+                <Label className="font-medium text-sm">Type</Label>
                 <span className="text-sm">
                   {" "}
                   {animal?.animal_type !== null
