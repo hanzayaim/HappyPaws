@@ -40,7 +40,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
     defaultValues: {
       incomeName: "",
       incomeType: "",
-      incomeDate: null,
+      incomeDate: new Date(),
       incomeAmount: null,
       incomeNote: "",
     },
@@ -57,7 +57,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
           date: data.incomeDate.toISOString().split("T")[0], // 'YYYY-MM-DD'
           type: data.incomeType,
           note: data.incomeNote || "",
-          created_by: "admin",
+          created_by: User.owner_name ? User.owner_name : User.name,
         }
       );
 
@@ -67,7 +67,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
         throw new Error(result.message || "Failed to insert income data");
       }
 
-      reset(); // reset the form fields
+      reset();
       onOpenChange(false);
       fetchData();
     } catch (error) {
@@ -229,7 +229,7 @@ export function EditIncomeDialog({
           date: data.incomeDate.toISOString().split("T")[0],
           type: data.incomeType,
           note: data.incomeNote,
-          update_by: "admin",
+          update_by: User.owner_name ? User.owner_name : User.name,
         }
       );
 

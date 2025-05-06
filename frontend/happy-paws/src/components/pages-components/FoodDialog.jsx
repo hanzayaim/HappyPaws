@@ -82,7 +82,7 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
           cost: data.foodCost,
           date: data.foodDate,
           note: data.foodNote,
-          created_by: User.role,
+          created_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
         }
       );
@@ -301,7 +301,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
           cost: data.foodCost,
           date: data.foodDate,
           note: data.foodNote,
-          updated_by: User.role,
+          updated_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
           id_food: food.id_food,
         }

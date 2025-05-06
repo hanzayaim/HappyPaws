@@ -51,7 +51,7 @@ export function InsertSalaryDialog({
     defaultValues: {
       SalaryName: null,
       SalaryAmount: "",
-      SalaryDate: null,
+      SalaryDate: new Date(),
       SalaryNote: "",
     },
   });
@@ -72,7 +72,7 @@ export function InsertSalaryDialog({
           cost: data.SalaryAmount,
           date: data.SalaryDate.toISOString().split("T")[0],
           note: data.SalaryNote || "",
-          created_by: "admin",
+          created_by: User.owner_name ? User.owner_name : User.name,
         }
       );
 

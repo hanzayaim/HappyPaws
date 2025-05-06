@@ -66,7 +66,7 @@ export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
           gender: data.AdopterGender,
           phone_number: data.AdopterPhoneNumber,
           address: data.AdopterAddress || "",
-          createdby: User.role,
+          createdby: User.owner_name ? User.owner_name : User.name,
         }
       );
 
@@ -261,7 +261,7 @@ export function EditAdopterDialog({
           gender: data.AdopterGender,
           phone_number: data.AdopterPhoneNumber,
           address: data.AdopterAddress || "",
-          updated_by: User.role,
+          updated_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
           id_adopter: AdopterData.id_adopter,
         }
