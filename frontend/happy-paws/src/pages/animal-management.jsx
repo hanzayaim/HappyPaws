@@ -43,6 +43,7 @@ export default function AnimalManagement() {
   const [openAnimalIn, setOpenAnimalIn] = useState(false);
   const [openAnimalOut, setOpenAnimalOut] = useState(false);
   const [animalData, setAnimalData] = useState([]);
+  const [adopterData, setAdopter] = useState([]);
 
   const fetchAnimalData = async () => {
     try {
@@ -80,12 +81,31 @@ export default function AnimalManagement() {
 
       setAnimalData(enrichedAnimalData);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching animal data:", error);
+    }
+  };
+
+  const fetchAdopterData = async () => {
+    try {
+      const adopterRes = await axios.get(
+        `/api/adopters/getAdopterData/${user.id_shelter}`
+      );
+      const adopterData = adopterRes.data;
+
+      if (adopterData.error) {
+        setAdopter([]);
+        console.error("Error fetching adopter data:", adopterRes.data.error);
+      }
+
+      setAdopter(adopterData.data || []);
+    } catch (error) {
+      console.error("Error fetching adopter data:", error);
     }
   };
 
   useEffect(() => {
     fetchAnimalData();
+    fetchAdopterData();
   }, []);
 
   return (
@@ -120,6 +140,9 @@ export default function AnimalManagement() {
             open={openAnimalOut}
             onOpenChange={setOpenAnimalOut}
             animalData={animalData}
+            adopterData={adopterData}
+            User={user}
+            fetchData={fetchAnimalData}
           />
         </div>
         <div className="flex pt-3 lg:px-15 md:px-10 justify-center min-h-svh w-full">

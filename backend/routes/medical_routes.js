@@ -15,11 +15,6 @@ router.get("/getMedicalData/:id_shelter", async (req, res) => {
 
   try {
     const result = await getMedicalData(id_shelter);
-
-    if (result.error) {
-      return res.status(400).json(result);
-    }
-
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({

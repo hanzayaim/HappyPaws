@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Check, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -11,68 +11,6 @@ import {
   CommandEmpty,
 } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import axios from "axios";
-
-const AdopterData = [
-  {
-    id_adopter: "AD001",
-    adopter_name: "Nina Rahma",
-  },
-  {
-    id_adopter: "AD002",
-    adopter_name: "Budi Santoso",
-  },
-  {
-    id_adopter: "AD003",
-    adopter_name: "Siti Aminah",
-  },
-  {
-    id_adopter: "AD004",
-    adopter_name: "Andre Wijaya",
-  },
-  {
-    id_adopter: "AD005",
-    adopter_name: "Lisa Maulida",
-  },
-  {
-    id_adopter: "AD006",
-    adopter_name: "Doni gress",
-  },
-  {
-    id_adopter: "AD007",
-    adopter_name: "FGGFG",
-  },
-  {
-    id_adopter: "AD008",
-    adopter_name: "Dontol Ganteng",
-  },
-  {
-    id_adopter: "AD009",
-    adopter_name: "FDFD",
-  },
-  {
-    id_adopter: "AD0010",
-    adopter_name: "FDSDFFD",
-  },
-  {
-    id_adopter: "AD011",
-    adopter_name: "GDTFGH",
-  },
-  {
-    id_adopter: "AD012",
-    adopter_name: "DWA",
-  },
-];
-
-const user = {
-  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-  owner_name: "Dimas",
-  email: "shelter001@gmail.com",
-  shelter_name: "Happy Paws Shelter",
-  phone_number: "081238697341",
-  role: "Owner",
-  address: "jln jalan",
-};
 
 export function AnimalOutCombobox({ value, onChange, animal }) {
   const [open, setOpen] = useState(false);
@@ -203,8 +141,14 @@ export function AnimalNameCombobox({ value, onChange, animal, disabled }) {
   );
 }
 
-export function AnimalAdopterCombobox({ value, onChange }) {
+export function AnimalAdopterCombobox({ value, onChange, adopterData }) {
   const [open, setOpen] = useState(false);
+  const [AdopterData, setAdopterData] = useState([]);
+
+  useEffect(() => {
+    setAdopterData(adopterData);
+  }, [adopterData]);
+
   const selectedAdopter = AdopterData.find((a) => a.id_adopter === value);
 
   return (
@@ -221,9 +165,7 @@ export function AnimalAdopterCombobox({ value, onChange }) {
                 !value && "text-muted-foreground"
               )}
             >
-              {selectedAdopter
-                ? selectedAdopter.adopter_name
-                : "Select Adopter..."}
+              {selectedAdopter ? selectedAdopter.name : "Select Adopter..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -243,7 +185,7 @@ export function AnimalAdopterCombobox({ value, onChange }) {
                         setOpen(false);
                       }}
                     >
-                      {adopter.adopter_name}
+                      {adopter.name}
                       <Check
                         className={cn(
                           "ml-auto",

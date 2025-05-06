@@ -74,3 +74,30 @@ export function SuccessDeleteDialog({ open, onOpenChange, data_name }) {
     </Dialog>
   );
 }
+
+export function SuccessAdoptAnimalDialog({
+  open,
+  onOpenChange,
+  data_animal,
+  data_adopter,
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md text-center">
+        <DialogHeader>
+          <DialogTitle className="text-green-600 text-xl">
+            🎉 Adopt Success!
+          </DialogTitle>
+          <DialogDescription>
+            {data_animal} has been adopt by {data_adopter}.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="mt-4">
+          <DialogClose asChild>
+            <Button onClick={() => onOpenChange(false)}>Close</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

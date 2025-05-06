@@ -113,9 +113,8 @@ export default function MedicalManagement() {
       const medicalDataFetch = medicalRes.data;
 
       if (medicalDataFetch.error) {
-        throw new Error(
-          medicalDataFetch.message || "Failed to fetch animal data"
-        );
+        setMedicalData([]);
+        console.error("Error fetching adopter data:", medicalRes.data.error);
       }
       setMedicalData(medicalDataFetch.data || []);
     } catch (error) {
@@ -221,6 +220,7 @@ export default function MedicalManagement() {
           medical={selectedMedical}
           User={user}
           fetchData={fetchMedicalData}
+          animalData={animalData}
         />
 
         <div className="p-4 bg-white rounded shadow-md overflow-auto">
