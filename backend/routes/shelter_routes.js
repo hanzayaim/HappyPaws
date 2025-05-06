@@ -13,6 +13,13 @@ const {
   getShelterPassByEmail,
 } = require("../models/shelter_models");
 
+const {
+  sendApprovalEmail,
+  sendRejectionEmail,
+  sendActivationEmail,
+  sendDeactivationEmail,
+} = require("./send_email");
+
 const { insertNewShelter } = require("../controllers/shelter_controller");
 
 router.get("/getShelterData", async (req, res) => {
@@ -110,18 +117,58 @@ router.post("/insertShelter", async (req, res) => {
 });
 
 router.post("/updateShelterStatus", async (req, res) => {
-  const { status, id_shelter } = req.body;
-  if (id_shelter == null || status == null) {
+  const { status, id_shelter, email } = req.body;
+
+  if (id_shelter == null || status == null || email == null) {
     return res.status(400).send({
       error: true,
       message: "Please provide all required data.",
     });
   }
   try {
+    const currentShelter = await getShelterDataById(id_shelter);
+    const currentStatus = currentShelter.data?.status;
+
+    if (status === "Active") {
+      if (currentStatus !== "New" && currentStatus !== "Inactive") {
+        return res.status(400).json({
+          error: true,
+          message: "Only 'New' or 'Inactive' shelters can be activated",
+        });
+      }
+    } else if (status === "Inactive") {
+      if (currentStatus !== "Active" && currentStatus !== "New") {
+        return res.status(400).json({
+          error: true,
+          message:
+            "Only 'Active' or 'New' shelters can be deactivated/rejected",
+        });
+      }
+    }
+
     const result = await updateShelterStatus(status, id_shelter);
+
+    try {
+      if (status === "Active") {
+        if (currentStatus === "New") {
+          await axios.post("/api/emails/email_approval", { email });
+        } else if (currentStatus === "Inactive") {
+          await axios.post("/api/emails/email_activation", { email });
+        }
+      } else if (status === "Inactive") {
+        if (currentStatus === "New") {
+          await axios.post("/api/emails/email_rejection", { email });
+        } else if (currentStatus === "Active") {
+          await axios.post("/api/emails/email_deactivation", { email });
+        }
+      }
+    } catch (emailError) {
+      console.error("Error sending email:", emailError);
+    }
+
     res.status(200).json(result);
   } catch {
-    res.status(500).json({ error: true, message: "failed to update data" });
+    res.status(500).json({ error: true, message: "Failed to update status" });
   }
 });
 

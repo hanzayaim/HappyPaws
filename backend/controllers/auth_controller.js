@@ -161,14 +161,24 @@ exports.profile = async (req, res) => {
   const { email, userType, id_shelter, id_employee } = req.session.user;
 
   try {
-    let profileData;
-
-    if (userType === "shelter") {
+    if (userType === "superuser") {
+      const { password, ...safeUserData } = superuser;
+      return res.json({
+        message: "Profile retrieved successfully.",
+        userType,
+        profile: safeUserData,
+      });
+    } else if (userType === "shelter") {
       const result = await getShelterDataById(id_shelter);
       if (result.error || !result.data) {
         return res.status(404).json({ message: MESSAGES.PROFILE_NOT_FOUND });
       }
-      profileData = result.data;
+      const { password, ...safeProfileData } = result.data;
+      return res.json({
+        message: "Profile retrieved successfully.",
+        userType,
+        profile: safeProfileData,
+      });
     } else if (userType === "employee") {
       let employeeId = id_employee;
 
@@ -192,18 +202,17 @@ exports.profile = async (req, res) => {
         return res.status(404).json({ message: MESSAGES.PROFILE_NOT_FOUND });
       }
 
-      profileData = result.data;
+      const { password, ...safeProfileData } = result.data;
+      return res.json({
+        message: "Profile retrieved successfully.",
+        userType,
+        profile: safeProfileData,
+      });
     } else {
       return res.status(400).json({ message: "Invalid user type." });
     }
-
-    const { password, ...safeProfileData } = profileData;
-    res.json({
-      message: "Profile retrieved successfully.",
-      userType,
-      profile: safeProfileData,
-    });
   } catch (error) {
+    console.error("Profile error:", error);
     return res.status(500).json({ message: MESSAGES.INTERNAL_ERROR });
   }
 };
