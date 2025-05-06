@@ -760,7 +760,7 @@ export default function FinancePage() {
               placeholder="Search by Salary name"
               value={SalarySearchQuery}
               onChange={handleSalarySearchChange}
-              className="md:w-full sm:w-64"
+              className="w-full sm:w-64"
             />
             <MonthFilterSelect
               value={SalarySelectedMonth}
