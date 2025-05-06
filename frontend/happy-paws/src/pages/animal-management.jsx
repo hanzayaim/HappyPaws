@@ -18,16 +18,6 @@ import {
 } from "../components/pages-components/animalDialog";
 import axios from "axios";
 
-const user = {
-  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-  owner_name: "Dimas",
-  email: "shelter001@gmail.com",
-  shelter_name: "Happy Paws Shelter",
-  phone_number: "081238697341",
-  role: "Owner",
-  address: "jln jalan",
-};
-
 export function determineAnimalStatus(
   medicalStatus,
   vaccinateStatus,
@@ -44,12 +34,28 @@ export default function AnimalManagement() {
   const [openAnimalOut, setOpenAnimalOut] = useState(false);
   const [animalData, setAnimalData] = useState([]);
   const [adopterData, setAdopter] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [userType, setUserType] = useState(null);
+
+  const currentUser = async () => {
+    try {
+      const storedUserType = localStorage.getItem("userType");
+      const storedUserData = localStorage.getItem("userData");
+
+      if (storedUserType && storedUserData) {
+        setUserType(storedUserType);
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error("Error user data", error);
+    }
+  };
 
   const fetchAnimalData = async () => {
     try {
       const [animalRes, medicalRes] = await Promise.allSettled([
-        axios.get(`/api/animals/getAnimalData/${user.id_shelter}`),
-        axios.get(`/api/medical/getMedicalData/${user.id_shelter}`),
+        axios.get(`/api/animals/getAnimalData/${userData.id_shelter}`),
+        axios.get(`/api/medical/getMedicalData/${userData.id_shelter}`),
       ]);
 
       if (animalRes.status !== "fulfilled") {
@@ -88,7 +94,7 @@ export default function AnimalManagement() {
   const fetchAdopterData = async () => {
     try {
       const adopterRes = await axios.get(
-        `/api/adopters/getAdopterData/${user.id_shelter}`
+        `/api/adopters/getAdopterData/${userData.id_shelter}`
       );
       const adopterData = adopterRes.data;
 
@@ -104,9 +110,21 @@ export default function AnimalManagement() {
   };
 
   useEffect(() => {
-    fetchAnimalData();
-    fetchAdopterData();
+    currentUser();
   }, []);
+  useEffect(() => {
+    if (userData && userData.id_shelter) {
+      if (
+        (userType === "employee" && userData?.role === "Administrator") ||
+        (userType === "shelter" && userData?.role === "Owner")
+      ) {
+        fetchAnimalData();
+        fetchAdopterData();
+      } else {
+        setOpenAlertUser(true);
+      }
+    }
+  }, [userData]);
 
   return (
     <Layout>
@@ -125,7 +143,7 @@ export default function AnimalManagement() {
           <AnimalInDialog
             open={openAnimalIn}
             onOpenChange={setOpenAnimalIn}
-            User={user}
+            User={userData}
             fetchData={fetchAnimalData}
           />
           <Button
@@ -141,7 +159,7 @@ export default function AnimalManagement() {
             onOpenChange={setOpenAnimalOut}
             animalData={animalData}
             adopterData={adopterData}
-            User={user}
+            User={userData}
             fetchData={fetchAnimalData}
           />
         </div>
