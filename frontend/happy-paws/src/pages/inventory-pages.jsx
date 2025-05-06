@@ -347,16 +347,11 @@ export default function InventoryPages() {
   }, []);
   useEffect(() => {
     if (userData && userData.id_shelter) {
-      if (
-        (userType === "employee" && userData?.role === "Finance") ||
-        (userType === "shelter" && userData?.role === "Owner") ||
-        (userType === "employee" && userData?.role === "Administrator")
-      ) {
-        fetchEquipmentsData();
-        fetchFoodsData();
-      }
+      fetchEquipmentsData();
+      fetchFoodsData();
     }
   }, [userData]);
+
   const handleFoodSearchChange = (e) => {
     setFoodSearchQuery(e.target.value);
     setFoodCurrentPage(1);
