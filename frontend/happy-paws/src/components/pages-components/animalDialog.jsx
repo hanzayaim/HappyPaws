@@ -21,7 +21,11 @@ import DatePicker from "./DatePicker";
 import GenderCombobox from "./gender-combobox";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { SuccessInsertDialog, SuccessUpdateDialog } from "./SuccessDialog";
+import {
+  SuccessAdoptAnimalDialog,
+  SuccessInsertDialog,
+  SuccessUpdateDialog,
+} from "./SuccessDialog";
 
 const animalInSchema = z.object({
   animalName: z
@@ -294,7 +298,18 @@ const animalOutSchema = z.object({
   animalName: z.string().min(1, "Animal Name is required"),
   animalAdopter: z.string().min(1, "Animal Adopter is required"),
 });
-export function AnimalOutDialog({ open, onOpenChange, animalData }) {
+export function AnimalOutDialog({
+  open,
+  onOpenChange,
+  animalData,
+  adopterData,
+  User,
+  fetchData,
+}) {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [insertedAnimalName, setInsertedAnimalName] = useState("");
+  const [insertedAdopterName, setInsertedAdopterName] = useState("");
+
   const {
     handleSubmit,
     control,
@@ -308,69 +323,109 @@ export function AnimalOutDialog({ open, onOpenChange, animalData }) {
       animalAdopter: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form data: ", data);
-    reset();
-    onOpenChange(false);
+  const onSubmit = async (data) => {
+    try {
+      let userName = User.owner_name ? User.owner_name : User.name;
+      const animal = animalData.find((a) => a.id_animal === data.animalName);
+      if (!animal) throw new Error("Animal not found");
+
+      const adopter = adopterData.find(
+        (a) => a.id_adopter === data.animalAdopter
+      );
+      if (!adopter) throw new Error("Adopter not found");
+
+      const response = await axios.post(
+        "/api/animals/insertAdopterAnimalData",
+        {
+          id_adopter: data.animalAdopter,
+          updated_by: userName,
+          id_shelter: User.id_shelter,
+          id_animal: data.animalName,
+        }
+      );
+
+      const result = response.data;
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      reset();
+      onOpenChange(false);
+      setInsertedAnimalName(animal.animal_name);
+      setInsertedAdopterName(adopter.name);
+      setShowSuccessDialog(true);
+      fetchData();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Animal Out</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <div className="grid gap-4 py-4">
-            <div>
-              <Controller
-                control={control}
-                name="animalName"
-                render={({ field }) => (
-                  <>
-                    <AnimalOutCombobox
-                      className="w-full"
-                      value={field.value}
-                      onChange={field.onChange}
-                      animal={animalData}
-                    />
-                    {errors.animalName && (
-                      <p className="text-destructive text-sm">
-                        {errors.animalName.message}
-                      </p>
-                    )}
-                  </>
-                )}
-              />
+    <>
+      <SuccessAdoptAnimalDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_animal={insertedAnimalName}
+        data_adopter={insertedAdopterName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Animal Out</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <div className="grid gap-4 py-4">
+              <div>
+                <Controller
+                  control={control}
+                  name="animalName"
+                  render={({ field }) => (
+                    <>
+                      <AnimalOutCombobox
+                        className="w-full"
+                        value={field.value}
+                        onChange={field.onChange}
+                        animal={animalData}
+                      />
+                      {errors.animalName && (
+                        <p className="text-destructive text-sm">
+                          {errors.animalName.message}
+                        </p>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+              <div>
+                <Controller
+                  control={control}
+                  name="animalAdopter"
+                  render={({ field }) => (
+                    <>
+                      <AnimalAdopterCombobox
+                        className="w-full"
+                        value={field.value}
+                        onChange={field.onChange}
+                        adopterData={adopterData}
+                      />
+                      {errors.animalAdopter && (
+                        <p className="text-destructive text-sm">
+                          {errors.animalAdopter.message}
+                        </p>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
             </div>
-            <div>
-              <Controller
-                control={control}
-                name="animalAdopter"
-                render={({ field }) => (
-                  <>
-                    <AnimalAdopterCombobox
-                      className="w-full"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                    {errors.animalAdopter && (
-                      <p className="text-destructive text-sm">
-                        {errors.animalAdopter.message}
-                      </p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Animal Out</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <Button type="submit">Animal Out</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

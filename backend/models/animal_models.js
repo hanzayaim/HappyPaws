@@ -179,7 +179,7 @@ async function insertAdopterData(
       id_adopter = $1,
     updated_by = $2,
     updated_at = CURRENT_TIMESTAMP
-  WHERE id_shelter = $3 AND id_animal = $14 RETURNING *`,
+  WHERE id_shelter = $3 AND id_animal = $4 RETURNING *`,
       [id_adopter, updated_by, id_shelter, id_animal]
     );
     return {
@@ -204,11 +204,7 @@ async function deleteAnimalData(id_shelter, id_animal) {
       animal: rows[0],
     };
   } catch (error) {
-    return {
-      error: true,
-      message: "error deleting animal",
-      data: null,
-    };
+    throw error;
   }
 }
 

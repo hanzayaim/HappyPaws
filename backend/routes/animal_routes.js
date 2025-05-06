@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const pool = require("../config/db");
+
 const {
   getAnimalDataById,
   getAnimalData,
   updateAnimalData,
   deleteAnimalData,
+  insertAdopterData,
 } = require("../models/animal_models");
 const { insertNewAnimal } = require("../controllers/animal_controller");
 
@@ -152,7 +155,6 @@ router.post("/insertAdopterAnimalData", async (req, res) => {
   const { id_adopter, updated_by, id_shelter, id_animal } = req.body;
   if (
     id_shelter == null ||
-    id_shelter == null ||
     id_animal == null ||
     id_adopter == null ||
     updated_by == null
@@ -163,7 +165,7 @@ router.post("/insertAdopterAnimalData", async (req, res) => {
     });
   }
   try {
-    const result = await updateAnimalData(
+    const result = await insertAdopterData(
       id_adopter,
       updated_by,
       id_shelter,
@@ -180,9 +182,14 @@ router.post("/insertAdopterAnimalData", async (req, res) => {
 router.post("/deleteAnimalData", async (req, res) => {
   const { id_shelter, id_animal } = req.body;
   try {
+    await pool.query(
+      `DELETE FROM medical WHERE id_animal = $1 AND id_shelter = $2`,
+      [id_animal, id_shelter]
+    );
     const result = await deleteAnimalData(id_shelter, id_animal);
     res.status(200).json(result);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: true, message: "failed to delete data" });
   }
 });
