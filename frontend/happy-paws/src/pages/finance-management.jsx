@@ -45,40 +45,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import {
+  MonthFilterSelect,
+  YearFilterSelect,
+} from "../components/pages-components/Select-Month-Year";
+import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 //#region Dummy
-const medicals = [
-  {
-    id_medical: "MEDICAL-001",
-    medical_status: "Sembuh",
-    vaccin_status: true,
-    medical_date_in: "2025-04-01T08:00:00.000Z",
-    medical_date_out: "2025-04-10T08:00:00.000Z",
-    medical_cost: 500000,
-    note: "Penyakit kulit, sudah sembuh",
-    created_at: "2025-04-01T08:10:00.000Z",
-    created_by: "vet01",
-    updated_at: "2025-04-10T08:30:00.000Z",
-    updated_by: "vet01",
-    id_shelter: "shelter_001",
-    id_animal: "animal_001",
-  },
-  {
-    id_medical: "MEDICAL-002",
-    medical_status: "Sakit",
-    vaccin_status: false,
-    medical_date_in: "2025-04-02T09:00:00.000Z",
-    medical_date_out: "2025-04-12T09:00:00.000Z",
-    medical_cost: 700000,
-    note: "Flu berat, masih pengobatan",
-    created_at: "2025-04-02T09:10:00.000Z",
-    created_by: "vet02",
-    updated_at: "2025-04-12T09:30:00.000Z",
-    updated_by: "vet02",
-    id_shelter: "shelter_001",
-    id_animal: "animal_002",
-  },
-];
+// const medicals = [
+//   {
+//     id_medical: "MEDICAL-001",
+//     medical_status: "Sembuh",
+//     vaccin_status: true,
+//     medical_date_in: "2025-04-01T08:00:00.000Z",
+//     medical_date_out: "2025-04-10T08:00:00.000Z",
+//     medical_cost: 500000,
+//     note: "Penyakit kulit, sudah sembuh",
+//     created_at: "2025-04-01T08:10:00.000Z",
+//     created_by: "vet01",
+//     updated_at: "2025-04-10T08:30:00.000Z",
+//     updated_by: "vet01",
+//     id_shelter: "shelter_001",
+//     id_animal: "animal_001",
+//   },
+//   {
+//     id_medical: "MEDICAL-002",
+//     medical_status: "Sakit",
+//     vaccin_status: false,
+//     medical_date_in: "2025-04-02T09:00:00.000Z",
+//     medical_date_out: "2025-04-12T09:00:00.000Z",
+//     medical_cost: 700000,
+//     note: "Flu berat, masih pengobatan",
+//     created_at: "2025-04-02T09:10:00.000Z",
+//     created_by: "vet02",
+//     updated_at: "2025-04-12T09:30:00.000Z",
+//     updated_by: "vet02",
+//     id_shelter: "shelter_001",
+//     id_animal: "animal_002",
+//   },
+// ];
 // const user = {
 //   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
 //   owner_name: "Dimas",
@@ -101,10 +106,11 @@ export default function FinancePage() {
   const [getProfit, setProfit] = useState(0);
   const [Employees, setEmployees] = useState([]);
   const [Foods, setFoods] = useState([]);
+  const [medicals, setMedicals] = useState([]);
   const [Equipments, setEquipments] = useState([]);
-  // const [userType, setUserType] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
   const [expensesCurrentPage, setExpensesCurrentPage] = useState(1);
   const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
@@ -220,6 +226,23 @@ export default function FinancePage() {
       console.error("Error fetching salary data:", error);
     }
   };
+  const fetchMedicalsData = async () => {
+    try {
+      const response = await axios.get(
+        `/api/food/getFoodData/${userData.id_shelter}`
+      );
+
+      const medicalsData = response.data;
+
+      if (medicalsData.error) {
+        throw new Error(medicalsData.message || "Failed to fetch foods");
+      }
+
+      setMedicals(medicalsData.data || []);
+    } catch (error) {
+      console.error("Error fetching food data", error);
+    }
+  };
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
@@ -273,7 +296,7 @@ export default function FinancePage() {
       const storedUserData = localStorage.getItem("userData");
 
       if (storedUserType && storedUserData) {
-        // setUserType(storedUserType);
+        setUserType(storedUserType);
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
@@ -322,6 +345,7 @@ export default function FinancePage() {
       fetchEmployeeData();
       fetchEquipmentsData();
       fetchFoodsData();
+      fetchMedicalsData();
     }
   }, [userData]);
 
@@ -367,6 +391,9 @@ export default function FinancePage() {
     setSelectedSalary(Salary);
     setDeleteSalaryDialogOpen(true);
   };
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+
   //#endregion
   return (
     <Layout>
@@ -415,22 +442,22 @@ export default function FinancePage() {
             </CardFooter>
           </Card>
         </div>
-        <div className="flex lg:flex-row flex-col md:flex-row gap-2 justify-between items-center w-full">
-          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
-            <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+        <Label className="lg:text-2xl text-xl font-medium">Income</Label>
+        <div className="flex flex-col lg:flex-row md:flex-row gap-2 justify-between items-center w-full mt-4">
+          <div className="flex flex-wrap  gap-2 items-center">
             <Input
               type="text"
               placeholder="Search by income name"
               value={IncomeSearchQuery}
               onChange={handleIncomeSearchChange}
-              className="md:w-full sm:w-64"
+              className="w-full sm:w-64"
             />
 
             <Select
               onValueChange={handleIncomeTypeFilterChange}
               value={IncomeTypeFilter}
             >
-              <SelectTrigger className="md:w-full sm:w-50">
+              <SelectTrigger className="w-full  sm:w-50">
                 <SelectValue placeholder="Filter Income Type" />
               </SelectTrigger>
               <SelectContent>
@@ -439,6 +466,18 @@ export default function FinancePage() {
                 <SelectItem value="Non Donasi">Non Donasi</SelectItem>
               </SelectContent>
             </Select>
+            <MonthFilterSelect
+              value={selectedMonth}
+              onChange={(val) =>
+                setSelectedMonth(val === "all" ? undefined : val)
+              }
+            />
+            <YearFilterSelect
+              value={selectedYear}
+              onChange={(val) =>
+                setSelectedYear(val === "all" ? undefined : val)
+              }
+            />
           </div>
           <Button
             className="flex items-center gap-1"
@@ -706,12 +745,11 @@ export default function FinancePage() {
             </Pagination>
           </div>
         </div>
-
-        <div className="flex justify-between items-center w-full">
-          <div className="flex flex-col lg:flex-row md:flex-row gap-2 min-w-fit justify-start items-center">
-            <Label className="lg:text-2xl min-w-fit text-xl font-medium">
-              Employee Salary
-            </Label>
+        <Label className="lg:text-2xl min-w-fit text-xl font-medium">
+          Employee Salary
+        </Label>
+        <div className="flex flex-col lg:flex-row md:flex-row gap-2 justify-between items-center w-full mt-4">
+          <div className="flex flex-wrap gap-2 items-center">
             <Input
               type="text"
               placeholder="Search by Salary name"

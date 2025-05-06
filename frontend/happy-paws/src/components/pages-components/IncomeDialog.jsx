@@ -40,7 +40,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
     defaultValues: {
       incomeName: "",
       incomeType: "",
-      incomeDate: null,
+      incomeDate: new Date(),
       incomeAmount: null,
       incomeNote: "",
     },
@@ -67,7 +67,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
         throw new Error(result.message || "Failed to insert income data");
       }
 
-      reset(); // reset the form fields
+      reset();
       onOpenChange(false);
       fetchData();
     } catch (error) {

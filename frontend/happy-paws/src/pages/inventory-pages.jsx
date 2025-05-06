@@ -348,7 +348,7 @@ export default function InventoryPages() {
       fetchEquipmentsData();
       fetchFoodsData();
     }
-  }, []);
+  }, [userData]);
   const handleFoodSearchChange = (e) => {
     setFoodSearchQuery(e.target.value);
     setFoodCurrentPage(1);
