@@ -41,7 +41,7 @@ export default function CardLogin() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 justify-center">
-          <div>{userData.email}</div>
+          <div className="break-all text-center">{userData.email}</div>
           <div>{userData.role}</div>
         </CardContent>
       </Card>
@@ -50,10 +50,12 @@ export default function CardLogin() {
     return (
       <Card className="text-center w-auto h-auto gap-2 justify-center bg-primary/90 text-white ">
         <CardHeader>
-          <CardTitle className="text-xl break-words">{userData.name || "User"}</CardTitle>
+          <CardTitle className="text-xl break-words">
+            {userData.name || "User"}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 justify-center break-words">
-          <div>{userData.email}</div>
+          <div className="break-all text-center">{userData.email}</div>
           <div>{userData.role}</div>
         </CardContent>
       </Card>

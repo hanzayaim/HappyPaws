@@ -51,49 +51,7 @@ import {
 } from "../components/pages-components/Select-Month-Year";
 // import { useNavigate } from "react-router-dom";
 import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
-// import { useNavigate } from "react-router-dom";
-//#region Dummy
-// const medicals = [
-//   {
-//     id_medical: "MEDICAL-001",
-//     medical_status: "Sembuh",
-//     vaccin_status: true,
-//     medical_date_in: "2025-04-01T08:00:00.000Z",
-//     medical_date_out: "2025-04-10T08:00:00.000Z",
-//     medical_cost: 500000,
-//     note: "Penyakit kulit, sudah sembuh",
-//     created_at: "2025-04-01T08:10:00.000Z",
-//     created_by: "vet01",
-//     updated_at: "2025-04-10T08:30:00.000Z",
-//     updated_by: "vet01",
-//     id_shelter: "shelter_001",
-//     id_animal: "animal_001",
-//   },
-//   {
-//     id_medical: "MEDICAL-002",
-//     medical_status: "Sakit",
-//     vaccin_status: false,
-//     medical_date_in: "2025-04-02T09:00:00.000Z",
-//     medical_date_out: "2025-04-12T09:00:00.000Z",
-//     medical_cost: 700000,
-//     note: "Flu berat, masih pengobatan",
-//     created_at: "2025-04-02T09:10:00.000Z",
-//     created_by: "vet02",
-//     updated_at: "2025-04-12T09:30:00.000Z",
-//     updated_by: "vet02",
-//     id_shelter: "shelter_001",
-//     id_animal: "animal_002",
-//   },
-// ];
-// const user = {
-//   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-//   owner_name: "Dimas",
-//   email: "shelter001@gmail.com",
-//   shelter_name: "Happy Paws Shelter",
-//   phone_number: "081238697341",
-//   address: "jln jalan",
-// };
-//#endregion
+
 const API_BASE_URL = "http://localhost:3000";
 axios.defaults.baseURL = API_BASE_URL;
 export default function FinancePage() {
@@ -118,8 +76,12 @@ export default function FinancePage() {
 
   const [IncomeSearchQuery, setIncomeSearchQuery] = useState("");
   const [IncomeTypeFilter, setIncomeTypeFilter] = useState("");
+  const [IncomeSelectedYear, setIncomeSelectedYear] = useState("");
+  const [incomeSelectedMonth, setIncomeSelectedMonth] = useState("");
 
   const [SalarySearchQuery, setSalarySearchQuery] = useState("");
+  const [SalarySelectedYear, setSalarySelectedYear] = useState("");
+  const [SalarySelectedMonth, setSalarySelectedMonth] = useState("");
 
   const [openAlertUser, setOpenAlertUser] = useState(false);
   const [addIncomeDialogOpen, setAddIncomeDialogOpen] = useState(false);
@@ -138,18 +100,35 @@ export default function FinancePage() {
         .toLowerCase()
         .includes(IncomeSearchQuery.toLowerCase());
       const matchesType = !IncomeTypeFilter || inc.type === IncomeTypeFilter;
-      return matchesSearch && matchesType;
+      const matchesMonth =
+        !incomeSelectedMonth ||
+        new Date(inc.date).getMonth() === incomeSelectedMonth - 1;
+      const matchesYear =
+        !IncomeSelectedYear ||
+        new Date(inc.date).getFullYear() === Number(IncomeSelectedYear);
+      return matchesSearch && matchesType && matchesMonth && matchesYear;
     });
-  }, [Incomes, IncomeSearchQuery, IncomeTypeFilter]);
-
+  }, [
+    Incomes,
+    IncomeSearchQuery,
+    IncomeTypeFilter,
+    incomeSelectedMonth,
+    IncomeSelectedYear,
+  ]);
   const filteredSalary = useMemo(() => {
     return Salaries.filter((salary) => {
       const matchesSearch = salary.name
         .toLowerCase()
         .includes(SalarySearchQuery.toLowerCase());
-      return matchesSearch;
+      const matchesMonth =
+        !SalarySelectedMonth ||
+        new Date(salary.date).getMonth() === SalarySelectedMonth - 1;
+      const matchesYear =
+        !SalarySelectedYear ||
+        new Date(salary.date).getFullYear() === Number(SalarySelectedYear);
+      return matchesSearch && matchesMonth && matchesYear;
     });
-  }, [Salaries, SalarySearchQuery]);
+  }, [Salaries, SalarySearchQuery, SalarySelectedYear, SalarySelectedMonth]);
 
   const incomeTotalPages =
     Incomes && Incomes.length
@@ -367,6 +346,22 @@ export default function FinancePage() {
     setIncomeTypeFilter(value);
     setIncomeCurrentPage(1);
   };
+  const handleIncomeMonthFilterChange = (value) => {
+    setIncomeSelectedMonth(value === "all" ? undefined : value);
+    setIncomeCurrentPage(1);
+  };
+  const handleIncomeYearFilterChange = (value) => {
+    setIncomeSelectedYear(value === "all" ? undefined : value);
+    setIncomeCurrentPage(1);
+  };
+  const handleSalaryMonthFilterChange = (value) => {
+    setSalarySelectedMonth(value === "all" ? undefined : value);
+    setSalaryCurrentPage(1);
+  };
+  const handleSalaryYearFilterChange = (value) => {
+    setSalarySelectedYear(value === "all" ? undefined : value);
+    setSalaryCurrentPage(1);
+  };
 
   const handleSalarySearchChange = (e) => {
     setSalarySearchQuery(e.target.value);
@@ -400,8 +395,6 @@ export default function FinancePage() {
     setSelectedSalary(Salary);
     setDeleteSalaryDialogOpen(true);
   };
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
 
   //#endregion
   return (
@@ -483,16 +476,12 @@ export default function FinancePage() {
               </SelectContent>
             </Select>
             <MonthFilterSelect
-              value={selectedMonth}
-              onChange={(val) =>
-                setSelectedMonth(val === "all" ? undefined : val)
-              }
+              value={incomeSelectedMonth}
+              onChange={handleIncomeMonthFilterChange}
             />
             <YearFilterSelect
-              value={selectedYear}
-              onChange={(val) =>
-                setSelectedYear(val === "all" ? undefined : val)
-              }
+              value={IncomeSelectedYear}
+              onChange={handleIncomeYearFilterChange}
             />
           </div>
           <Button
@@ -772,6 +761,14 @@ export default function FinancePage() {
               value={SalarySearchQuery}
               onChange={handleSalarySearchChange}
               className="md:w-full sm:w-64"
+            />
+            <MonthFilterSelect
+              value={SalarySelectedMonth}
+              onChange={handleSalaryMonthFilterChange}
+            />
+            <YearFilterSelect
+              value={SalarySelectedYear}
+              onChange={handleSalaryYearFilterChange}
             />
           </div>
           <Button
