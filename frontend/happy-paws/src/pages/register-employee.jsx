@@ -103,8 +103,6 @@ export default function RegisterEmployee() {
         address: data.employeeAddress,
       });
 
-      console.log(data.email);
-
       await axios.post("/api/email/email_register_all", {
         email: data.email,
       });
