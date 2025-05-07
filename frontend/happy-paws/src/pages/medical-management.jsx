@@ -34,16 +34,6 @@ import {
 } from "../components/ui/select";
 import axios from "axios";
 
-const user = {
-  id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-  owner_name: "Dimas",
-  email: "shelter001@gmail.com",
-  shelter_name: "Happy Paws Shelter",
-  phone_number: "081238697341",
-  role: "Owner",
-  address: "jln jalan",
-};
-
 export default function MedicalManagement() {
   const itemsPerPage = 5;
   const [animalData, setAnimalData] = useState([]);
@@ -56,6 +46,22 @@ export default function MedicalManagement() {
   const [statusFilter, setStatusFilter] = useState("");
   const [vaccineFilter, setVaccineFilter] = useState("");
   const [selectedMedical, setSelectedMedical] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [userType, setUserType] = useState(null);
+
+  const currentUser = async () => {
+    try {
+      const storedUserType = localStorage.getItem("userType");
+      const storedUserData = localStorage.getItem("userData");
+
+      if (storedUserType && storedUserData) {
+        setUserType(storedUserType);
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error("Error user data", error);
+    }
+  };
 
   const getAnimalName = (id_animal, id_shelter) => {
     const animal = animalData.find(
@@ -88,7 +94,7 @@ export default function MedicalManagement() {
   const fetchAnimalData = async () => {
     try {
       const animalRes = await axios.get(
-        `api/animals/getAnimalData/${user.id_shelter}`
+        `api/animals/getAnimalData/${userData.id_shelter}`
       );
 
       const animalDataFetch = animalRes.data;
@@ -107,7 +113,7 @@ export default function MedicalManagement() {
   const fetchMedicalData = async () => {
     try {
       const medicalRes = await axios.get(
-        `/api/medical/getMedicalData/${user.id_shelter}`
+        `/api/medical/getMedicalData/${userData.id_shelter}`
       );
 
       const medicalDataFetch = medicalRes.data;
@@ -123,9 +129,21 @@ export default function MedicalManagement() {
   };
 
   useEffect(() => {
-    fetchAnimalData();
-    fetchMedicalData();
+    currentUser();
   }, []);
+  useEffect(() => {
+    if (userData && userData.id_shelter) {
+      if (
+        (userType === "employee" && userData?.role === "Medical") ||
+        (userType === "shelter" && userData?.role === "Owner")
+      ) {
+        fetchAnimalData();
+        fetchMedicalData();
+      } else {
+        setOpenAlertUser(true);
+      }
+    }
+  }, [userData]);
 
   useEffect(() => {
     setMedicalCurrentPage(1);
@@ -200,7 +218,7 @@ export default function MedicalManagement() {
         <InsertMedicalDialog
           open={addMedicalDialogOpen}
           onOpenChange={setAddMedicalDialogOpen}
-          User={user}
+          User={userData}
           fetchData={fetchMedicalData}
           animalData={animalData}
         />
@@ -209,7 +227,7 @@ export default function MedicalManagement() {
           open={editMedicalDialogOpen}
           onOpenChange={setEditMedicalDialogOpen}
           medical={selectedMedical}
-          User={user}
+          User={userData}
           fetchData={fetchMedicalData}
           animalData={animalData}
         />
@@ -218,7 +236,7 @@ export default function MedicalManagement() {
           open={deleteMedicalDialogOpen}
           onOpenChange={setDeleteMedicalDialogOpen}
           medical={selectedMedical}
-          User={user}
+          User={userData}
           fetchData={fetchMedicalData}
           animalData={animalData}
         />

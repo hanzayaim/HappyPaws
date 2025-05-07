@@ -15,11 +15,15 @@ const insertNewAnimal = async (
 ) => {
   try {
     const id_animal = "ANIMAL-" + generateId();
-
-    const cleanBase64String = animal_img.replace(
-      /^data:image\/[a-zA-Z]+;base64,/,
-      ""
-    );
+    let cleanBase64String = null;
+    if (animal_img === null || animal_img === undefined || animal_img === "") {
+      animal_img = null;
+    } else {
+      cleanBase64String = animal_img.replace(
+        /^data:image\/[a-zA-Z]+;base64,/,
+        ""
+      );
+    }
 
     const animalImgBuffer = cleanBase64String
       ? Buffer.from(cleanBase64String, "base64")

@@ -133,20 +133,6 @@ router.post("/updateAnimalData", async (req, res) => {
     );
     res.status(200).json(result);
   } catch (error) {
-    if (error.code === "23505") {
-      const constraint = error.constraint;
-
-      if (error.code === "23505") {
-        if (constraint === "animal_animal_name_key") {
-          return res
-            .status(400)
-            .json({ error: true, message: "animal name already exists" });
-        }
-      }
-
-      return res.status(400).json({ error: true, message: "duplicate key" });
-    }
-
     res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
