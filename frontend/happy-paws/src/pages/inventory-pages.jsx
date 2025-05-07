@@ -244,11 +244,13 @@ export default function InventoryPages() {
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
   const [foodCategoryFilter, setFoodCategoryFilter] = useState("");
   const [foodTypeFilter, setFoodTypeFilter] = useState("");
-  const [SalarySelectedYear, setSalarySelectedYear] = useState("");
-  const [SalarySelectedMonth, setSalarySelectedMonth] = useState("");
+  const [FoodSelectedYear, setFoodSelectedYear] = useState("");
+  const [FoodSelectedMonth, setFoodSelectedMonth] = useState("");
 
   const [equipmentSearchQuery, setEquipmentSearchQuery] = useState("");
   const [equipmentTypeFilter, setEquipmentTypeFilter] = useState("");
+  const [EquipmentSelectedYear, setEquipmentSelectedYear] = useState("");
+  const [EquipmentSelectedMonth, setEquipmentSelectedMonth] = useState("");
 
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false);
   const [editFoodDialogOpen, setEditFoodDialogOpen] = useState(false);
@@ -270,9 +272,28 @@ export default function InventoryPages() {
       const matchesCategory =
         !foodCategoryFilter || food.category === foodCategoryFilter;
       const matchesType = !foodTypeFilter || food.type === foodTypeFilter;
-      return matchesSearch && matchesCategory && matchesType;
+      const matchesMonth =
+        !FoodSelectedMonth ||
+        new Date(food.date).getMonth() === FoodSelectedMonth - 1;
+      const matchesYear =
+        !FoodSelectedYear ||
+        new Date(food.date).getFullYear() === Number(FoodSelectedYear);
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesType &&
+        matchesMonth &&
+        matchesYear
+      );
     });
-  }, [foods, foodSearchQuery, foodCategoryFilter, foodTypeFilter]);
+  }, [
+    foods,
+    foodSearchQuery,
+    foodCategoryFilter,
+    foodTypeFilter,
+    FoodSelectedYear,
+    FoodSelectedMonth,
+  ]);
 
   const filteredEquipments = useMemo(() => {
     return equipments.filter((equipment) => {
@@ -281,9 +302,22 @@ export default function InventoryPages() {
         .includes(equipmentSearchQuery.toLowerCase());
       const matchesType =
         !equipmentTypeFilter || equipment.type === equipmentTypeFilter;
-      return matchesSearch && matchesType;
+      const matchesMonth =
+        !EquipmentSelectedMonth ||
+        new Date(equipment.date).getMonth() === EquipmentSelectedMonth - 1;
+      const matchesYear =
+        !EquipmentSelectedYear ||
+        new Date(equipment.date).getFullYear() ===
+          Number(EquipmentSelectedYear);
+      return matchesSearch && matchesType && matchesMonth && matchesYear;
     });
-  }, [equipments, equipmentSearchQuery, equipmentTypeFilter]);
+  }, [
+    equipments,
+    equipmentSearchQuery,
+    equipmentTypeFilter,
+    EquipmentSelectedYear,
+    EquipmentSelectedMonth,
+  ]);
 
   const foodTotalPages = Math.ceil(filteredFoods.length / itemsPerPage);
   const foodStartIndex = (foodCurrentPage - 1) * itemsPerPage;
@@ -371,12 +405,20 @@ export default function InventoryPages() {
     setFoodCurrentPage(1);
   };
   const handleSalaryMonthFilterChange = (value) => {
-    setSalarySelectedMonth(value === "all" ? undefined : value);
+    setFoodSelectedMonth(value === "all" ? undefined : value);
     setFoodCurrentPage(1);
   };
   const handleSalaryYearFilterChange = (value) => {
-    setSalarySelectedYear(value === "all" ? undefined : value);
+    setFoodSelectedYear(value === "all" ? undefined : value);
     setFoodCurrentPage(1);
+  };
+  const handleEquipmentMonthFilterChange = (value) => {
+    setEquipmentSelectedMonth(value === "all" ? undefined : value);
+    setEquipmentCurrentPage(1);
+  };
+  const handleEquipmentYearFilterChange = (value) => {
+    setEquipmentSelectedYear(value === "all" ? undefined : value);
+    setEquipmentCurrentPage(1);
   };
 
   const handleEquipmentSearchChange = (e) => {
@@ -464,11 +506,11 @@ export default function InventoryPages() {
               </SelectContent>
             </Select>
             <MonthFilterSelect
-              value={SalarySelectedMonth}
+              value={FoodSelectedMonth}
               onChange={handleSalaryMonthFilterChange}
             />
             <YearFilterSelect
-              value={SalarySelectedYear}
+              value={FoodSelectedYear}
               onChange={handleSalaryYearFilterChange}
             />
           </div>
@@ -622,6 +664,14 @@ export default function InventoryPages() {
                 <SelectItem value="Beli">Beli</SelectItem>
               </SelectContent>
             </Select>
+            <MonthFilterSelect
+              value={EquipmentSelectedMonth}
+              onChange={handleEquipmentMonthFilterChange}
+            />
+            <YearFilterSelect
+              value={EquipmentSelectedYear}
+              onChange={handleEquipmentYearFilterChange}
+            />
           </div>
           <Button
             className="flex items-center gap-1"
