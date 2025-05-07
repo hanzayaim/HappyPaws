@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
-
 app.use(express.json());
 
 const {
@@ -14,13 +13,20 @@ const {
 } = require("../models/shelter_models");
 
 const {
+  sendShelterRegistrationNotificationEmail,
   sendApprovalEmail,
   sendRejectionEmail,
   sendActivationEmail,
   sendDeactivationEmail,
-} = require("./send_email");
+} = require("../routes/send_email");
 
 const { insertNewShelter } = require("../controllers/shelter_controller");
+
+const STATUS = {
+  NEW: "New",
+  ACTIVE: "Active",
+  INACTIVE: "Inactive",
+};
 
 router.get("/getShelterData", async (req, res) => {
   try {
@@ -86,6 +92,13 @@ router.post("/insertShelter", async (req, res) => {
       phone_number,
       address
     );
+
+    try {
+      await sendShelterRegistrationNotificationEmail(email);
+    } catch (emailError) {
+      console.error(emailError);
+    }
+
     res.status(200).json(result);
   } catch (error) {
     if (error.code === "23505") {
@@ -125,41 +138,60 @@ router.post("/updateShelterStatus", async (req, res) => {
       message: "Please provide all required data.",
     });
   }
+
   try {
     const currentShelter = await getShelterDataById(id_shelter);
-    const currentStatus = currentShelter.data?.status;
 
-    if (status === "Active") {
-      if (currentStatus !== "New" && currentStatus !== "Inactive") {
-        return res.status(400).json({
-          error: true,
-          message: "Only 'New' or 'Inactive' shelters can be activated",
-        });
+    if (!currentShelter || !currentShelter.data) {
+      return res.status(404).json({
+        error: true,
+        message: "Shelter not found",
+      });
+    }
+
+    const currentStatus = currentShelter.data.status;
+
+    let validTransition = true;
+    let errorMessage = "";
+
+    if (status === STATUS.ACTIVE) {
+      if (currentStatus === STATUS.NEW || currentStatus === STATUS.INACTIVE) {
+        isValidTransition = true;
+      } else {
+        errorMessage = "Only 'New' or 'Inactive' shelters can be activated";
       }
-    } else if (status === "Inactive") {
-      if (currentStatus !== "Active" && currentStatus !== "New") {
-        return res.status(400).json({
-          error: true,
-          message:
-            "Only 'Active' or 'New' shelters can be deactivated/rejected",
-        });
+    } else if (status === STATUS.INACTIVE) {
+      if (currentStatus === STATUS.NEW || currentStatus === STATUS.ACTIVE) {
+        isValidTransition = true;
+      } else {
+        errorMessage =
+          "Only 'New' or 'Active' shelters can be deactivated/rejected";
       }
+    } else {
+      errorMessage = "Invalid status value";
+    }
+
+    if (!validTransition) {
+      return res.status(400).json({
+        error: true,
+        message: errorMessage,
+      });
     }
 
     const result = await updateShelterStatus(status, id_shelter);
 
     try {
-      if (status === "Active") {
-        if (currentStatus === "New") {
-          await axios.post("/api/emails/email_approval", { email });
-        } else if (currentStatus === "Inactive") {
-          await axios.post("/api/emails/email_activation", { email });
+      if (status === STATUS.ACTIVE) {
+        if (currentStatus === STATUS.NEW) {
+          await sendApprovalEmail(email);
+        } else if (currentStatus === STATUS.INACTIVE) {
+          await sendActivationEmail(email);
         }
-      } else if (status === "Inactive") {
-        if (currentStatus === "New") {
-          await axios.post("/api/emails/email_rejection", { email });
-        } else if (currentStatus === "Active") {
-          await axios.post("/api/emails/email_deactivation", { email });
+      } else if (status === STATUS.INACTIVE) {
+        if (currentStatus === STATUS.NEW) {
+          await sendRejectionEmail(email);
+        } else if (currentStatus === STATUS.ACTIVE) {
+          await sendDeactivationEmail(email);
         }
       }
     } catch (emailError) {
@@ -167,7 +199,8 @@ router.post("/updateShelterStatus", async (req, res) => {
     }
 
     res.status(200).json(result);
-  } catch {
+  } catch (error) {
+    console.error("Error updating shelter status:", error);
     res.status(500).json({ error: true, message: "Failed to update status" });
   }
 });
