@@ -19,6 +19,11 @@ import { FoodCategoryCombobox, FoodTypeCombobox } from "./FoodCombobox";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
 import axios from "axios";
+import {
+  SuccessDeleteDialog,
+  SuccessInsertDialog,
+  SuccessUpdateDialog,
+} from "./SuccessDialog";
 
 const foodSchema = z.object({
   foodName: z.string().min(1, "Name is required"),
@@ -47,7 +52,8 @@ const foodSchema = z.object({
 export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
   const [foodCategory, setFoodCategory] = useState("");
   const [foodType, setFoodType] = useState("");
-
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [insertFoodName, setInsertFoodName] = useState("");
   const {
     register,
     handleSubmit,
@@ -93,6 +99,8 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
 
       reset();
       fetchData();
+      setInsertFoodName(data.foodName);
+      setShowSuccessDialog(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error insert income:", error.message);
@@ -118,138 +126,149 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
   }, [open, reset]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add Food</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Insert new food below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Name</Label>
-              <Input placeholder="Input Name..." {...register("foodName")} />
-              {errors.foodName && (
-                <p className="text-destructive text-sm">
-                  {errors.foodName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Quantity</Label>
-              <Input
-                type="number"
-                step="1"
-                min="1"
-                placeholder="Input Quantity..."
-                {...register("foodQuantity")}
-              />
-              {errors.foodQuantity && (
-                <p className="text-destructive text-sm">
-                  {errors.foodQuantity.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Category</Label>
-              <FoodCategoryCombobox
-                className="w-full"
-                value={foodCategory}
-                onChange={handleFoodCategoryChange}
-              />
-              {errors.foodCategory && (
-                <p className="text-destructive text-sm">
-                  {errors.foodCategory.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <FoodTypeCombobox
-                className="w-full"
-                value={foodType}
-                onChange={handleFoodTypeChange}
-              />
-              {errors.foodType && (
-                <p className="text-destructive text-sm">
-                  {errors.foodType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Expired Date</Label>
-              <Controller
-                control={control}
-                name="foodExpiredDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+    <>
+      <SuccessInsertDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={insertFoodName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Food</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Insert new food below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Name</Label>
+                <Input placeholder="Input Name..." {...register("foodName")} />
+                {errors.foodName && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodName.message}
+                  </p>
                 )}
-              />
-              {errors.foodExpiredDate && (
-                <p className="text-destructive text-sm">
-                  {errors.foodExpiredDate.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Cost</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="Cost"
-                {...register("foodCost")}
-              />
-              {errors.foodCost && (
-                <p className="text-destructive text-sm">
-                  {errors.foodCost.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="foodDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Quantity</Label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="1"
+                  placeholder="Input Quantity..."
+                  {...register("foodQuantity")}
+                />
+                {errors.foodQuantity && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodQuantity.message}
+                  </p>
                 )}
-              />
-              {errors.foodDate && (
-                <p className="text-destructive text-sm">
-                  {errors.foodDate.message}
-                </p>
-              )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Category</Label>
+                <FoodCategoryCombobox
+                  className="w-full"
+                  value={foodCategory}
+                  onChange={handleFoodCategoryChange}
+                />
+                {errors.foodCategory && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodCategory.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <FoodTypeCombobox
+                  className="w-full"
+                  value={foodType}
+                  onChange={handleFoodTypeChange}
+                />
+                {errors.foodType && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodType.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Expired Date</Label>
+                <Controller
+                  control={control}
+                  name="foodExpiredDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.foodExpiredDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodExpiredDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Cost</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Cost"
+                  {...register("foodCost")}
+                />
+                {errors.foodCost && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodCost.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="foodDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.foodDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea
+                  placeholder="Input Note..."
+                  {...register("foodNote")}
+                />
+                {errors.foodNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodNote.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea placeholder="Input Note..." {...register("foodNote")} />
-              {errors.foodNote && (
-                <p className="text-destructive text-sm">
-                  {errors.foodNote.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Add</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Add</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
 export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
   const [foodCategory, setFoodCategory] = useState("");
   const [foodType, setFoodType] = useState("");
-
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [editedFoodName, setEditedFoodName] = useState("");
   const {
     register,
     handleSubmit,
@@ -315,6 +334,8 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
 
       reset();
       fetchData();
+      setEditedFoodName(data.AdopterName);
+      setShowSuccessDialog(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating Food:", error.message);
@@ -332,135 +353,144 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit Food</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Edit food below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Name</Label>
-              <Input placeholder="Input Name..." {...register("foodName")} />
-              {errors.foodName && (
-                <p className="text-destructive text-sm">
-                  {errors.foodName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Quantity</Label>
-              <Input
-                type="number"
-                step="1"
-                min="1"
-                placeholder="Input Quantity..."
-                {...register("foodQuantity")}
-              />
-              {errors.foodQuantity && (
-                <p className="text-destructive text-sm">
-                  {errors.foodQuantity.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Category</Label>
-              <FoodCategoryCombobox
-                className="w-full"
-                value={foodCategory}
-                onChange={handleFoodCategoryChange}
-              />
-              {errors.foodCategory && (
-                <p className="text-destructive text-sm">
-                  {errors.foodCategory.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <FoodTypeCombobox
-                className="w-full"
-                value={foodType}
-                onChange={handleFoodTypeChange}
-              />
-              {errors.foodType && (
-                <p className="text-destructive text-sm">
-                  {errors.foodType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Expired Date</Label>
-              <Controller
-                control={control}
-                name="foodExpiredDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+    <>
+      <SuccessUpdateDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={editedFoodName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Food</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Edit food below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Name</Label>
+                <Input placeholder="Input Name..." {...register("foodName")} />
+                {errors.foodName && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodName.message}
+                  </p>
                 )}
-              />
-              {errors.foodExpiredDate && (
-                <p className="text-destructive text-sm">
-                  {errors.foodExpiredDate.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Cost</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="Cost"
-                {...register("foodCost")}
-              />
-              {errors.foodCost && (
-                <p className="text-destructive text-sm">
-                  {errors.foodCost.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="foodDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Quantity</Label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="1"
+                  placeholder="Input Quantity..."
+                  {...register("foodQuantity")}
+                />
+                {errors.foodQuantity && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodQuantity.message}
+                  </p>
                 )}
-              />
-              {errors.foodDate && (
-                <p className="text-destructive text-sm">
-                  {errors.foodDate.message}
-                </p>
-              )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Category</Label>
+                <FoodCategoryCombobox
+                  className="w-full"
+                  value={foodCategory}
+                  onChange={handleFoodCategoryChange}
+                />
+                {errors.foodCategory && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodCategory.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <FoodTypeCombobox
+                  className="w-full"
+                  value={foodType}
+                  onChange={handleFoodTypeChange}
+                />
+                {errors.foodType && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodType.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Expired Date</Label>
+                <Controller
+                  control={control}
+                  name="foodExpiredDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.foodExpiredDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodExpiredDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Cost</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Cost"
+                  {...register("foodCost")}
+                />
+                {errors.foodCost && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodCost.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="foodDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.foodDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea placeholder="Note" {...register("foodNote")} />
+                {errors.foodNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.foodNote.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea placeholder="Note" {...register("foodNote")} />
-              {errors.foodNote && (
-                <p className="text-destructive text-sm">
-                  {errors.foodNote.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Submit</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Submit</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
 export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [deleteFoodName, setDeleteFoodName] = useState("");
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
@@ -483,33 +513,41 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
     } catch (error) {
       console.error("Error deleting Food:", error.message);
     }
-
     fetchData();
+    setDeleteFoodName(data.foodName);
+    setShowSuccessDialog(true);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Delete Food</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={onSubmit} className="grid gap-2 py-2">
-          <DialogDescription>
-            Are you sure want to delete this food item?
-          </DialogDescription>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
+    <>
+      <SuccessDeleteDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={deleteFoodName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Delete Food</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={onSubmit} className="grid gap-2 py-2">
+            <DialogDescription>
+              Are you sure want to delete this food item?
+            </DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" variant="alert">
+                Delete
               </Button>
-            </DialogClose>
-            <Button type="submit" variant="alert">
-              Delete
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
