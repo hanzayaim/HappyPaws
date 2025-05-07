@@ -81,6 +81,7 @@ export default function RegisterEmployee() {
 
       const shelterId = matchedShelter.id_shelter;
       const shelterEmail = matchedShelter.email;
+      console.log(shelterEmail);
 
       if (data.email === shelterEmail) {
         setError("email", {
@@ -90,31 +91,27 @@ export default function RegisterEmployee() {
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:3000/api/employees/insertEmployee",
-        {
-          id_shelter: shelterId,
-          name: data.employeeName,
-          email: data.email,
-          password: data.password,
-          role: data.role,
-          gender: data.gender,
-          shelter_name: data.shelter,
-          phone_number: data.employeePhoneNumber,
-          address: data.employeeAddress,
-        }
-      );
+      const response = await axios.post("/api/employees/insertEmployee", {
+        id_shelter: shelterId,
+        name: data.employeeName,
+        email: data.email,
+        password: data.password,
+        role: data.role,
+        gender: data.gender,
+        shelter_name: data.shelter,
+        phone_number: data.employeePhoneNumber,
+        address: data.employeeAddress,
+      });
 
-      await axios.post(" http://localhost:3000/api/email/email_register_all", {
+      console.log(data.email);
+
+      await axios.post("/api/email/email_register_all", {
         email: data.email,
       });
 
-      await axios.post(
-        " http://localhost:3000/api/email/email_register_employee",
-        {
-          email: shelterEmail,
-        }
-      );
+      await axios.post("/api/email/email_register_employee", {
+        email: shelterEmail,
+      });
 
       const result = response.data;
 
@@ -123,6 +120,7 @@ export default function RegisterEmployee() {
       }
 
       setShowSuccess(true);
+      console.log(showSuccess);
       reset();
     } catch (error) {
       console.error("Error creating employee:", error);

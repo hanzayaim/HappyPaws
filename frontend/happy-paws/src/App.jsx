@@ -18,6 +18,7 @@ import FinancePage from "./pages/finance-management";
 import ForgotPassword from "./pages/forgot-password";
 import ForgotPasswordLink from "./pages/forgot-password-link";
 import Dashboard from "./pages/dashboard-pages";
+import DataConvert from "./pages/data-convert";
 
 function App() {
   return (
@@ -49,9 +50,11 @@ function App() {
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
         <Route path="/medical-management" element={<MedicalManagement />} />
+        <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/finance-management" element={<FinancePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />
+        <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>

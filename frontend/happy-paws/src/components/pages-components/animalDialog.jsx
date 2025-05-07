@@ -48,7 +48,6 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
   const {
     register,
     handleSubmit,
-    setError,
     control,
     formState: { errors },
     reset,
@@ -79,7 +78,7 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
       const response = await axios.post("/api/animals/insertAnimalData", {
         id_shelter: User.id_shelter,
         animal_name: data.animalName,
-        animal_img: profileImgBase64,
+        animal_img: profileImgBase64 ? profileImgBase64 : null,
         animal_gender: data.animalGender,
         animal_type: data.animalType,
         animal_age: data.animalAge,
@@ -101,16 +100,6 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
       fetchData();
     } catch (error) {
       console.error("Error submitting form:", error);
-      const message =
-        error?.response?.data?.message || error?.message || "Unknown error";
-
-      if (message.toLowerCase().includes("animal name")) {
-        setError("animalName", {
-          type: "manual",
-          message:
-            "Animal name is already taken. Please choose a different name.",
-        });
-      }
     }
   };
 
@@ -460,7 +449,6 @@ export function AnimalEditDialog({
     register,
     handleSubmit,
     control,
-    setError,
     formState: { errors },
     reset,
   } = useForm({
@@ -528,16 +516,6 @@ export function AnimalEditDialog({
       fetchData();
     } catch (error) {
       console.error(error);
-      const message =
-        error?.response?.data?.message || error?.message || "Unknown error";
-
-      if (message.toLowerCase().includes("animal name")) {
-        setError("animalName", {
-          type: "manual",
-          message:
-            "Animal name is already taken. Please choose a different name.",
-        });
-      }
     }
   };
 

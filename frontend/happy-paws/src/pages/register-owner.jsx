@@ -47,23 +47,20 @@ export default function RegisterOwner() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/shelters/insertShelter",
-        {
-          owner_name: data.shelterOwnerName,
-          email: data.email,
-          password: data.password,
-          shelter_name: data.shelterName,
-          phone_number: data.shelterPhoneNumber,
-          address: data.shelterAddress,
-        }
-      );
-
-      await axios.post(" http://localhost:3000/api/email/email_register_all", {
+      const response = await axios.post("/api/shelters/insertShelter", {
+        owner_name: data.shelterOwnerName,
         email: data.email,
+        password: data.password,
+        shelter_name: data.shelterName,
+        phone_number: data.shelterPhoneNumber,
+        address: data.shelterAddress,
       });
 
       const result = response.data;
+
+      await axios.post("/api/email/email_register_all", {
+        email: data.email,
+      });
 
       if (result.error) {
         throw new Error(result.message || "Failed to create account");

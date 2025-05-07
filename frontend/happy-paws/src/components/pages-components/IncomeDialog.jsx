@@ -54,7 +54,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
           id_shelter: User.id_shelter,
           name: data.incomeName,
           amount: data.incomeAmount,
-          date: data.incomeDate.toISOString().split("T")[0], // 'YYYY-MM-DD'
+          date: data.incomeDate.toISOString().split("T")[0],
           type: data.incomeType,
           note: data.incomeNote || "",
           created_by: User.owner_name ? User.owner_name : User.name,

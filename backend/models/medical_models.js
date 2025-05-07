@@ -3,9 +3,8 @@ const pool = require("../config/db.js");
 async function getMedicalData(id_shelter) {
   try {
     const { rows } = await pool.query(
-      `select m.*, a.animal_name
+      `select *
             from medical m 
-            left join animal a ON a.id_animal = m.id_animal 
             where m.id_shelter = $1
             order by m.created_at desc`,
       [id_shelter]
@@ -25,6 +24,43 @@ async function getMedicalData(id_shelter) {
       };
     }
   } catch (error) {
+    return {
+      error: true,
+      message: "Error fetching data.",
+      data: null,
+    };
+  }
+}
+
+async function getMedicalDataConvert(id_shelter, month, year) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT a.animal_name, m.medical_status, m.vaccin_status, m.medical_date_in, 
+       m.medical_cost, m.note, m.created_at, m.created_by
+   FROM medical m 
+   LEFT JOIN animal a ON a.id_animal = m.id_animal 
+   WHERE m.id_shelter = $1
+     AND ($2::int IS NULL OR EXTRACT(MONTH FROM m.created_at) = $2::int)
+     AND ($3::int IS NULL OR EXTRACT(YEAR FROM m.created_at) = $3::int)
+   ORDER BY m.created_at DESC`,
+      [id_shelter, month, year]
+    );
+
+    if (rows.length > 0) {
+      return {
+        error: false,
+        message: "Data fetched successfully.",
+        data: rows,
+      };
+    } else {
+      return {
+        error: true,
+        message: "No data found.",
+        data: null,
+      };
+    }
+  } catch (error) {
+    console.error(error);
     return {
       error: true,
       message: "Error fetching data.",
@@ -211,4 +247,5 @@ module.exports = {
   insertMedicalData,
   updateMedicalData,
   deleteMedicalData,
+  getMedicalDataConvert,
 };

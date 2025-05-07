@@ -38,6 +38,10 @@ import {
 import { Plus, Pencil, Trash } from "lucide-react";
 import Layout from "../app/layout";
 import axios from "axios";
+import {
+  MonthFilterSelect,
+  YearFilterSelect,
+} from "../components/pages-components/Select-Month-Year";
 
 // const foods = [
 //   {
@@ -240,6 +244,8 @@ export default function InventoryPages() {
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
   const [foodCategoryFilter, setFoodCategoryFilter] = useState("");
   const [foodTypeFilter, setFoodTypeFilter] = useState("");
+  const [SalarySelectedYear, setSalarySelectedYear] = useState("");
+  const [SalarySelectedMonth, setSalarySelectedMonth] = useState("");
 
   const [equipmentSearchQuery, setEquipmentSearchQuery] = useState("");
   const [equipmentTypeFilter, setEquipmentTypeFilter] = useState("");
@@ -349,6 +355,7 @@ export default function InventoryPages() {
       fetchFoodsData();
     }
   }, [userData]);
+
   const handleFoodSearchChange = (e) => {
     setFoodSearchQuery(e.target.value);
     setFoodCurrentPage(1);
@@ -361,6 +368,14 @@ export default function InventoryPages() {
 
   const handleFoodTypeFilterChange = (value) => {
     setFoodTypeFilter(value);
+    setFoodCurrentPage(1);
+  };
+  const handleSalaryMonthFilterChange = (value) => {
+    setSalarySelectedMonth(value === "all" ? undefined : value);
+    setFoodCurrentPage(1);
+  };
+  const handleSalaryYearFilterChange = (value) => {
+    setSalarySelectedYear(value === "all" ? undefined : value);
     setFoodCurrentPage(1);
   };
 
@@ -448,6 +463,14 @@ export default function InventoryPages() {
                 <SelectItem value="Beli">Beli</SelectItem>
               </SelectContent>
             </Select>
+            <MonthFilterSelect
+              value={SalarySelectedMonth}
+              onChange={handleSalaryMonthFilterChange}
+            />
+            <YearFilterSelect
+              value={SalarySelectedYear}
+              onChange={handleSalaryYearFilterChange}
+            />
           </div>
           <Button
             className="flex items-center gap-1"

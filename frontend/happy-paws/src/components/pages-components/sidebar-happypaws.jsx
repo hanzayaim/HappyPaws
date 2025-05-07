@@ -1,5 +1,6 @@
 import {
   ClipboardPlus,
+  FolderSync,
   HeartHandshake,
   Landmark,
   LogOut,
@@ -93,6 +94,11 @@ export default function AppSidebar() {
         url: "/inventory-management",
         icon: Warehouse,
       },
+      {
+        title: "Data Convert",
+        url: "/data-convert",
+        icon: FolderSync,
+      },
     ];
 
     if (userType === "superuser" && userData?.role === "Superuser") {
@@ -109,23 +115,27 @@ export default function AppSidebar() {
           "Medical Management",
           "Finance Management",
           "Inventory Management",
+          "Data Convert",
         ].includes(item.title)
       );
     }
 
-    if (userType === "employee" && userData?.role === "Administration") {
+    if (userType === "employee" && userData?.role === "Administrator") {
       return baseItems.filter((item) =>
         [
           "Animal Management",
           "Adopter Management",
           "Inventory Management",
+          "Data Convert",
         ].includes(item.title)
       );
     }
 
     if (userType === "employee" && userData?.role === "Medical") {
       return baseItems.filter((item) =>
-        ["Medical Management", "Finance Management"].includes(item.title)
+        ["Medical Management", "Finance Management", "Data Convert"].includes(
+          item.title
+        )
       );
     }
 
