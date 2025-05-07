@@ -6,7 +6,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-// Months array
 const months = [
   { label: "January", value: "1" },
   { label: "February", value: "2" },

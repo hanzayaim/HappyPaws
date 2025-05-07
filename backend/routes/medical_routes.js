@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getMedicalData,
   getMedicalDataById,
+  getMedicalDataConvert,
 } = require("../models/medical_models");
 const {
   insertMedical,
@@ -40,6 +41,28 @@ router.get("/getMedicalDataById/:id_shelter/:id_medical", async (req, res) => {
     return res.status(500).json({
       error: true,
       message: "Failed to get data.",
+    });
+  }
+});
+
+router.post("/getMedicalDataConvert", async (req, res) => {
+  const { id_shelter, month, year } = req.body;
+  if (id_shelter == null) {
+    return res.status(400).send({
+      error: true,
+      message: "Please provide all required data.",
+    });
+  }
+
+  try {
+    const result = await getMedicalDataConvert(id_shelter, month, year);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: true,
+      message: "Failed to get data.",
+      data: null,
     });
   }
 });
