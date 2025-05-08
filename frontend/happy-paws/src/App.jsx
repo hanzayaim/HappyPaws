@@ -19,6 +19,7 @@ import ForgotPassword from "./pages/forgot-password";
 import ForgotPasswordLink from "./pages/forgot-password-link";
 import Dashboard from "./pages/dashboard-pages";
 import DataConvert from "./pages/data-convert";
+import EmployeeManagementPages from "./pages/employee-management-pages";
 
 function App() {
   return (
@@ -49,6 +50,10 @@ function App() {
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route
+          path="/employee-management"
+          element={<EmployeeManagementPages />}
+        />
         <Route path="/medical-management" element={<MedicalManagement />} />
         <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/finance-management" element={<FinancePage />} />

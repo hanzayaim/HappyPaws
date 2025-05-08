@@ -29,7 +29,7 @@ import Layout from "../app/layout";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-export default function ShelterManagementPages() {
+export default function EmployeeManagementPages() {
   const itemsPerPage = 50;
 
   const [users, setUsers] = useState([]);
@@ -73,12 +73,16 @@ export default function ShelterManagementPages() {
   useEffect(() => {
     const fetchShelterData = async () => {
       if (!userSession) return;
-
+      console.log(userSession.userType);
       try {
         setLoading(true);
-
-        if (userSession.userType === "superuser") {
-          const response = await axios.get("/api/shelters/getShelterData");
+        if (
+          userSession.userType === "Shelter" &&
+          userSession.profile === "Owner"
+        ) {
+          const response = await axios.get(
+            `/api/employees/getEmployeeData/${userSession.id_shelter}`
+          );
           if (!response.data.error) {
             const sortedData = sortSheltersByStatus(response.data.data || []);
             setUsers(sortedData);
