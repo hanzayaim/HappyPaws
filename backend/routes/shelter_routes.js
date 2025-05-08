@@ -13,7 +13,7 @@ const {
 } = require("../models/shelter_models");
 
 const {
-  sendShelterRegistrationNotificationEmail,
+  sendShelterRegistrationEmail,
   sendApprovalEmail,
   sendRejectionEmail,
   sendActivationEmail,
@@ -94,7 +94,7 @@ router.post("/insertShelter", async (req, res) => {
     );
 
     try {
-      await sendShelterRegistrationNotificationEmail(email);
+      await sendShelterRegistrationEmail(email);
     } catch (emailError) {
       console.error(emailError);
     }

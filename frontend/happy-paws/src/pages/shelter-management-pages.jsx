@@ -24,7 +24,7 @@ import {
   ActivateShelterDialog,
   DeactivateShelterDialog,
 } from "../components/pages-components/ShelterDialog";
-import { Pencil, Trash, ToggleRight, ToggleLeft, Check, X } from "lucide-react";
+import { Trash, ToggleRight, ToggleLeft, Check, X } from "lucide-react";
 import Layout from "../app/layout";
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -253,18 +253,6 @@ export default function ShelterManagementPages() {
         <div className="flex justify-between items-center w-full">
           <Label className="text-2xl font-medium">Shelter</Label>
         </div>
-        {/* <EditShelterDialog
-          open={editUserDialogOpen}
-          onOpenChange={setEditUserDialogOpen}
-          user={selectedUser}
-          onSuccess={(updatedUser) => {
-            setUsers(
-              users.map((u) =>
-                u.id_shelter === updatedUser.id_shelter ? updatedUser : u
-              )
-            );
-          }}
-        /> */}
         <DeleteShelterDialog
           open={deleteUserDialogOpen}
           onOpenChange={setDeleteUserDialogOpen}
@@ -416,14 +404,7 @@ export default function ShelterManagementPages() {
                               Deactivate
                             </Button>
                           )}
-                          {/* <Button
-                            className="text-sm w-28"
-                            variant="blue"
-                            onClick={() => handleEditUserClick(user)}
-                          >
-                            <Pencil className="size-4" />
-                            Edit
-                          </Button> */}
+
                           {canPerformAdminActions() && (
                             <Button
                               className="text-sm w-28"
@@ -448,14 +429,6 @@ export default function ShelterManagementPages() {
                               <Check className="size-4" />
                               Activate
                             </Button>
-                            {/* <Button
-                              className="text-sm w-28"
-                              variant="blue"
-                              onClick={() => handleEditUserClick(user)}
-                            >
-                              <Pencil className="size-4" />
-                              Edit
-                            </Button> */}
                             <Button
                               className="text-sm w-28"
                               variant="alert"
