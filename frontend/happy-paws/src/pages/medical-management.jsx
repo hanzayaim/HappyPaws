@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import axios from "axios";
-
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 export default function MedicalManagement() {
   const itemsPerPage = 5;
   const [animalData, setAnimalData] = useState([]);
@@ -48,7 +48,7 @@ export default function MedicalManagement() {
   const [selectedMedical, setSelectedMedical] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userType, setUserType] = useState(null);
-
+  const [openAlertUser, setOpenAlertUser] = useState(false);
   const currentUser = async () => {
     try {
       const storedUserType = localStorage.getItem("userType");
@@ -134,7 +134,7 @@ export default function MedicalManagement() {
   useEffect(() => {
     if (userData && userData.id_shelter) {
       if (
-        (userType === "employee" && userData?.role === "Medical") ||
+        (userType === "employee" && userData?.role === "Finance") ||
         (userType === "shelter" && userData?.role === "Owner")
       ) {
         fetchAnimalData();
@@ -172,7 +172,13 @@ export default function MedicalManagement() {
         <Label className="text-3xl font-bold self-start">
           Medical Management
         </Label>
-
+        <AlertDialogUser
+          desc={
+            "This feature just can be access by Owner shelter or Finance Employee"
+          }
+          open={openAlertUser}
+          onOpenChange={setOpenAlertUser}
+        />
         <div className="flex flex-wrap gap-4 items-center justify-between w-full">
           <div className="flex flex-wrap gap-4 items-center w-full sm:w-auto">
             <Input
