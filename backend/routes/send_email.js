@@ -70,7 +70,7 @@ If you have any questions, please contact our support team.
   );
 };
 
-const sendShelterRegistrationNotificationEmail = async (email) => {
+const sendShelterRegistrationEmail = async (email) => {
   return sendEmail(
     email,
     "HappyPaws Account Registration Received",
@@ -95,7 +95,7 @@ Thank you for your attention.
 };
 
 module.exports = {
-  sendShelterRegistrationNotificationEmail,
+  sendShelterRegistrationEmail,
   sendEmployeeRegistrationEmail,
   sendApprovalEmail,
   sendRejectionEmail,

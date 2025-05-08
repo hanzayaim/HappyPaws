@@ -5,14 +5,14 @@ const {
   sendRejectionEmail,
   sendActivationEmail,
   sendDeactivationEmail,
-  sendRegistrationNotificationEmail,
+  sendShelterRegistrationEmail,
   sendEmployeeRegistrationEmail,
 } = require("./send_email");
 
 router.post("/email_register_all", async (req, res) => {
   try {
     const { email } = req.body;
-    await sendRegistrationNotificationEmail(email);
+    await sendShelterRegistrationEmail(email);
     res.status(200).json({
       message: "Registration email sent successfully",
     });
