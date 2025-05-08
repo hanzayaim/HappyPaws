@@ -81,7 +81,6 @@ export default function RegisterEmployee() {
 
       const shelterId = matchedShelter.id_shelter;
       const shelterEmail = matchedShelter.email;
-      console.log(shelterEmail);
 
       if (data.email === shelterEmail) {
         setError("email", {
@@ -102,8 +101,6 @@ export default function RegisterEmployee() {
         phone_number: data.employeePhoneNumber,
         address: data.employeeAddress,
       });
-
-      console.log(data.email);
 
       await axios.post("/api/email/email_register_all", {
         email: data.email,
