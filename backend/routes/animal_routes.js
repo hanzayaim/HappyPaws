@@ -8,6 +8,7 @@ const {
   updateAnimalData,
   deleteAnimalData,
   insertAdopterData,
+  getAnimalDataConvert,
 } = require("../models/animal_models");
 const { insertNewAnimal } = require("../controllers/animal_controller");
 
@@ -162,6 +163,28 @@ router.post("/insertAdopterAnimalData", async (req, res) => {
     res
       .status(500)
       .json({ error: true, message: "failed to insert adopter animal data" });
+  }
+});
+
+router.post("/getAnimalDataConvert", async (req, res) => {
+  const { id_shelter, month, year } = req.body;
+  if (id_shelter == null) {
+    return res.status(400).send({
+      error: true,
+      message: "Please provide all required data.",
+    });
+  }
+
+  try {
+    const result = await getAnimalDataConvert(id_shelter, month, year);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: true,
+      message: "Failed to get data.",
+      data: null,
+    });
   }
 });
 
