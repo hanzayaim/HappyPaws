@@ -162,6 +162,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
               <div className="flex flex-col gap-2">
                 <Label>Cost</Label>
                 <Input
+                  disabled={equipmentType === "Donasi"}
                   type="number"
                   step="0.01"
                   min="0"
@@ -251,7 +252,7 @@ export function EditEquipmentDialog({
           name: data.equipmentName,
           type: data.equipmentType,
           date: data.equipmentDate.toISOString().split("T")[0],
-          cost: data.equipmentCost,
+          cost: data.equipmentType === "Donasi" ? 0 : data.equipmentCost,
           note: data.equipmentNote,
           updated_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
@@ -324,6 +325,7 @@ export function EditEquipmentDialog({
               <div className="flex flex-col gap-2">
                 <Label>Cost</Label>
                 <Input
+                  disabled={equipmentType === "Donasi"}
                   type="number"
                   step="0.01"
                   min="0"

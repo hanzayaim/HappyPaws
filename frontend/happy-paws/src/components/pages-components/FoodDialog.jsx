@@ -209,6 +209,7 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
               <div className="flex flex-col gap-2">
                 <Label>Cost</Label>
                 <Input
+                  disabled={foodType === "Donasi"}
                   type="number"
                   step="0.01"
                   min="0"
@@ -317,7 +318,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
           category: data.foodCategory,
           type: data.foodType,
           exp_date: data.foodExpiredDate.toISOString().split("T")[0],
-          cost: data.foodCost,
+          cost: data.foodType === "Donasi" ? 0 : data.foodCost,
           date: data.foodDate,
           note: data.foodNote,
           updated_by: User.owner_name ? User.owner_name : User.name,
@@ -436,6 +437,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
               <div className="flex flex-col gap-2">
                 <Label>Cost</Label>
                 <Input
+                  disabled={foodType === "Donasi"}
                   type="number"
                   step="0.01"
                   min="0"

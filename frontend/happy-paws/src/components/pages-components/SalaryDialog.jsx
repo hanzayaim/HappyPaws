@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,7 @@ import {
 import { Label } from "../ui/label";
 import { EmployeeNameCombobox } from "./SalaryCombobox";
 import DatePicker from "./DatePicker";
+import { SuccessInsertDialog } from "./SuccessDialog";
 
 const SalarySchema = z.object({
   SalaryName: z
@@ -40,6 +41,8 @@ export function InsertSalaryDialog({
   EmployeeData,
   fetchDataSalary,
 }) {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [insertSalaryName, setInsertSalaryName] = useState("");
   const {
     register,
     handleSubmit,
@@ -84,6 +87,8 @@ export function InsertSalaryDialog({
 
       reset();
       onOpenChange(false);
+      setInsertSalaryName(data.SalaryName.name);
+      setShowSuccessDialog(true);
       fetchDataSalary();
     } catch (error) {
       console.error("Error inserting Salary:", error.message);
@@ -96,104 +101,111 @@ export function InsertSalaryDialog({
     }
   }, [open, reset]);
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add Employee Salary</DialogTitle>
-        </DialogHeader>
-        <DialogDescription>Insert new salary below.</DialogDescription>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Name</Label>
-              <Controller
-                control={control}
-                name="SalaryName"
-                render={({ field }) => {
-                  // console.log(field.value);
-                  const handleChange = (value) => {
-                    console.log("Selected Employee:", value);
-                    field.onChange(value);
-                  };
-                  return (
-                    <>
-                      <EmployeeNameCombobox
-                        EmployeeData={EmployeeData}
-                        className="w-full"
-                        value={field.value}
-                        onChange={handleChange}
-                      />
-                      {errors.SalaryName && (
-                        <p className="text-destructive text-sm">
-                          {errors.SalaryName.message}
-                        </p>
-                      )}
-                    </>
-                  );
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Amount</Label>
-              <Controller
-                control={control}
-                name="SalaryAmount"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="Input Amount..."
-                  />
+    <>
+      <SuccessInsertDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={"Salary " + insertSalaryName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Employee Salary</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>Insert new salary below.</DialogDescription>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Name</Label>
+                <Controller
+                  control={control}
+                  name="SalaryName"
+                  render={({ field }) => {
+                    // console.log(field.value);
+                    const handleChange = (value) => {
+                      console.log("Selected Employee:", value);
+                      field.onChange(value);
+                    };
+                    return (
+                      <>
+                        <EmployeeNameCombobox
+                          EmployeeData={EmployeeData}
+                          className="w-full"
+                          value={field.value}
+                          onChange={handleChange}
+                        />
+                        {errors.SalaryName && (
+                          <p className="text-destructive text-sm">
+                            {errors.SalaryName.message}
+                          </p>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Amount</Label>
+                <Controller
+                  control={control}
+                  name="SalaryAmount"
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="Input Amount..."
+                    />
+                  )}
+                />
+                {errors.SalaryAmount && (
+                  <p className="text-destructive text-sm">
+                    {errors.SalaryAmount.message}
+                  </p>
                 )}
-              />
-              {errors.SalaryAmount && (
-                <p className="text-destructive text-sm">
-                  {errors.SalaryAmount.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="SalaryDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="SalaryDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.SalaryDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.SalaryDate.message}
+                  </p>
                 )}
-              />
-              {errors.SalaryDate && (
-                <p className="text-destructive text-sm">
-                  {errors.SalaryDate.message}
-                </p>
-              )}
-            </div>
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea
-                placeholder="Input Note..."
-                {...register("SalaryNote")}
-              />
-              {errors.SalaryNote && (
-                <p className="text-destructive text-sm">
-                  {errors.SalaryNote.message}
-                </p>
-              )}
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea
+                  placeholder="Input Note..."
+                  {...register("SalaryNote")}
+                />
+                {errors.SalaryNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.SalaryNote.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Add</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Add</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
