@@ -37,7 +37,7 @@ export default function DataConvert() {
   const [animalData, setAnimalData] = useState([]);
   const [medicalData, setMedicalData] = useState([]);
   const [medicalCurrentPage, setMedicalCurrentPage] = useState(1);
-  const [convertData, setConvertData] = useState("");
+  const [animalCurrentPage, setAnimalCurrentPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedYear, setSelectedYear] = useState("all");
   const [userData, setUserData] = useState(null);
@@ -65,11 +65,24 @@ export default function DataConvert() {
     medicalStartIndex + itemsPerPage
   );
 
+  const animalTotalPages = Math.ceil(animalData.length / itemsPerPage);
+  const animalStartIndex = (animalCurrentPage - 1) * itemsPerPage;
+  const currentAnimal = animalData.slice(
+    animalStartIndex,
+    animalStartIndex + itemsPerPage
+  );
+
   const fetchAnimalData = async () => {
     try {
-      const animalRes = await axios.get(
-        `api/animals/getAnimalData/${userData.id_shelter}`
-      );
+      const month = selectedMonth === "all" ? null : selectedMonth;
+      const year = selectedYear === "all" ? null : selectedYear;
+
+      const animalRes = await axios.post(`/api/animals/getAnimalDataConvert`, {
+        id_shelter: userData.id_shelter,
+        month,
+        year,
+      });
+
       const animalDataFetch = animalRes.data;
       if (animalDataFetch.error) {
         throw new Error(
@@ -120,7 +133,7 @@ export default function DataConvert() {
           triggerValue: selectedDataType,
         },
         {
-          responseType: "blob", // Important!
+          responseType: "blob",
         }
       );
 
@@ -167,11 +180,15 @@ export default function DataConvert() {
 
   useEffect(() => {
     setMedicalCurrentPage(1);
+    setAnimalCurrentPage(1);
   }, []);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= medicalTotalPages) {
       setMedicalCurrentPage(page);
+    }
+    if (page >= 1 && page <= animalTotalPages) {
+      setAnimalCurrentPage(page);
     }
   };
 
@@ -191,6 +208,9 @@ export default function DataConvert() {
                 <SelectItem value="medical">Medical</SelectItem>
               )}
               <SelectItem value="animal">Animal</SelectItem>
+              {["Finance", "Owner"].includes(userData?.role) && (
+                <SelectItem value="salary">Salary</SelectItem>
+              )}
             </SelectContent>
           </Select>
 
@@ -308,6 +328,102 @@ export default function DataConvert() {
                       onClick={() => handlePageChange(medicalCurrentPage + 1)}
                       className={
                         medicalCurrentPage === medicalTotalPages
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
+        )}
+
+        {selectedDataType === "animal" && (
+          <>
+            <div className="p-4 bg-white rounded shadow-md overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center">No</TableHead>
+                    <TableHead className="text-center">Animal Name</TableHead>
+                    <TableHead className="text-center">Animal Gender</TableHead>
+                    <TableHead className="text-center">Animal Type</TableHead>
+                    <TableHead className="text-center">
+                      Rescue Location
+                    </TableHead>
+                    <TableHead className="text-center">Date In</TableHead>
+                    <TableHead className="text-center">Note</TableHead>
+                    <TableHead className="text-center">Created At</TableHead>
+                    <TableHead className="text-center">Created By</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {currentAnimal.map((animal, index) => (
+                    <TableRow key={animal.id_animal}>
+                      <TableCell className="text-center">
+                        {animalStartIndex + index + 1}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.animal_name}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.animal_gender}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.animal_type}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.rescue_location}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.date
+                          ? new Date(animal.date).toLocaleDateString()
+                          : "No Date"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.note}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.created_at
+                          ? new Date(animal.created_at).toLocaleDateString()
+                          : "No Date"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {animal.created_at ? animal.created_by : "Unkown"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Pagination className="w-full flex justify-center mt-4">
+                <PaginationContent className="gap-1">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(animalCurrentPage - 1)}
+                      className={
+                        animalCurrentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: animalTotalPages }).map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        isActive={animalCurrentPage === i + 1}
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(animalCurrentPage + 1)}
+                      className={
+                        animalCurrentPage === animalTotalPages
                           ? "pointer-events-none opacity-50"
                           : ""
                       }

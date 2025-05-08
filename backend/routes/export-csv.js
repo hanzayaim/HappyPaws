@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { format } = require("@fast-csv/format");
 const { getMedicalDataConvert } = require("../models/medical_models");
+const { getAnimalDataConvert } = require("../models/animal_models");
 
 router.post("/export-csv", async (req, res) => {
   const { id_shelter, month, year, triggerValue } = req.body;
@@ -18,6 +19,9 @@ router.post("/export-csv", async (req, res) => {
     if (triggerValue === "medical") {
       result = await getMedicalDataConvert(id_shelter, safeMonth, safeYear);
       fileName = `Recap_MedicalData_${month}_${year}.csv`;
+    } else if (triggerValue === "animal") {
+      result = await getAnimalDataConvert(id_shelter, safeMonth, safeYear);
+      fileName = `Recap_AnimalData_${month}_${year}.csv`;
     }
 
     if (result.error || !result.data || result.data.length === 0) {
