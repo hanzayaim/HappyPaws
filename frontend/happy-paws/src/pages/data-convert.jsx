@@ -58,13 +58,6 @@ export default function DataConvert() {
     }
   };
 
-  const getAnimalName = (id_animal, id_shelter) => {
-    const animal = animalData.find(
-      (a) => a.id_animal === id_animal && a.id_shelter === id_shelter
-    );
-    return animal ? animal.animal_name : "Unknown";
-  };
-
   const medicalTotalPages = Math.ceil(medicalData.length / itemsPerPage);
   const medicalStartIndex = (medicalCurrentPage - 1) * itemsPerPage;
   const currentMedical = medicalData.slice(
@@ -113,6 +106,36 @@ export default function DataConvert() {
       }
     } catch (error) {
       console.error("error fetching data", error);
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const res = await axios.post(
+        "/api/export/export-csv",
+        {
+          id_shelter: userData.id_shelter,
+          month: selectedMonth,
+          year: selectedYear,
+          triggerValue: selectedDataType,
+        },
+        {
+          responseType: "blob", // Important!
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `Export_${selectedDataType}_${selectedMonth}_${selectedYear}.csv`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error exporting data:", error);
     }
   };
 
@@ -298,6 +321,7 @@ export default function DataConvert() {
 
         <Button
           disabled={!selectedDataType}
+          onClick={handleExportCSV}
           className="flex items-center gap-2 ml-auto w-full sm:w-auto"
         >
           <FolderSync className="size-4" /> Convert Data
