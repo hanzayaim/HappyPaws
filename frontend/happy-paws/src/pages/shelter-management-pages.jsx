@@ -39,7 +39,6 @@ export default function ShelterManagementPages() {
 
   const [userCurrentPage, setUserCurrentPage] = useState(1);
 
-  // const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
   const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
   const [approveUserDialogOpen, setApproveUserDialogOpen] = useState(false);
   const [rejectUserDialogOpen, setRejectUserDialogOpen] = useState(false);
@@ -124,11 +123,6 @@ export default function ShelterManagementPages() {
     }
   };
 
-  // const handleEditUserClick = (user) => {
-  //   setSelectedUser(user);
-  //   setEditUserDialogOpen(true);
-  // };
-
   const handleDeleteUserClick = (user) => {
     setSelectedUser(user);
     setDeleteUserDialogOpen(true);
@@ -166,7 +160,6 @@ export default function ShelterManagementPages() {
       });
 
       if (!response.data.error) {
-        // Update user status and re-sort the list
         const updatedUsers = users.map((user) =>
           user.id_shelter === id ? { ...user, status: status } : user
         );

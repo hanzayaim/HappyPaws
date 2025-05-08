@@ -81,7 +81,6 @@ export default function RegisterEmployee() {
 
       const shelterId = matchedShelter.id_shelter;
       const shelterEmail = matchedShelter.email;
-      console.log(shelterEmail);
 
       if (data.email === shelterEmail) {
         setError("email", {
