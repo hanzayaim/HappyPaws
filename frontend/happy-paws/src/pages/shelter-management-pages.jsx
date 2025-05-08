@@ -18,7 +18,6 @@ import {
   PaginationLink,
 } from "../components/ui/pagination";
 import {
-  EditShelterDialog,
   DeleteShelterDialog,
   ApproveShelterDialog,
   RejectShelterDialog,
@@ -31,7 +30,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 export default function ShelterManagementPages() {
-  const itemsPerPage = 5;
+  const itemsPerPage = 50;
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +39,7 @@ export default function ShelterManagementPages() {
 
   const [userCurrentPage, setUserCurrentPage] = useState(1);
 
-  const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
+  // const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
   const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
   const [approveUserDialogOpen, setApproveUserDialogOpen] = useState(false);
   const [rejectUserDialogOpen, setRejectUserDialogOpen] = useState(false);
@@ -49,6 +48,9 @@ export default function ShelterManagementPages() {
     useState(false);
 
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchUserSession = async () => {
@@ -78,7 +80,8 @@ export default function ShelterManagementPages() {
         if (userSession.userType === "superuser") {
           const response = await axios.get("/api/shelters/getShelterData");
           if (!response.data.error) {
-            setUsers(response.data.data || []);
+            const sortedData = sortSheltersByStatus(response.data.data || []);
+            setUsers(sortedData);
           } else {
             setError(response.data.message);
           }
@@ -96,6 +99,18 @@ export default function ShelterManagementPages() {
     fetchShelterData();
   }, [userSession]);
 
+  const sortSheltersByStatus = (shelters) => {
+    const statusOrder = {
+      New: 1,
+      Active: 2,
+      Inactive: 3,
+    };
+
+    return [...shelters].sort((a, b) => {
+      return statusOrder[a.status] - statusOrder[b.status];
+    });
+  };
+
   const userTotalPages = Math.ceil(users.length / itemsPerPage);
   const userStartIndex = (userCurrentPage - 1) * itemsPerPage;
   const currentUsers = users.slice(
@@ -109,10 +124,10 @@ export default function ShelterManagementPages() {
     }
   };
 
-  const handleEditUserClick = (user) => {
-    setSelectedUser(user);
-    setEditUserDialogOpen(true);
-  };
+  // const handleEditUserClick = (user) => {
+  //   setSelectedUser(user);
+  //   setEditUserDialogOpen(true);
+  // };
 
   const handleDeleteUserClick = (user) => {
     setSelectedUser(user);
@@ -141,6 +156,9 @@ export default function ShelterManagementPages() {
 
   const updateShelterStatus = async (id, status) => {
     try {
+      setSuccessMessage("");
+      setErrorMessage("");
+
       const response = await axios.post("/api/shelters/updateShelterStatus", {
         id_shelter: id,
         status: status,
@@ -148,37 +166,50 @@ export default function ShelterManagementPages() {
       });
 
       if (!response.data.error) {
-        setUsers(
-          users.map((user) =>
-            user.id_shelter === id ? { ...user, status: status } : user
-          )
+        // Update user status and re-sort the list
+        const updatedUsers = users.map((user) =>
+          user.id_shelter === id ? { ...user, status: status } : user
         );
+        const sortedUsers = sortSheltersByStatus(updatedUsers);
+        setUsers(sortedUsers);
+
+        setSuccessMessage(`Shelter status updated to ${status} successfully!`);
         return true;
       } else {
-        console.error("Failed to update status:", response.data.message);
+        setErrorMessage(response.data.message || "Failed to update status");
         return false;
       }
     } catch (error) {
       console.error("Error updating shelter status:", error);
+      setErrorMessage(
+        error.response?.data?.message || "Failed to update shelter status"
+      );
       return false;
     }
   };
 
   const deleteShelter = async (id) => {
     try {
+      setSuccessMessage("");
+      setErrorMessage("");
+
       const response = await axios.post("/api/shelters/deleteShelterData", {
         id_shelter: id,
       });
 
       if (!response.data.error) {
-        setUsers(users.filter((users) => users.id_shelter !== id));
+        setUsers(users.filter((user) => user.id_shelter !== id));
+        setSuccessMessage("Shelter deleted successfully!");
         return true;
       } else {
-        console.error("Failed to delete shelter:", response.data.message);
+        setErrorMessage(response.data.message || "Failed to delete shelter");
         return false;
       }
     } catch (error) {
       console.error("Error deleting shelter:", error);
+      setErrorMessage(
+        error.response?.data?.message || "Failed to delete shelter"
+      );
       return false;
     }
   };
@@ -229,7 +260,7 @@ export default function ShelterManagementPages() {
         <div className="flex justify-between items-center w-full">
           <Label className="text-2xl font-medium">Shelter</Label>
         </div>
-        <EditShelterDialog
+        {/* <EditShelterDialog
           open={editUserDialogOpen}
           onOpenChange={setEditUserDialogOpen}
           user={selectedUser}
@@ -240,14 +271,19 @@ export default function ShelterManagementPages() {
               )
             );
           }}
-        />
+        /> */}
         <DeleteShelterDialog
           open={deleteUserDialogOpen}
           onOpenChange={setDeleteUserDialogOpen}
           user={selectedUser}
-          onConfirm={() => {
+          onConfirm={async () => {
             if (selectedUser) {
-              deleteShelter(selectedUser.id_shelter);
+              const success = await deleteShelter(selectedUser.id_shelter);
+              if (success) {
+                setSuccessMessage("Shelter deleted successfully!");
+              } else {
+                setErrorMessage("Failed to delete shelter");
+              }
             }
             setDeleteUserDialogOpen(false);
           }}
@@ -296,6 +332,16 @@ export default function ShelterManagementPages() {
             setDeactivateUserDialogOpen(false);
           }}
         />
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {errorMessage}
+          </div>
+        )}
         <div className="p-4 bg-white rounded-sm shadow-md w-full overflow-auto">
           <Table>
             <TableHeader>
@@ -330,7 +376,19 @@ export default function ShelterManagementPages() {
                     <TableCell className="text-center">
                       {user.address}
                     </TableCell>
-                    <TableCell className="text-center">{user.status}</TableCell>
+                    <TableCell className="text-center">
+                      <span
+                        className={`px-2 py-1 rounded-full ${
+                          user.status === "New"
+                            ? "bg-blue-100 text-blue-800"
+                            : user.status === "Active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {user.status}
+                      </span>
+                    </TableCell>
                     <TableCell className="flex gap-1 justify-center">
                       {canPerformAdminActions() && user.status === "New" && (
                         <>
@@ -365,14 +423,14 @@ export default function ShelterManagementPages() {
                               Deactivate
                             </Button>
                           )}
-                          <Button
+                          {/* <Button
                             className="text-sm w-28"
                             variant="blue"
                             onClick={() => handleEditUserClick(user)}
                           >
                             <Pencil className="size-4" />
                             Edit
-                          </Button>
+                          </Button> */}
                           {canPerformAdminActions() && (
                             <Button
                               className="text-sm w-28"
@@ -383,7 +441,6 @@ export default function ShelterManagementPages() {
                               Delete
                             </Button>
                           )}
-                          ;
                         </>
                       )}
 
@@ -398,14 +455,14 @@ export default function ShelterManagementPages() {
                               <Check className="size-4" />
                               Activate
                             </Button>
-                            <Button
+                            {/* <Button
                               className="text-sm w-28"
                               variant="blue"
                               onClick={() => handleEditUserClick(user)}
                             >
                               <Pencil className="size-4" />
                               Edit
-                            </Button>
+                            </Button> */}
                             <Button
                               className="text-sm w-28"
                               variant="alert"

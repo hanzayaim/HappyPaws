@@ -173,33 +173,6 @@ async function updateShelterStatus(status, id_shelter) {
   }
 }
 
-async function updateShelterStatus(status, id_shelter) {
-  try {
-    const { rows } = await pool.query(
-      "UPDATE shelter SET status= $1 WHERE id_shelter = $2 returning *",
-      [status, id_shelter]
-    );
-    if (rows.length === 0) {
-      return {
-        error: true,
-        message: "no data found",
-        data: null,
-      };
-    }
-    return {
-      error: false,
-      message: "shelter status updated successfully",
-      shelter: rows[0],
-    };
-  } catch (error) {
-    return {
-      error: true,
-      message: "error updating shelter status",
-      data: null,
-    };
-  }
-}
-
 async function deleteShelterData(id_shelter) {
   try {
     const { rows } = await pool.query(
