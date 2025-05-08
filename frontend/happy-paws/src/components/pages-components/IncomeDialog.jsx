@@ -61,7 +61,6 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
         }
       );
       const result = response.data;
-      console.log(data.incomeDate.toLocaleDateString("en-CA"));
       if (result.error) {
         throw new Error(result.message || "Failed to insert income data");
       }
