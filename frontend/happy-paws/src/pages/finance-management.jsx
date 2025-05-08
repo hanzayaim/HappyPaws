@@ -405,7 +405,7 @@ export default function FinancePage() {
         </Label>
         <AlertDialogUser
           desc={
-            "This feature just can be access by Owner shelter or Finance Employe"
+            "This feature just can be access by Owner shelter or Finance Employee"
           }
           open={openAlertUser}
           onOpenChange={setOpenAlertUser}

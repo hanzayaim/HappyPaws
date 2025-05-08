@@ -17,6 +17,7 @@ import {
   AnimalOutDialog,
 } from "../components/pages-components/animalDialog";
 import axios from "axios";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 
 export function determineAnimalStatus(
   medicalStatus,
@@ -36,6 +37,7 @@ export default function AnimalManagement() {
   const [adopterData, setAdopter] = useState([]);
   const [userData, setUserData] = useState(null);
   const [userType, setUserType] = useState(null);
+  const [openAlertUser, setOpenAlertUser] = useState(false);
 
   const currentUser = async () => {
     try {
@@ -131,6 +133,13 @@ export default function AnimalManagement() {
       <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">
         <div>
           <Label className="text-3xl font-bold">Animal Management</Label>
+          <AlertDialogUser
+            desc={
+              "This feature just can be access by Owner shelter or Admin Employee"
+            }
+            open={openAlertUser}
+            onOpenChange={setOpenAlertUser}
+          />
         </div>
         <div className="flex lg:justify-end md:justify-end sm:justify-center mt-2 gap-3">
           <Button

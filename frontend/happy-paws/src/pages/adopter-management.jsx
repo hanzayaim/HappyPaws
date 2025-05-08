@@ -27,6 +27,7 @@ import {
 import { Input } from "../components/ui/input";
 
 import axios from "axios";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 
 // const user = {
 //   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
@@ -43,6 +44,8 @@ export default function AdopterManagement() {
   const [adopter, setAdopter] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const [openAlertUser, setOpenAlertUser] = useState(false);
 
   const [AdopterCurrentPage, setAdopterCurrentPage] = useState(1);
   const [addAdopterDialogOpen, setAddAdopterDialogOpen] = useState(false);
@@ -99,7 +102,7 @@ export default function AdopterManagement() {
       const storedUserData = localStorage.getItem("userData");
 
       if (storedUserType && storedUserData) {
-        // setUserType(storedUserType);
+        setUserType(storedUserType);
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
@@ -110,7 +113,16 @@ export default function AdopterManagement() {
     currentUser();
   }, []);
   useEffect(() => {
-    if (userData && userData.id_shelter) fetchAdopterData();
+    if (userData && userData.id_shelter) {
+      if (
+        (userType === "employee" && userData?.role === "Administrator") ||
+        (userType === "shelter" && userData?.role === "Owner")
+      ) {
+        fetchAdopterData();
+      } else {
+        setOpenAlertUser(true);
+      }
+    }
   }, [userData]);
 
   useEffect(() => {
@@ -138,6 +150,13 @@ export default function AdopterManagement() {
         <Label className="text-3xl font-bold self-start">
           Adopter Management
         </Label>
+        <AlertDialogUser
+          desc={
+            "This feature just can be access by Owner shelter or Admin Employee"
+          }
+          open={openAlertUser}
+          onOpenChange={setOpenAlertUser}
+        />
         <div className="flex justify-between gap-2 lg:gap-0 items-center w-full">
           <Input
             type="text"

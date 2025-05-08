@@ -47,6 +47,10 @@ function App() {
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
+        <Route
+          path="/employee-management"
+          element={<EmployeeManagementPages />}
+        />
         <Route path="/medical-management" element={<MedicalManagement />} />
         <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/finance-management" element={<FinancePage />} />

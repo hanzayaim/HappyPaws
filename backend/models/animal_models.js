@@ -67,6 +67,35 @@ async function getAnimalData(id_shelter) {
   }
 }
 
+async function getAnimalDataConvert(id_shelter, month, year) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT a.animal_name, a.animal_gender, a.animal_type, a.rescue_location, 
+             a.date, a.note, a.created_at, a.created_by
+       FROM animal a
+       WHERE a.id_shelter = $1
+         AND ($2::int IS NULL OR EXTRACT(MONTH FROM a.created_at) = $2::int)
+         AND ($3::int IS NULL OR EXTRACT(YEAR FROM a.created_at) = $3::int)
+       ORDER BY a.created_at DESC`,
+      [id_shelter, month, year]
+    );
+
+    return {
+      error: false,
+      message:
+        rows.length > 0 ? "Data fetched successfully." : "No data found.",
+      data: rows,
+    };
+  } catch (error) {
+    console.error("Database error in getAnimalDataConvert:", error);
+    return {
+      error: true,
+      message: "Error fetching data.",
+      data: [],
+    };
+  }
+}
+
 // insert data
 async function insertAnimalData(
   id_shelter,
@@ -215,4 +244,5 @@ module.exports = {
   insertAdopterData,
   updateAnimalData,
   deleteAnimalData,
+  getAnimalDataConvert,
 };

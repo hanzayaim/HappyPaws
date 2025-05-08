@@ -113,10 +113,19 @@ async function updateAdopterData(
   id_adopter
 ) {
   try {
-    const cleanBase64String = profile_img.replace(
-      /^data:image\/[a-zA-Z]+;base64,/,
-      ""
-    );
+    let cleanBase64String = null;
+    if (
+      profile_img === null ||
+      profile_img === undefined ||
+      profile_img === ""
+    ) {
+      profile_img = null;
+    } else {
+      cleanBase64String = profile_img.replace(
+        /^data:image\/[a-zA-Z]+;base64,/,
+        ""
+      );
+    }
     const profileImgBuffer = cleanBase64String
       ? Buffer.from(cleanBase64String, "base64")
       : null;

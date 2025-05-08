@@ -80,7 +80,6 @@ router.post("/updateAdopterData", async (req, res) => {
   } = req.body;
   if (
     adopter_name == null ||
-    profile_img == null ||
     gender == null ||
     phone_number == null ||
     address == null ||

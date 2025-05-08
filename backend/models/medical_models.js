@@ -36,35 +36,28 @@ async function getMedicalDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
       `SELECT a.animal_name, m.medical_status, m.vaccin_status, m.medical_date_in, 
-       m.medical_cost, m.note, m.created_at, m.created_by
-   FROM medical m 
-   LEFT JOIN animal a ON a.id_animal = m.id_animal 
-   WHERE m.id_shelter = $1
-     AND ($2::int IS NULL OR EXTRACT(MONTH FROM m.created_at) = $2::int)
-     AND ($3::int IS NULL OR EXTRACT(YEAR FROM m.created_at) = $3::int)
-   ORDER BY m.created_at DESC`,
+              m.medical_cost, m.note, m.created_at, m.created_by
+       FROM medical m 
+       LEFT JOIN animal a ON a.id_animal = m.id_animal 
+       WHERE m.id_shelter = $1
+         AND ($2::int IS NULL OR EXTRACT(MONTH FROM m.created_at) = $2::int)
+         AND ($3::int IS NULL OR EXTRACT(YEAR FROM m.created_at) = $3::int)
+       ORDER BY m.created_at DESC`,
       [id_shelter, month, year]
     );
 
-    if (rows.length > 0) {
-      return {
-        error: false,
-        message: "Data fetched successfully.",
-        data: rows,
-      };
-    } else {
-      return {
-        error: true,
-        message: "No data found.",
-        data: null,
-      };
-    }
+    return {
+      error: false,
+      message:
+        rows.length > 0 ? "Data fetched successfully." : "No data found.",
+      data: rows,
+    };
   } catch (error) {
-    console.error(error);
+    console.error("Database error in getMedicalDataConvert:", error);
     return {
       error: true,
       message: "Error fetching data.",
-      data: null,
+      data: [],
     };
   }
 }

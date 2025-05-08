@@ -59,7 +59,7 @@ export default function RegisterEmployee() {
   const onSubmit = async (data) => {
     try {
       const searchShelterIdRes = await axios.get(
-        `http://localhost:3000/api/shelters/getShelterData`
+        `/api/shelters/getShelterData`
       );
 
       const rawData = searchShelterIdRes.data;

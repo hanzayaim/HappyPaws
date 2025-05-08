@@ -14,6 +14,7 @@ const expensesRoutes = require("./expenses_routes");
 const incomeRoutes = require("./income_routes");
 const salaryRoutes = require("./salary_routes");
 const emailRoutes = require("./email_routes");
+const exportRoutes = require("./export-csv");
 
 router.use("/auth", authRoutes);
 router.use("/adopters", adopterRoutes);
@@ -28,5 +29,6 @@ router.use("/salary", salaryRoutes);
 router.use("/expenses", expensesRoutes);
 router.use("/income", incomeRoutes);
 router.use("/email", emailRoutes);
+router.use("/export", exportRoutes);
 
 module.exports = router;

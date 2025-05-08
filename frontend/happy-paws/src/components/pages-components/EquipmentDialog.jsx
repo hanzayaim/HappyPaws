@@ -19,6 +19,7 @@ import EquipmentTypeCombobox from "./EquipmentCombobox";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
 import axios from "axios";
+import { SuccessInsertDialog, SuccessUpdateDialog } from "./SuccessDialog";
 
 const equipmentSchema = z.object({
   equipmentName: z.string().min(1, "Name is required"),
@@ -40,7 +41,8 @@ const equipmentSchema = z.object({
 
 export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
   const [equipmentType, setEquipmentType] = useState("");
-
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [insertEquipmentName, setInsertEquipmentName] = useState("");
   const {
     register,
     handleSubmit,
@@ -80,6 +82,9 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
 
       reset();
       fetchData();
+
+      setInsertEquipmentName(data.equipmentName);
+      setShowSuccessDialog(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error insert Equipment:", error.message);
@@ -99,94 +104,102 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
   }, [open, reset]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add Equipment</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Insert new equipment below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Name</Label>
-              <Input
-                placeholder="Input Name..."
-                {...register("equipmentName")}
-              />
-              {errors.equipmentName && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <EquipmentTypeCombobox
-                className="w-full"
-                value={equipmentType}
-                onChange={handleEquipmentTypeChange}
-              />
-              {errors.equipmentType && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="equipmentDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+    <>
+      <SuccessInsertDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={insertEquipmentName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Equipment</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Insert new equipment below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Name</Label>
+                <Input
+                  placeholder="Input Name..."
+                  {...register("equipmentName")}
+                />
+                {errors.equipmentName && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentName.message}
+                  </p>
                 )}
-              />
-              {errors.equipmentDate && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentDate.message}
-                </p>
-              )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <EquipmentTypeCombobox
+                  className="w-full"
+                  value={equipmentType}
+                  onChange={handleEquipmentTypeChange}
+                />
+                {errors.equipmentType && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentType.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="equipmentDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.equipmentDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Cost</Label>
+                <Input
+                  disabled={equipmentType === "Donasi"}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Input Cost..."
+                  {...register("equipmentCost", { required: true })}
+                />
+                {errors.equipmentCost && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentCost.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea
+                  placeholder="Input Note..."
+                  {...register("equipmentNote")}
+                />
+                {errors.equipmentNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentNote.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label>Cost</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="Input Cost..."
-                {...register("equipmentCost", { required: true })}
-              />
-              {errors.equipmentCost && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentCost.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea
-                placeholder="Input Note..."
-                {...register("equipmentNote")}
-              />
-              {errors.equipmentNote && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentNote.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Add</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Add</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -198,7 +211,8 @@ export function EditEquipmentDialog({
   fetchData,
 }) {
   const [equipmentType, setEquipmentType] = useState("");
-
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [editedEquipmentName, setEditedEquipmentName] = useState("");
   const {
     register,
     handleSubmit,
@@ -238,7 +252,7 @@ export function EditEquipmentDialog({
           name: data.equipmentName,
           type: data.equipmentType,
           date: data.equipmentDate.toISOString().split("T")[0],
-          cost: data.equipmentCost,
+          cost: data.equipmentType === "Donasi" ? 0 : data.equipmentCost,
           note: data.equipmentNote,
           updated_by: User.owner_name ? User.owner_name : User.name,
           id_shelter: User.id_shelter,
@@ -254,6 +268,8 @@ export function EditEquipmentDialog({
 
       reset();
       fetchData();
+      setEditedEquipmentName(data.equipmentName);
+      setShowSuccessDialog(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating Equipment:", error.message);
@@ -266,94 +282,102 @@ export function EditEquipmentDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Edit Equipment</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
-          <DialogDescription>Edit equipment below.</DialogDescription>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label>Name</Label>
-              <Input
-                placeholder="Input Name..."
-                {...register("equipmentName")}
-              />
-              {errors.equipmentName && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentName.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Type</Label>
-              <EquipmentTypeCombobox
-                className="w-full"
-                value={equipmentType}
-                onChange={handleEquipmentTypeChange}
-              />
-              {errors.equipmentType && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentType.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Cost</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="Input Cost..."
-                {...register("equipmentCost", { required: true })}
-              />
-              {errors.equipmentCost && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentCost.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="equipmentDate"
-                render={({ field }) => (
-                  <DatePicker value={field.value} onChange={field.onChange} />
+    <>
+      <SuccessUpdateDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={editedEquipmentName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Equipment</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 py-2">
+            <DialogDescription>Edit equipment below.</DialogDescription>
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label>Name</Label>
+                <Input
+                  placeholder="Input Name..."
+                  {...register("equipmentName")}
+                />
+                {errors.equipmentName && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentName.message}
+                  </p>
                 )}
-              />
-              {errors.equipmentDate && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentDate.message}
-                </p>
-              )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Type</Label>
+                <EquipmentTypeCombobox
+                  className="w-full"
+                  value={equipmentType}
+                  onChange={handleEquipmentTypeChange}
+                />
+                {errors.equipmentType && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentType.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Cost</Label>
+                <Input
+                  disabled={equipmentType === "Donasi"}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Input Cost..."
+                  {...register("equipmentCost", { required: true })}
+                />
+                {errors.equipmentCost && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentCost.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="equipmentDate"
+                  render={({ field }) => (
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.equipmentDate && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentDate.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>Note</Label>
+                <Textarea
+                  placeholder="Input Note..."
+                  {...register("equipmentNote")}
+                />
+                {errors.equipmentNote && (
+                  <p className="text-destructive text-sm">
+                    {errors.equipmentNote.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label>Note</Label>
-              <Textarea
-                placeholder="Input Note..."
-                {...register("equipmentNote")}
-              />
-              {errors.equipmentNote && (
-                <p className="text-destructive text-sm">
-                  {errors.equipmentNote.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Submit</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Submit</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

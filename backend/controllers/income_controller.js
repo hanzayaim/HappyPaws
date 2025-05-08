@@ -15,10 +15,6 @@ const {
 } = require("../controllers/finance_controller.js");
 const generateId = require("../config/generate_id");
 
-/**
- * Insert Table Income -> Update Id table Finance
- * Delete Table Income -> Update Id table Finance
- */
 const insertIncome = async (
   id_shelter,
   name,
