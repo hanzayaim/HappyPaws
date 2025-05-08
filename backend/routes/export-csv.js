@@ -5,23 +5,6 @@ const path = require("path");
 const { format } = require("@fast-csv/format");
 const { getMedicalDataConvert } = require("../models/medical_models");
 
-function formatMedicalRow(row) {
-  return {
-    animal_name: row.animal_name || "-",
-    medical_status: row.medical_status || "-",
-    vaccin_status: row.vaccin_status || "-",
-    medical_date_in: row.medical_date_in
-      ? new Date(row.medical_date_in).toLocaleString("id-ID")
-      : "-",
-    medical_cost: row.medical_cost ?? "-",
-    note: row.note || "-",
-    created_at: row.created_at
-      ? new Date(row.created_at).toLocaleString("id-ID")
-      : "-",
-    created_by: row.created_by || "-",
-  };
-}
-
 router.post("/export-csv", async (req, res) => {
   const { id_shelter, month, year, triggerValue } = req.body;
 
@@ -31,20 +14,14 @@ router.post("/export-csv", async (req, res) => {
   try {
     let result = null;
     let fileName = null;
-    let formatter = null;
 
     if (triggerValue === "medical") {
       result = await getMedicalDataConvert(id_shelter, safeMonth, safeYear);
       fileName = `Recap_MedicalData_${month}_${year}.csv`;
-      formatter = formatMedicalRow;
     }
 
     if (result.error || !result.data || result.data.length === 0) {
       return res.status(400).send("No data available or error occurred.");
-    }
-
-    if (!formatter) {
-      return res.status(400).send("Unsupported export type");
     }
 
     const exportDir = path.join(__dirname, "..", "exports");
@@ -55,13 +32,10 @@ router.post("/export-csv", async (req, res) => {
 
     const filePath = path.join(exportDir, fileName);
     const writeStream = fs.createWriteStream(filePath);
-    const csvStream = format({ headers: true });
+    const csvStream = format({ headers: true, delimiter: ";" });
 
     csvStream.pipe(writeStream);
-    result.data.forEach((row) => {
-      const formattedRow = formatter(row);
-      csvStream.write(formattedRow);
-    });
+    result.data.forEach((row) => csvStream.write(row));
     csvStream.end();
 
     writeStream.on("finish", () => {
