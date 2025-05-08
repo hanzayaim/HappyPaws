@@ -40,7 +40,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
     defaultValues: {
       incomeName: "",
       incomeType: "",
-      incomeDate: new Date(),
+      incomeDate: "",
       incomeAmount: null,
       incomeNote: "",
     },
@@ -54,15 +54,14 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
           id_shelter: User.id_shelter,
           name: data.incomeName,
           amount: data.incomeAmount,
-          date: data.incomeDate.toISOString().split("T")[0],
+          date: data.incomeDate,
           type: data.incomeType,
           note: data.incomeNote || "",
           created_by: User.owner_name ? User.owner_name : User.name,
         }
       );
-
       const result = response.data;
-
+      console.log(data.incomeDate);
       if (result.error) {
         throw new Error(result.message || "Failed to insert income data");
       }
@@ -71,6 +70,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
       onOpenChange(false);
       fetchData();
     } catch (error) {
+      console.log(error);
       console.error("Error inserting income:", error.message);
     }
   };

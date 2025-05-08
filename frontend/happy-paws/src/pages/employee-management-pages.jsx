@@ -73,15 +73,15 @@ export default function EmployeeManagementPages() {
   useEffect(() => {
     const fetchShelterData = async () => {
       if (!userSession) return;
-      console.log(userSession.userType);
       try {
         setLoading(true);
         if (
-          userSession.userType === "Shelter" &&
-          userSession.profile === "Owner"
+          userSession.userType === "shelter" &&
+          userSession.profile.role === "Owner"
         ) {
+          console.log(":tes");
           const response = await axios.get(
-            `/api/employees/getEmployeeData/${userSession.id_shelter}`
+            `/api/employees/getEmployeeData/${userSession.profile.id_shelter}`
           );
           if (!response.data.error) {
             const sortedData = sortSheltersByStatus(response.data.data || []);
@@ -219,7 +219,7 @@ export default function EmployeeManagementPages() {
   };
 
   const canPerformAdminActions = () => {
-    return userSession?.userType === "superuser";
+    return userSession?.userType === "shelter";
   };
 
   if (loading) {
@@ -245,7 +245,7 @@ export default function EmployeeManagementPages() {
     );
   }
 
-  if (userSession && userSession.userType !== "superuser") {
+  if (userSession && userSession.userType !== "shelter") {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center min-h-svh p-6">
@@ -262,7 +262,7 @@ export default function EmployeeManagementPages() {
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
         <Label className="text-3xl font-bold self-start">User Management</Label>
         <div className="flex justify-between items-center w-full">
-          <Label className="text-2xl font-medium">Shelter</Label>
+          <Label className="text-2xl font-medium">Employee</Label>
         </div>
         {/* <EditShelterDialog
           open={editUserDialogOpen}
@@ -351,11 +351,11 @@ export default function EmployeeManagementPages() {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">No.</TableHead>
-                <TableHead className="text-center">Owner Name</TableHead>
+                <TableHead className="text-center">Employee Name</TableHead>
                 <TableHead className="text-center">Email</TableHead>
                 <TableHead className="text-center">Shelter Name</TableHead>
                 <TableHead className="text-center">Phone Number</TableHead>
-                <TableHead className="text-center">Address</TableHead>
+                <TableHead className="text-center">Role</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
@@ -367,19 +367,13 @@ export default function EmployeeManagementPages() {
                     <TableCell className="text-center">
                       {userStartIndex + index + 1}
                     </TableCell>
-                    <TableCell className="text-center">
-                      {user.owner_name}
-                    </TableCell>
+                    <TableCell className="text-center">{user.name}</TableCell>
                     <TableCell className="text-center">{user.email}</TableCell>
-                    <TableCell className="text-center">
-                      {user.shelter_name}
-                    </TableCell>
                     <TableCell className="text-center">
                       {user.phone_number}
                     </TableCell>
-                    <TableCell className="text-center">
-                      {user.address}
-                    </TableCell>
+                    <TableCell className="text-center">{user.gender}</TableCell>
+                    <TableCell className="text-center">{user.role}</TableCell>
                     <TableCell className="text-center">
                       <span
                         className={`px-2 py-1 rounded-full ${
