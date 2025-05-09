@@ -54,6 +54,35 @@ async function getSalaryById(id_shelter, id_salary) {
   }
 }
 
+async function getSalaryDataConvert(id_shelter, month, year) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT es.name, s.name as s_name, s.cost, s.date, s.note, s.created_at, s.created_by, s.updated_at, s.updated_by
+      FROM salary s
+      LEFT JOIN employee_shelter es ON es.id_employee = s.id_employee
+      WHERE s.id_shelter = $1
+      AND ($2::int IS NULL OR EXTRACT(MONTH FROM s.created_at) = $2::int)
+      AND ($3::int IS NULL OR EXTRACT(YEAR FROM s.created_at) = $3::int)
+      ORDER BY s.created_at DESC`,
+      [id_shelter, month, year]
+    );
+
+    return {
+      error: false,
+      message:
+        rows.length > 0 ? "Data fetched successfully." : "No data found.",
+      data: rows,
+    };
+  } catch (error) {
+    console.error("Database error in getSalaryDataConvert:", error);
+    return {
+      error: true,
+      message: "Error fetching data.",
+      data: [],
+    };
+  }
+}
+
 async function insertSalaryData(
   id_salary,
   id_shelter,
@@ -116,4 +145,5 @@ module.exports = {
   insertSalaryData,
   getSalary,
   getSalaryById,
+  getSalaryDataConvert,
 };

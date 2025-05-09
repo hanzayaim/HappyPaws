@@ -36,8 +36,10 @@ export default function DataConvert() {
   const itemsPerPage = 5;
   const [animalData, setAnimalData] = useState([]);
   const [medicalData, setMedicalData] = useState([]);
+  const [salaryData, setSalaryData] = useState([]);
   const [medicalCurrentPage, setMedicalCurrentPage] = useState(1);
   const [animalCurrentPage, setAnimalCurrentPage] = useState(1);
+  const [salaryCurrentPage, setSalaryCurrentPage] = useState(1);
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedYear, setSelectedYear] = useState("all");
   const [userData, setUserData] = useState(null);
@@ -70,6 +72,13 @@ export default function DataConvert() {
   const currentAnimal = animalData.slice(
     animalStartIndex,
     animalStartIndex + itemsPerPage
+  );
+
+  const salaryTotalPages = Math.ceil(salaryData.length / itemsPerPage);
+  const salaryStartIndex = (salaryCurrentPage - 1) * itemsPerPage;
+  const currentSalary = salaryData.slice(
+    salaryStartIndex,
+    salaryStartIndex + itemsPerPage
   );
 
   const fetchAnimalData = async () => {
@@ -116,6 +125,30 @@ export default function DataConvert() {
         console.error("Error fetching medical data:", medicalRes.data.error);
       } else {
         setMedicalData(medicalDataFetch.data || []);
+      }
+    } catch (error) {
+      console.error("error fetching data", error);
+    }
+  };
+
+  const fetchSalaryData = async () => {
+    try {
+      const month = selectedMonth === "all" ? null : selectedMonth;
+      const year = selectedYear === "all" ? null : selectedYear;
+
+      const salaryRes = await axios.post(`/api/salary/getSalaryDataConvert`, {
+        id_shelter: userData.id_shelter,
+        month,
+        year,
+      });
+
+      const salaryDataFetch = salaryRes.data;
+
+      if (salaryDataFetch.error) {
+        setSalaryData([]);
+        console.error("Error fetching medical data:", salaryRes.data.error);
+      } else {
+        setSalaryData(salaryDataFetch.data || []);
       }
     } catch (error) {
       console.error("error fetching data", error);
@@ -174,6 +207,9 @@ export default function DataConvert() {
         if (selectedDataType === "animal") {
           fetchAnimalData();
         }
+        if (selectedDataType === "salary") {
+          fetchSalaryData();
+        }
       }
     }
   }, [selectedDataType, selectedMonth, selectedYear]);
@@ -181,6 +217,7 @@ export default function DataConvert() {
   useEffect(() => {
     setMedicalCurrentPage(1);
     setAnimalCurrentPage(1);
+    setSalaryCurrentPage(1);
   }, []);
 
   const handlePageChange = (page) => {
@@ -189,6 +226,9 @@ export default function DataConvert() {
     }
     if (page >= 1 && page <= animalTotalPages) {
       setAnimalCurrentPage(page);
+    }
+    if (page >= 1 && page <= salaryTotalPages) {
+      setSalaryCurrentPage(page);
     }
   };
 
@@ -390,7 +430,7 @@ export default function DataConvert() {
                           : "No Date"}
                       </TableCell>
                       <TableCell className="text-center">
-                        {animal.created_at ? animal.created_by : "Unkown"}
+                        {animal.created_by ? animal.created_by : "Unkown"}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -424,6 +464,109 @@ export default function DataConvert() {
                       onClick={() => handlePageChange(animalCurrentPage + 1)}
                       className={
                         animalCurrentPage === animalTotalPages
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
+        )}
+
+        {selectedDataType === "salary" && (
+          <>
+            <div className="p-4 bg-white rounded shadow-md overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center">No</TableHead>
+                    <TableHead className="text-center">Employee Name</TableHead>
+                    <TableHead className="text-center">Salary Name</TableHead>
+                    <TableHead className="text-center">Cost</TableHead>
+                    <TableHead className="text-center">Date</TableHead>
+                    <TableHead className="text-center">Note</TableHead>
+                    <TableHead className="text-center">Created At</TableHead>
+                    <TableHead className="text-center">Created By</TableHead>
+                    <TableHead className="text-center">Updated At</TableHead>
+                    <TableHead className="text-center">Updated By</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {currentSalary.map((salary, index) => (
+                    <TableRow key={`${salary.id_salary}-${index}`}>
+                      <TableCell className="text-center">
+                        {salaryStartIndex + index + 1}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.name}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.s_name}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        }).format(salary.cost)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.date
+                          ? new Date(salary.date).toLocaleDateString()
+                          : "No Date"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.note}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.created_at
+                          ? new Date(salary.created_at).toLocaleDateString()
+                          : "No Date"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.created_by ? salary.created_by : "Unkown"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.updated_at
+                          ? new Date(salary.updated_at).toLocaleDateString()
+                          : "No Date"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {salary.updated_by ? salary.updated_by : "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Pagination className="w-full flex justify-center mt-4">
+                <PaginationContent className="gap-1">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(salaryCurrentPage - 1)}
+                      className={
+                        salaryCurrentPage === 1
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: salaryTotalPages }).map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        isActive={salaryCurrentPage === i + 1}
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(salaryCurrentPage + 1)}
+                      className={
+                        salaryCurrentPage === salaryTotalPages
                           ? "pointer-events-none opacity-50"
                           : ""
                       }

@@ -5,6 +5,7 @@ const path = require("path");
 const { format } = require("@fast-csv/format");
 const { getMedicalDataConvert } = require("../models/medical_models");
 const { getAnimalDataConvert } = require("../models/animal_models");
+const { getSalaryDataConvert } = require("../models/salary_models");
 
 router.post("/export-csv", async (req, res) => {
   const { id_shelter, month, year, triggerValue } = req.body;
@@ -22,45 +23,22 @@ router.post("/export-csv", async (req, res) => {
     } else if (triggerValue === "animal") {
       result = await getAnimalDataConvert(id_shelter, safeMonth, safeYear);
       fileName = `Recap_AnimalData_${month}_${year}.csv`;
+    } else if (triggerValue === "salary") {
+      result = await getSalaryDataConvert(id_shelter, safeMonth, safeYear);
+      fileName = `Recap_SalaryData_${month}_${year}.csv`;
     }
 
     if (result.error || !result.data || result.data.length === 0) {
       return res.status(400).send("No data available or error occurred.");
     }
 
-    const exportDir = path.join(__dirname, "..", "exports");
+    res.setHeader("Content-disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-Type", "text/csv");
 
-    if (!fs.existsSync(exportDir)) {
-      fs.mkdirSync(exportDir, { recursive: true });
-    }
-
-    const filePath = path.join(exportDir, fileName);
-    const writeStream = fs.createWriteStream(filePath);
     const csvStream = format({ headers: true, delimiter: ";" });
-
-    csvStream.pipe(writeStream);
+    csvStream.pipe(res);
     result.data.forEach((row) => csvStream.write(row));
     csvStream.end();
-
-    writeStream.on("finish", () => {
-      res.download(filePath, fileName, (err) => {
-        if (err) {
-          console.error("Download error:", err);
-          res.status(500).send("Failed to download file");
-        } else {
-          fs.unlink(filePath, (err) => {
-            if (err) console.error("Failed to delete file:", err);
-          });
-        }
-      });
-    });
-
-    writeStream.on("error", (err) => {
-      console.error("Write error:", err);
-      res.status(500).send("Failed to write CSV file");
-    });
-
-    console.log(result.data[0]);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error exporting data");
