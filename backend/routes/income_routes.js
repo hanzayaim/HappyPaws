@@ -6,6 +6,7 @@ const {
   updateIncomeData,
   getIncome,
   getIncomeById,
+  getIncomeDataConvert,
 } = require("../models/income_models.js");
 const {
   insertIncome,
@@ -21,6 +22,7 @@ router.get("/getIncome/:id_shelter", async (req, res) => {
   }
   res.json(result);
 });
+
 router.get("/getIncomebyId/:id_shelter/:id_income", async (req, res) => {
   const { id_shelter, id_income } = req.params;
   const result = await getIncomeById(id_shelter, id_income);
@@ -28,6 +30,28 @@ router.get("/getIncomebyId/:id_shelter/:id_income", async (req, res) => {
     return res.status(404).json(result);
   }
   res.json(result);
+});
+
+router.post("/getIncomeDataConvert", async (req, res) => {
+  const { id_shelter, month, year } = req.body;
+  if (id_shelter == null) {
+    return res.status(400).send({
+      error: true,
+      message: "Please provide all required data.",
+    });
+  }
+
+  try {
+    const result = await getIncomeDataConvert(id_shelter, month, year);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: true,
+      message: "Failed to get data.",
+      data: null,
+    });
+  }
 });
 
 router.post("/insertIncomeData", async (req, res) => {
