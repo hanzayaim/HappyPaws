@@ -225,7 +225,7 @@ export function EditIncomeDialog({
           id_shelter: User.id_shelter,
           name: data.incomeName,
           amount: data.incomeAmount,
-          date: data.incomeDate.toISOString().split("T")[0],
+          date: data.incomeDate.toLocaleDateString("en-CA"),
           type: data.incomeType,
           note: data.incomeNote,
           update_by: User.owner_name ? User.owner_name : User.name,

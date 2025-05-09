@@ -73,7 +73,7 @@ export function InsertSalaryDialog({
           id_employee: data.SalaryName.id_employee,
           name: `Salary Month - ${data.SalaryName.name}`,
           cost: data.SalaryAmount,
-          date: data.SalaryDate.toISOString().split("T")[0],
+          date: data.SalaryDate.toLocaleDateString("en-CA"),
           note: data.SalaryNote || "",
           created_by: User.owner_name ? User.owner_name : User.name,
         }

@@ -36,7 +36,6 @@ const insertIncome = async (
       note,
       created_by
     );
-    // update total balance
     await updateTotalBalance(id_shelter);
     return {
       error: false,

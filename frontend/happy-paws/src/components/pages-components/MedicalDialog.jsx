@@ -86,8 +86,8 @@ export function InsertMedicalDialog({
       const response = await axios.post("/api/medical/insertMedicalData", {
         medical_status: medicalStatus,
         vaccin_status: vaccineStatus,
-        medical_date_in: data.medicalDate,
-        medical_date_out: data.medicalDateOut,
+        medical_date_in: data.medicalDate.toLocaleDateString("en-CA"),
+        medical_date_out: data.medicalDateOut.toLocaleDateString("en-CA"),
         medical_cost: data.medicalCost,
         note: data.medicalNote,
         created_by: userName,
@@ -319,8 +319,8 @@ export function EditMedicalDialog({
       const response = await axios.post("/api/medical/updateMedicalData", {
         medical_status: medicalStatus,
         vaccin_status: vaccineStatus,
-        medical_date_in: data.medicalDate.toISOString().split("T")[0],
-        medical_date_out: data.medicalDateOut,
+        medical_date_in: data.medicalDate.toLocaleDateString("en-CA"),
+        medical_date_out: data.medicalDateOut.toLocaleDateString("en-CA"),
         medical_cost: data.medicalCost,
         note: data.medicalNote,
         updated_by: userName,
