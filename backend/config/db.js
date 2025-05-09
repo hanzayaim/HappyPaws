@@ -13,4 +13,8 @@ const pool = new Pool({
   },
 });
 
+pool.on("connect", async (client) => {
+  await client.query(`SET TIME ZONE 'Asia/Jakarta'`);
+});
+
 module.exports = pool;

@@ -54,14 +54,13 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
           id_shelter: User.id_shelter,
           name: data.incomeName,
           amount: data.incomeAmount,
-          date: data.incomeDate,
+          date: data.incomeDate.toLocaleDateString("en-CA"),
           type: data.incomeType,
           note: data.incomeNote || "",
           created_by: User.owner_name ? User.owner_name : User.name,
         }
       );
       const result = response.data;
-      console.log(data.incomeDate);
       if (result.error) {
         throw new Error(result.message || "Failed to insert income data");
       }

@@ -12,6 +12,7 @@ const {
   deleteIncome,
   updateIncome,
 } = require("../controllers/income_controller.js");
+
 router.get("/getIncome/:id_shelter", async (req, res) => {
   const { id_shelter } = req.params;
   const result = await getIncome(id_shelter);
@@ -32,9 +33,6 @@ router.get("/getIncomebyId/:id_shelter/:id_income", async (req, res) => {
 router.post("/insertIncomeData", async (req, res) => {
   try {
     const { id_shelter, name, amount, date, type, note, created_by } = req.body;
-    const dateObj = new Date(date);
-    const convertDate = dateObj.toISOString();
-    console.log(date);
     if (!id_shelter || !name || !amount || !date || !type) {
       return res
         .status(400)
