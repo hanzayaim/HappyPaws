@@ -30,6 +30,7 @@ async function getFoodData(id_shelter) {
     };
   }
 }
+
 async function getFoodDataById(id_shelter, id_food) {
   try {
     const { rows } = await pool.query(
@@ -61,6 +62,35 @@ async function getFoodDataById(id_shelter, id_food) {
     };
   }
 }
+
+async function getFoodDataConvert(id_shelter, month, year) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT name, type, date as buying_date, exp_date as expired_date, cost, note, created_at, created_by, updated_at, updated_by
+       FROM food
+       WHERE id_shelter = $1
+         AND ($2::int IS NULL OR EXTRACT(MONTH FROM created_at) = $2::int)
+         AND ($3::int IS NULL OR EXTRACT(YEAR FROM created_at) = $3::int)
+       ORDER BY created_at DESC`,
+      [id_shelter, month, year]
+    );
+
+    return {
+      error: false,
+      message:
+        rows.length > 0 ? "Data fetched successfully." : "No data found.",
+      data: rows,
+    };
+  } catch (error) {
+    console.error("Database error in getFoodDataConvert:", error);
+    return {
+      error: true,
+      message: "Error fetching data.",
+      data: [],
+    };
+  }
+}
+
 async function insertFoodData(
   id_food,
   name,
@@ -205,4 +235,5 @@ module.exports = {
   insertFoodData,
   updateFoodData,
   deleteFoodData,
+  getFoodDataConvert,
 };
