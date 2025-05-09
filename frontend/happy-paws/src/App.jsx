@@ -36,12 +36,9 @@ function App() {
           path="/shelter-management"
           element={<ShelterManagementPages />}
         />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/register/register-owner" element={<RegisterOwner />} />
         <Route
-          path="/register/register-employee"
-          element={<RegisterEmployee />}
+          path="/employee-management"
+          element={<EmployeeManagementPages />}
         />
         <Route path="/animal-management" element={<AnimalManagement />} />
         <Route path="/adopter-management" element={<AdopterManagement />} />

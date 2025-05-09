@@ -18,13 +18,13 @@ import {
   PaginationLink,
 } from "../components/ui/pagination";
 import {
-  DeleteShelterDialog,
-  ApproveShelterDialog,
-  RejectShelterDialog,
-  ActivateShelterDialog,
-  DeactivateShelterDialog,
-} from "../components/pages-components/ShelterDialog";
-import { Pencil, Trash, ToggleRight, ToggleLeft, Check, X } from "lucide-react";
+  DeleteEmployeeDialog,
+  ApproveEmployeeDialog,
+  RejectEmployeeDialog,
+  ActivateEmployeeDialog,
+  DeactivateEmployeeDialog,
+} from "../components/pages-components/EmployeeDialog";
+import { Trash, ToggleRight, ToggleLeft, Check, X } from "lucide-react";
 import Layout from "../app/layout";
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -39,7 +39,6 @@ export default function EmployeeManagementPages() {
 
   const [userCurrentPage, setUserCurrentPage] = useState(1);
 
-  // const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
   const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
   const [approveUserDialogOpen, setApproveUserDialogOpen] = useState(false);
   const [rejectUserDialogOpen, setRejectUserDialogOpen] = useState(false);
@@ -71,20 +70,27 @@ export default function EmployeeManagementPages() {
   }, []);
 
   useEffect(() => {
-    const fetchShelterData = async () => {
+    const fetchEmployeeData = async () => {
       if (!userSession) return;
+
       try {
         setLoading(true);
+
         if (
           userSession.userType === "shelter" &&
-          userSession.profile.role === "Owner"
+          userSession.profile?.role === "Owner"
         ) {
-          console.log(":tes");
-          const response = await axios.get(
-            `/api/employees/getEmployeeData/${userSession.profile.id_shelter}`
-          );
+          const shelterId = userSession.profile?.id_shelter;
+
+          let response;
+          if (shelterId) {
+            response = await axios.get(
+              `/api/employees/getEmployeeData/${shelterId}`
+            );
+          }
+
           if (!response.data.error) {
-            const sortedData = sortSheltersByStatus(response.data.data || []);
+            const sortedData = sortEmployeesByStatus(response.data.data || []);
             setUsers(sortedData);
           } else {
             setError(response.data.message);
@@ -93,24 +99,24 @@ export default function EmployeeManagementPages() {
           setError("Access level not supported for this view");
         }
       } catch (error) {
-        console.error("Error fetching shelter data:", error);
-        setError("Failed to load shelter data");
+        console.error("Error fetching employee data:", error);
+        setError("Failed to load employee data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchShelterData();
+    fetchEmployeeData();
   }, [userSession]);
 
-  const sortSheltersByStatus = (shelters) => {
+  const sortEmployeesByStatus = (employees) => {
     const statusOrder = {
       New: 1,
       Active: 2,
       Inactive: 3,
     };
 
-    return [...shelters].sort((a, b) => {
+    return [...employees].sort((a, b) => {
       return statusOrder[a.status] - statusOrder[b.status];
     });
   };
@@ -127,11 +133,6 @@ export default function EmployeeManagementPages() {
       setUserCurrentPage(page);
     }
   };
-
-  // const handleEditUserClick = (user) => {
-  //   setSelectedUser(user);
-  //   setEditUserDialogOpen(true);
-  // };
 
   const handleDeleteUserClick = (user) => {
     setSelectedUser(user);
@@ -158,75 +159,79 @@ export default function EmployeeManagementPages() {
     setDeactivateUserDialogOpen(true);
   };
 
-  const updateShelterStatus = async (id, status) => {
+  const updateEmployeeStatus = async (id_shelter, id_employee, status) => {
     try {
       setSuccessMessage("");
       setErrorMessage("");
 
-      const response = await axios.post("/api/shelters/updateShelterStatus", {
-        id_shelter: id,
+      const response = await axios.post("/api/employees/updateEmployeeStatus", {
+        id_shelter: id_shelter,
+        id_employee: id_employee,
         status: status,
         email: selectedUser.email,
       });
 
       if (!response.data.error) {
-        // Update user status and re-sort the list
         const updatedUsers = users.map((user) =>
-          user.id_shelter === id ? { ...user, status: status } : user
+          user.id_employee === id_employee ? { ...user, status: status } : user
         );
-        const sortedUsers = sortSheltersByStatus(updatedUsers);
+        const sortedUsers = sortEmployeesByStatus(updatedUsers);
         setUsers(sortedUsers);
 
-        setSuccessMessage(`Shelter status updated to ${status} successfully!`);
+        setSuccessMessage(`Employee status updated to ${status} successfully!`);
         return true;
       } else {
         setErrorMessage(response.data.message || "Failed to update status");
         return false;
       }
     } catch (error) {
-      console.error("Error updating shelter status:", error);
+      console.error("Error updating employee status:", error);
       setErrorMessage(
-        error.response?.data?.message || "Failed to update shelter status"
+        error.response?.data?.message || "Failed to update employee status"
       );
       return false;
     }
   };
 
-  const deleteShelter = async (id) => {
+  const deleteEmployee = async (id_employee) => {
     try {
       setSuccessMessage("");
       setErrorMessage("");
 
-      const response = await axios.post("/api/shelters/deleteShelterData", {
-        id_shelter: id,
+      const response = await axios.post("/api/employees/deleteEmployeeData", {
+        id_shelter: selectedUser.id_shelter,
+        id_employee: id_employee,
       });
 
       if (!response.data.error) {
-        setUsers(users.filter((user) => user.id_shelter !== id));
-        setSuccessMessage("Shelter deleted successfully!");
+        setUsers(users.filter((user) => user.id_employee !== id_employee));
+        setSuccessMessage("Employee deleted successfully!");
         return true;
       } else {
-        setErrorMessage(response.data.message || "Failed to delete shelter");
+        setErrorMessage(response.data.message || "Failed to delete empoyee");
         return false;
       }
     } catch (error) {
-      console.error("Error deleting shelter:", error);
+      console.error("Error deleting employee:", error);
       setErrorMessage(
-        error.response?.data?.message || "Failed to delete shelter"
+        error.response?.data?.message || "Failed to delete employee"
       );
       return false;
     }
   };
 
   const canPerformAdminActions = () => {
-    return userSession?.userType === "shelter";
+    return (
+      userSession?.userType === "shelter" &&
+      userSession.profile?.role === "Owner"
+    );
   };
 
   if (loading) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center min-h-svh p-6">
-          <p>Loading shelter data...</p>
+          <p>Loading employee data...</p>
         </div>
       </Layout>
     );
@@ -245,7 +250,13 @@ export default function EmployeeManagementPages() {
     );
   }
 
-  if (userSession && userSession.userType !== "shelter") {
+  if (
+    userSession &&
+    !(
+      userSession?.userType === "shelter" &&
+      userSession.profile?.role === "Owner"
+    )
+  ) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center min-h-svh p-6">
@@ -264,74 +275,78 @@ export default function EmployeeManagementPages() {
         <div className="flex justify-between items-center w-full">
           <Label className="text-2xl font-medium">Employee</Label>
         </div>
-        {/* <EditShelterDialog
-          open={editUserDialogOpen}
-          onOpenChange={setEditUserDialogOpen}
-          user={selectedUser}
-          onSuccess={(updatedUser) => {
-            setUsers(
-              users.map((u) =>
-                u.id_shelter === updatedUser.id_shelter ? updatedUser : u
-              )
-            );
-          }}
-        /> */}
-        <DeleteShelterDialog
+        <DeleteEmployeeDialog
           open={deleteUserDialogOpen}
           onOpenChange={setDeleteUserDialogOpen}
           user={selectedUser}
           onConfirm={async () => {
             if (selectedUser) {
-              const success = await deleteShelter(selectedUser.id_shelter);
+              const success = await deleteEmployee(selectedUser.id_employee);
               if (success) {
-                setSuccessMessage("Shelter deleted successfully!");
+                setSuccessMessage("Employee deleted successfully!");
               } else {
-                setErrorMessage("Failed to delete shelter");
+                setErrorMessage("Failed to delete employee");
               }
             }
             setDeleteUserDialogOpen(false);
           }}
         />
-        <ApproveShelterDialog
+        <ApproveEmployeeDialog
           open={approveUserDialogOpen}
           onOpenChange={setApproveUserDialogOpen}
           user={selectedUser}
           onConfirm={() => {
             if (selectedUser) {
-              updateShelterStatus(selectedUser.id_shelter, "Active");
+              updateEmployeeStatus(
+                selectedUser.id_shelter,
+                selectedUser.id_employee,
+                "Active"
+              );
             }
             setApproveUserDialogOpen(false);
           }}
         />
-        <RejectShelterDialog
+        <RejectEmployeeDialog
           open={rejectUserDialogOpen}
           onOpenChange={setRejectUserDialogOpen}
           user={selectedUser}
           onConfirm={() => {
             if (selectedUser) {
-              updateShelterStatus(selectedUser.id_shelter, "Inactive");
+              updateEmployeeStatus(
+                selectedUser.id_shelter,
+                selectedUser.id_employee,
+                "Inactive"
+              );
             }
             setRejectUserDialogOpen(false);
           }}
         />
-        <ActivateShelterDialog
+        <ActivateEmployeeDialog
           open={activateUserDialogOpen}
           onOpenChange={setActivateUserDialogOpen}
           user={selectedUser}
           onConfirm={() => {
             if (selectedUser) {
-              updateShelterStatus(selectedUser.id_shelter, "Active");
+              updateEmployeeStatus(
+                selectedUser.id_shelter,
+                selectedUser.id_employee,
+                "Active"
+              );
             }
             setActivateUserDialogOpen(false);
           }}
         />
-        <DeactivateShelterDialog
+        <DeactivateEmployeeDialog
           open={deactivateUserDialogOpen}
           onOpenChange={setDeactivateUserDialogOpen}
           user={selectedUser}
           onConfirm={() => {
             if (selectedUser) {
-              updateShelterStatus(selectedUser.id_shelter, "Inactive");
+              updateEmployeeStatus(
+                selectedUser.id_shelter,
+                selectedUser.id_employee,
+                "Inactive"
+              );
             }
             setDeactivateUserDialogOpen(false);
           }}
@@ -355,6 +370,8 @@ export default function EmployeeManagementPages() {
                 <TableHead className="text-center">Email</TableHead>
                 <TableHead className="text-center">Shelter Name</TableHead>
                 <TableHead className="text-center">Phone Number</TableHead>
+                <TableHead className="text-center">Address</TableHead>
+                <TableHead className="text-center">Gender</TableHead>
                 <TableHead className="text-center">Role</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Action</TableHead>
@@ -363,14 +380,20 @@ export default function EmployeeManagementPages() {
             <TableBody>
               {currentUsers.length > 0 ? (
                 currentUsers.map((user, index) => (
-                  <TableRow key={user.id_shelter}>
+                  <TableRow key={user.id_employee}>
                     <TableCell className="text-center">
                       {userStartIndex + index + 1}
                     </TableCell>
                     <TableCell className="text-center">{user.name}</TableCell>
                     <TableCell className="text-center">{user.email}</TableCell>
                     <TableCell className="text-center">
+                      {user.shelter_name}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {user.phone_number}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {user.address}
                     </TableCell>
                     <TableCell className="text-center">{user.gender}</TableCell>
                     <TableCell className="text-center">{user.role}</TableCell>
@@ -421,14 +444,6 @@ export default function EmployeeManagementPages() {
                               Deactivate
                             </Button>
                           )}
-                          {/* <Button
-                            className="text-sm w-28"
-                            variant="blue"
-                            onClick={() => handleEditUserClick(user)}
-                          >
-                            <Pencil className="size-4" />
-                            Edit
-                          </Button> */}
                           {canPerformAdminActions() && (
                             <Button
                               className="text-sm w-28"
@@ -453,14 +468,6 @@ export default function EmployeeManagementPages() {
                               <Check className="size-4" />
                               Activate
                             </Button>
-                            {/* <Button
-                              className="text-sm w-28"
-                              variant="blue"
-                              onClick={() => handleEditUserClick(user)}
-                            >
-                              <Pencil className="size-4" />
-                              Edit
-                            </Button> */}
                             <Button
                               className="text-sm w-28"
                               variant="alert"
@@ -477,7 +484,7 @@ export default function EmployeeManagementPages() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-4">
-                    No shelter data found
+                    No employee data found
                   </TableCell>
                 </TableRow>
               )}
