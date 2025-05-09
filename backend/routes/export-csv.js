@@ -15,24 +15,20 @@ router.post("/export-csv", async (req, res) => {
 
   try {
     let result = null;
-    let fileName = null;
 
     if (triggerValue === "medical") {
       result = await getMedicalDataConvert(id_shelter, safeMonth, safeYear);
-      fileName = `Recap_MedicalData_${month}_${year}.csv`;
     } else if (triggerValue === "animal") {
       result = await getAnimalDataConvert(id_shelter, safeMonth, safeYear);
-      fileName = `Recap_AnimalData_${month}_${year}.csv`;
     } else if (triggerValue === "salary") {
       result = await getSalaryDataConvert(id_shelter, safeMonth, safeYear);
-      fileName = `Recap_SalaryData_${month}_${year}.csv`;
     }
 
     if (result.error || !result.data || result.data.length === 0) {
       return res.status(400).send("No data available or error occurred.");
     }
 
-    res.setHeader("Content-disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-disposition", `attachment;`);
     res.setHeader("Content-Type", "text/csv");
 
     const csvStream = format({ headers: true, delimiter: ";" });
