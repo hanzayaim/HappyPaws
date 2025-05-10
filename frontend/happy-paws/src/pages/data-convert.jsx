@@ -973,7 +973,7 @@ export default function DataConvert() {
                     <TableHead className="text-center">Cost</TableHead>
                     <TableHead className="text-center">Type</TableHead>
                     <TableHead className="text-center">
-                      Purchase Date / Donation Date
+                      Purchase / Donation Date
                     </TableHead>
                     <TableHead className="text-center">Note</TableHead>
                     <TableHead className="text-center">Created At</TableHead>
@@ -1001,8 +1001,10 @@ export default function DataConvert() {
                         {equipment.type}
                       </TableCell>
                       <TableCell className="text-center">
-                        {equipment.buying_date
-                          ? new Date(equipment.buying_date).toLocaleDateString()
+                        {equipment.purchase_or_donation_date
+                          ? new Date(
+                              equipment.purchase_or_donation_date
+                            ).toLocaleDateString()
                           : "No Date"}
                       </TableCell>
                       <TableCell className="text-center">
@@ -1078,7 +1080,7 @@ export default function DataConvert() {
                     <TableHead className="text-center">Cost</TableHead>
                     <TableHead className="text-center">Type</TableHead>
                     <TableHead className="text-center">
-                      Purchase Date / Donation Date
+                      Purchase / Donation Date
                     </TableHead>
                     <TableHead className="text-center">Expired Date</TableHead>
                     <TableHead className="text-center">Note</TableHead>
@@ -1103,8 +1105,10 @@ export default function DataConvert() {
                       </TableCell>
                       <TableCell className="text-center">{food.type}</TableCell>
                       <TableCell className="text-center">
-                        {food.buying_date
-                          ? new Date(food.buying_date).toLocaleDateString()
+                        {food.purchase_or_donation_date
+                          ? new Date(
+                              food.purchase_or_donation_date
+                            ).toLocaleDateString()
                           : "No Date"}
                       </TableCell>
                       <TableCell className="text-center">
