@@ -66,7 +66,7 @@ async function getFoodDataById(id_shelter, id_food) {
 async function getFoodDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
-      `SELECT name, type, date as buying_date, exp_date as expired_date, cost, note, created_at, created_by, updated_at, updated_by
+      `SELECT name, type, date as purchase_or_donation_date, exp_date as expired_date, cost, note, created_at, created_by, updated_at, updated_by
        FROM food
        WHERE id_shelter = $1
          AND ($2::int IS NULL OR EXTRACT(MONTH FROM created_at) = $2::int)

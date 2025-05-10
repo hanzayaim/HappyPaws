@@ -3,10 +3,6 @@ const {
   deleteExpensesData,
   getExpenses,
 } = require("../models/expenses_models");
-const { getFoodDataById } = require("../models/food_models.js");
-const { getMedicalDataById } = require("../models/medical_models.js");
-const { getEquipmentDataById } = require("../models/equipment_models.js");
-const { getSalaryById } = require("../models/salary_models.js");
 const generateId = require("../config/generate_id");
 const { updateTotalBalance } = require("./finance_controller.js");
 
@@ -49,7 +45,7 @@ const insertExpenses = async (
       id_salary,
       created_by
     );
-    
+
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
@@ -77,11 +73,12 @@ const deleteExpenses = async (id_shelter, id_expenses) => {
 const deleteExpensesById = async (id_shelter, table_id) => {
   try {
     const expenses = await getExpenses(id_shelter);
-    const findExpense = expenses.data.find((expense) => 
-      expense.id_food === table_id ||
-      expense.id_medical === table_id ||
-      expense.id_equipment === table_id ||
-      expense.id_salary === table_id
+    const findExpense = expenses.data.find(
+      (expense) =>
+        expense.id_food === table_id ||
+        expense.id_medical === table_id ||
+        expense.id_equipment === table_id ||
+        expense.id_salary === table_id
     );
     let result;
     if (findExpense) {
