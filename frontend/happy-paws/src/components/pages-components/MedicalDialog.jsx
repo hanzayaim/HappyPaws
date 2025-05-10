@@ -39,6 +39,7 @@ const medicalSchema = z.object({
     .refine((data) => data !== null, {
       message: "Medical Date In is required",
     }),
+  medicalDateOut: z.date().nullable().optional(),
   medicalCost: z.coerce
     .number()
     .min(0, "Cost must be 0 or more")
@@ -82,12 +83,14 @@ export function InsertMedicalDialog({
   const onSubmit = async (data) => {
     try {
       let userName = User.owner_name ? User.owner_name : User.name;
-
+      console.log("Submitted data:", data);
       const response = await axios.post("/api/medical/insertMedicalData", {
         medical_status: medicalStatus,
         vaccin_status: vaccineStatus,
         medical_date_in: data.medicalDate.toLocaleDateString("en-CA"),
-        medical_date_out: data.medicalDateOut.toLocaleDateString("en-CA"),
+        medical_date_out: data.medicalDateOut
+          ? data.medicalDateOut.toLocaleDateString("en-CA")
+          : null,
         medical_cost: data.medicalCost,
         note: data.medicalNote,
         created_by: userName,

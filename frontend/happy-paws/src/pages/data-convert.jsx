@@ -344,15 +344,6 @@ export default function DataConvert() {
   }, []);
 
   useEffect(() => {
-    if (userData && userData.id_shelter) {
-      if (userType === "employee" || userType === "shelter") {
-      } else {
-        console.warn("Unauthorized user");
-      }
-    }
-  }, [userData]);
-
-  useEffect(() => {
     if (userData && userData.id_shelter && selectedDataType) {
       if (userType === "employee" || userType === "shelter") {
         if (selectedDataType === "medical") {

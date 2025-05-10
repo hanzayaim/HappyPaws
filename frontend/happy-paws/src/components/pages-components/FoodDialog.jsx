@@ -412,6 +412,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
                   className="w-full"
                   value={foodType}
                   onChange={handleFoodTypeChange}
+                  disabled={true}
                 />
                 {errors.foodType && (
                   <p className="text-destructive text-sm">

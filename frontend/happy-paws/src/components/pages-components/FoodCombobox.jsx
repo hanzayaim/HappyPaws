@@ -64,7 +64,7 @@ export function FoodCategoryCombobox({ value, onChange }) {
   );
 }
 
-export function FoodTypeCombobox({ value, onChange }) {
+export function FoodTypeCombobox({ value, onChange, disabled = false }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -76,6 +76,7 @@ export function FoodTypeCombobox({ value, onChange }) {
               variant="combobox"
               className="w-full justify-between text-left"
               onClick={() => setOpen(!open)}
+              disabled={disabled}
             >
               {value || "Select Type"}
               <ChevronDown />

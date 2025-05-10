@@ -66,6 +66,7 @@ export default function FinancePage() {
   const [Employees, setEmployees] = useState([]);
   const [Foods, setFoods] = useState([]);
   const [medicals, setMedicals] = useState([]);
+  const [animals, setAnimals] = useState([]);
   const [Equipments, setEquipments] = useState([]);
   const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -210,18 +211,33 @@ export default function FinancePage() {
   const fetchMedicalsData = async () => {
     try {
       const response = await axios.get(
-        `/api/food/getFoodData/${userData.id_shelter}`
+        `/api/medical/getMedicalData/${userData.id_shelter}`
       );
 
       const medicalsData = response.data;
-
+      console.log(medicalsData);
       if (medicalsData.error) {
-        throw new Error(medicalsData.message || "Failed to fetch foods");
+        throw new Error(medicalsData.message || "Failed to fetch Medical");
       }
 
       setMedicals(medicalsData.data || []);
     } catch (error) {
-      console.error("Error fetching food data", error);
+      console.error("Error fetching Medical data", error);
+    }
+  };
+  const fetchAnimalsData = async () => {
+    try {
+      const response = await axios.get(
+        `/api/animals/getAnimalData/${userData.id_shelter}`
+      );
+      const animalData = response.data;
+      console.log(animalData);
+      if (animalData.error) {
+        throw new Error(animalData.message || "Failed to fetch Animal");
+      }
+      setAnimals(animalData.data || []);
+    } catch (error) {
+      console.error("Error fetching Animal data", error);
     }
   };
   const fetchFoodsData = async () => {
@@ -331,6 +347,7 @@ export default function FinancePage() {
         fetchEquipmentsData();
         fetchFoodsData();
         fetchMedicalsData();
+        fetchAnimalsData();
       } else {
         setOpenAlertUser(true);
       }
@@ -673,10 +690,19 @@ export default function FinancePage() {
                   const medical = medicals.find(
                     (m) => m.id_medical === exp.id_medical
                   );
+                  const animal = animals.find(
+                    (a) => a.id_animal === medical.id_animal
+                  );
+                  {
+                    console.log(animals);
+                  }
+                  {
+                    console.log(medical);
+                  }
                   if (medical) {
-                    name = "MEDICAL";
+                    name = "Medical - " + animal.animal_name;
                     cost = medical.medical_cost ?? "-";
-                    type = medical.medical_status ?? "-";
+                    type = "Medical";
                     date = medical.medical_date_out
                       ? new Date(medical.medical_date_out).toLocaleDateString()
                       : "-";

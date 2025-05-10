@@ -315,6 +315,7 @@ export function EditEquipmentDialog({
                   className="w-full"
                   value={equipmentType}
                   onChange={handleEquipmentTypeChange}
+                  disabled={true}
                 />
                 {errors.equipmentType && (
                   <p className="text-destructive text-sm">
