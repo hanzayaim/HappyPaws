@@ -552,7 +552,9 @@ export default function InventoryPages() {
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-center">Expired Date</TableHead>
                 <TableHead className="text-center">Cost</TableHead>
-                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">
+                  Purchase / Donation Date
+                </TableHead>
                 <TableHead className="text-center">Note</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
@@ -707,7 +709,9 @@ export default function InventoryPages() {
                 <TableHead className="text-center">No.</TableHead>
                 <TableHead className="text-center">Name</TableHead>
                 <TableHead className="text-center">Type</TableHead>
-                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">
+                  Purchase / Donation Date
+                </TableHead>
                 <TableHead className="text-center">Cost</TableHead>
                 <TableHead className="text-center">Note</TableHead>
                 <TableHead className="text-center">Action</TableHead>
@@ -728,7 +732,7 @@ export default function InventoryPages() {
                   <TableCell className="text-center">
                     {new Date(equipment.date).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-left">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",

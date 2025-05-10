@@ -9,104 +9,91 @@ import {
 } from "@/components/ui/carousel";
 
 import AnimalCard from "../components/pages-components/animal-card";
-export const AnimalData = [
-  {
-    id_animal: "A001",
-    id_shelter: "S001",
-    id_adopter: null,
-    animal_name: "Luna",
-    animal_img:
-      "https://www.allianz.ie/blog/your-pet/choosing-a-pedigree-pet/_jcr_content/root/stage/stageimage.img.82.3360.jpeg/1727944382981/cute-happy-pup.jpeg", // dog
-    animal_gender: "Female",
-    animal_type: "Dog",
-    animal_age: 3,
-    animal_status: "Not Available",
-    rescue_location: "Jakarta Selatan",
-    date: "2024-12-10T10:00:00",
-    note: "Friendly and calm temperament",
-    created_at: "2024-12-10T10:10:00",
-    created_by: "admin001",
-    updated_at: "2025-01-01T08:00:00",
-    updated_by: "admin001",
-  },
-  {
-    id_animal: "A002",
-    id_shelter: "S002",
-    id_adopter: "AD123",
-    animal_name: "Max",
-    animal_img:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrjtNVIoesRaukkpGZ5ApIKj4iwk_NHzHTqQ&s", // cat
-    animal_gender: "Male",
-    animal_type: "Cat",
-    animal_age: 2,
-    animal_status: "Adopted",
-    rescue_location: "Bandung",
-    date: "2025-01-05T09:30:00",
-    note: "Playful and sociable",
-    created_at: "2025-01-05T09:40:00",
-    created_by: "admin002",
-    updated_at: "2025-01-20T10:00:00",
-    updated_by: "admin002",
-  },
-  {
-    id_animal: "A003",
-    id_shelter: "S001",
-    id_adopter: null,
-    animal_name: "Chiko",
-    animal_img:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXU-y5eqvxHM9Jn8Prs6YcL7oyLqTc0YYoBg&s",
-    animal_gender: "Male",
-    animal_type: "Rabbit",
-    animal_age: 1,
-    animal_status: "Available",
-    rescue_location: "Depok",
-    date: "2025-03-15T11:00:00",
-    note: "Loves to be held",
-    created_at: "2025-03-15T11:10:00",
-    created_by: "admin001",
-    updated_at: "2025-03-16T12:00:00",
-    updated_by: "admin001",
-  },
-  {
-    id_animal: "A004",
-    id_shelter: "S003",
-    id_adopter: null,
-    animal_name: "Molly",
-    animal_img:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH3JXXh0WgbF0UY8Tk499nwF8MMkyB9JWxmQ&s", // dog
-    animal_gender: "Female",
-    animal_type: "Dog",
-    animal_age: 5,
-    animal_status: "Available",
-    rescue_location: "Tangerang",
-    date: "2025-02-20T08:00:00",
-    note: "Needs daily walks",
-    created_at: "2025-02-20T08:10:00",
-    created_by: "admin003",
-    updated_at: "2025-03-01T09:00:00",
-    updated_by: "admin003",
-  },
-  {
-    id_animal: "A005",
-    id_shelter: "S002",
-    id_adopter: null,
-    animal_name: "Shadow",
-    animal_img:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0dI-pt8pKDIJS0_OGw0bzEh1nP4tnjzqKiA&s",
-    animal_gender: "Male",
-    animal_type: "Cat",
-    animal_age: 4,
-    animal_status: "Available",
-    rescue_location: "Bekasi",
-    date: "2025-04-01T14:00:00",
-    note: "Quiet and shy at first",
-    created_at: "2025-04-01T14:05:00",
-    created_by: "admin002",
-    updated_at: "2025-04-05T15:00:00",
-    updated_by: "admin002",
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { determineAnimalStatus } from "./animal-management";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 export default function Dashboard() {
+  const [userData, setUserData] = useState(null);
+  const [AnimalData, setAnimalData] = useState([]);
+  const currentUser = async () => {
+    try {
+      const storedUserType = localStorage.getItem("userType");
+      const storedUserData = localStorage.getItem("userData");
+
+      if (storedUserType && storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error("Error user data", error);
+    }
+  };
+  const fetchAnimalData = async () => {
+    try {
+      const [animalRes, medicalRes] = await Promise.allSettled([
+        axios.get(`/api/animals/getAnimalData/${userData.id_shelter}`),
+        axios.get(`/api/medical/getMedicalData/${userData.id_shelter}`),
+      ]);
+
+      if (animalRes.status !== "fulfilled") {
+        throw new Error("Failed to fetch animal data");
+      }
+
+      const animalDataFetch = animalRes.value.data;
+      const medicalDataFetch =
+        medicalRes.status === "fulfilled"
+          ? medicalRes.value.data
+          : { data: [] };
+
+      const enrichedAnimalData = (animalDataFetch.data || []).map((animal) => {
+        const medical = (medicalDataFetch.data || []).find(
+          (m) => m.id_animal === animal.id_animal
+        );
+
+        const animal_status = determineAnimalStatus(
+          medical?.medical_status,
+          medical?.vaccin_status,
+          animal.id_adopter
+        );
+
+        return {
+          ...animal,
+          animal_status,
+        };
+      });
+
+      setAnimalData(enrichedAnimalData);
+    } catch (error) {
+      console.error("Error fetching animal data:", error);
+    }
+  };
+
+  useEffect(() => {
+    currentUser();
+  }, []);
+  useEffect(() => {
+    if (userData) {
+      fetchAnimalData();
+    }
+  }, [userData]);
+
+  if (!userData) {
+    return (
+      <Card className="text-center w-auto h-auto gap-2 justify-center bg-primary/90 text-white">
+        <CardHeader>
+          <CardTitle className="text-xl">Loading...</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4 justify-center">
+          <div>Please wait</div>
+        </CardContent>
+      </Card>
+    );
+  }
   return (
     <Layout>
       <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">
@@ -115,7 +102,7 @@ export default function Dashboard() {
             Dashboard
           </Label>
           <Label className="lg:text-2xl md:text-xl text-lg">
-            Selamat Datang, user
+            Selamat Datang, {userData?.owner_name || userData?.name}
           </Label>
         </div>
         <div className="flex  mt-2 gap-3">
