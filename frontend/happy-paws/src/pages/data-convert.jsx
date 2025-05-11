@@ -31,6 +31,7 @@ import {
   MonthFilterSelect,
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
+import { useNavigate } from "react-router-dom";
 
 export default function DataConvert() {
   const itemsPerPage = 5;
@@ -55,18 +56,19 @@ export default function DataConvert() {
   const [selectedDataType, setSelectedDataType] = useState("");
   const [checkFetchedData, setCheckFetchedData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
-
+  const navigate = useNavigate();
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserType(response.data.userType);
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
 

@@ -5,11 +5,12 @@ import {
   AnimalEditDialog,
   DeleteAnimalDialog,
 } from "../components/pages-components/animalDialog";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../app/layout";
 import { determineAnimalStatus } from "./animal-management";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 
 export default function AnimalDetail() {
   const { id_animal } = useParams();
@@ -20,18 +21,20 @@ export default function AnimalDetail() {
   const [medicalData, setMedicalData] = useState([]);
   const [userData, setUserData] = useState(null);
   const [userType, setUserType] = useState(null);
-
+  const [openAlertUser, setOpenAlertUser] = useState(false);
+  const navigate = useNavigate();
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserType(response.data.userType);
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
 
@@ -111,6 +114,13 @@ export default function AnimalDetail() {
       <div className="flex-row min-h-svh bg-gray-100 w-full p-6 md:p-10">
         <div>
           <Label className="text-3xl font-bold">Animal Management</Label>
+          <AlertDialogUser
+            desc={
+              "This feature just can be access by Owner shelter or Administration Employee"
+            }
+            open={openAlertUser}
+            onOpenChange={setOpenAlertUser}
+          />
         </div>
         <div className="flex lg:justify-end md:justify-end sm:justify-center mt-2 gap-3">
           <Button

@@ -49,14 +49,15 @@ import {
   MonthFilterSelect,
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
-// import { useNavigate } from "react-router-dom";
 import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:3000";
 axios.defaults.baseURL = API_BASE_URL;
 export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;
+  const navigate = useNavigate();
   const [Incomes, setIncomes] = useState([]);
   const [Expenses, setExpenses] = useState([]);
   const [Salaries, setSalaries] = useState([]);
@@ -215,7 +216,6 @@ export default function FinancePage() {
       );
 
       const medicalsData = response.data;
-      console.log(medicalsData);
       if (medicalsData.error) {
         throw new Error(medicalsData.message || "Failed to fetch Medical");
       }
@@ -289,15 +289,16 @@ export default function FinancePage() {
   };
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserType(response.data.userType);
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
   const fetchFinanceData = async () => {
@@ -667,7 +668,7 @@ export default function FinancePage() {
                   if (food) {
                     name = food.name ?? "-";
                     cost = food.cost ?? "-";
-                    type = food.type ?? "-";
+                    type = food.category ?? "-";
                     date = food.date
                       ? new Date(food.date).toLocaleDateString()
                       : "-";
@@ -680,7 +681,7 @@ export default function FinancePage() {
                   if (equipment) {
                     name = equipment.name ?? "-";
                     cost = equipment.cost ?? "-";
-                    type = equipment.type ?? "-";
+                    type = "Equipment";
                     date = equipment.date
                       ? new Date(equipment.date).toLocaleDateString()
                       : "-";

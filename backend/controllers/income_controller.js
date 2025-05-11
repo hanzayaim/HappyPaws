@@ -3,12 +3,6 @@ const {
   deleteIncomeData,
   updateIncomeData,
 } = require("../models/income_models.js");
-// const {
-//   getFinance,
-//   increaseBalance,
-//   decreaseBalance,
-//   updateBalance,
-// } = require("../models/finance_models.js");
 const {
   updateTotalBalance,
   updateProfit,

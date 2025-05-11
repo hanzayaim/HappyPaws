@@ -1,6 +1,5 @@
 const pool = require("../config/db.js");
 
-// get data
 async function getShelterDataById(id_shelter) {
   try {
     const { rows } = await pool.query(
@@ -110,7 +109,6 @@ async function getShelterData() {
   }
 }
 
-// insert data
 async function insertShelterData(
   id_shelter,
   owner_name,

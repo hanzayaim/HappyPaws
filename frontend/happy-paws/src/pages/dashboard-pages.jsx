@@ -18,19 +18,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [AnimalData, setAnimalData] = useState([]);
+  const navigate = useNavigate();
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
   const fetchAnimalData = async () => {
