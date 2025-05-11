@@ -3,6 +3,7 @@ import {
   FolderSync,
   HeartHandshake,
   Landmark,
+  LayoutDashboard,
   LogOut,
   PawPrint,
   UserRoundCog,
@@ -64,6 +65,11 @@ export default function AppSidebar() {
 
   const getMenuItems = () => {
     const baseItems = [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: LayoutDashboard,
+      },
       {
         title: "User Management",
         url: getUserManagementUrl(),
