@@ -4,6 +4,7 @@ const {
   getFoodData,
   getFoodDataById,
   updateFoodData,
+  getFoodDataConvert,
 } = require("../models/food_models");
 const {
   insertFood,
@@ -43,6 +44,28 @@ router.get("/getFoodDataById/:id_shelter/:id_food", async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Failed to get data.",
+      data: null,
+    });
+  }
+});
+
+router.post("/getFoodDataConvert", async (req, res) => {
+  const { id_shelter, month, year } = req.body;
+  if (id_shelter == null) {
+    return res.status(400).send({
+      error: true,
+      message: "Please provide all required data.",
+    });
+  }
+
+  try {
+    const result = await getFoodDataConvert(id_shelter, month, year);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
       error: true,
       message: "Failed to get data.",

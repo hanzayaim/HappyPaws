@@ -84,7 +84,7 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
           quantity: data.foodQuantity,
           category: data.foodCategory,
           type: data.foodType,
-          exp_date: data.foodExpiredDate.toISOString().split("T")[0],
+          exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
           cost: data.foodCost,
           date: data.foodDate,
           note: data.foodNote,
@@ -317,7 +317,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
           quantity: data.foodQuantity,
           category: data.foodCategory,
           type: data.foodType,
-          exp_date: data.foodExpiredDate.toISOString().split("T")[0],
+          exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
           cost: data.foodType === "Donasi" ? 0 : data.foodCost,
           date: data.foodDate,
           note: data.foodNote,
@@ -412,6 +412,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
                   className="w-full"
                   value={foodType}
                   onChange={handleFoodTypeChange}
+                  disabled={true}
                 />
                 {errors.foodType && (
                   <p className="text-destructive text-sm">

@@ -22,12 +22,10 @@ const getProfit = async (id_shelter) => {
         totalProfit += item.amount;
       });
     }
-
-    // If you want to return the result from the backend structure, use this:
     return {
       error: false,
       message: "Success",
-      result: totalProfit, // This is the calculated profit value
+      result: totalProfit,
     };
   } catch (error) {
     return {
@@ -58,12 +56,10 @@ const getLoss = async (id_shelter) => {
     (salaryData?.data || []).forEach((item) => {
       totalLoss += item.cost;
     });
-
-    // Return the total loss as the result
     return {
       error: false,
       message: "Success",
-      result: totalLoss, // This is the calculated loss value
+      result: totalLoss,
     };
   } catch (error) {
     return {
@@ -96,20 +92,14 @@ const updateTotalBalance = async (id_shelter) => {
   try {
     const finance = await getFinance(id_shelter);
 
-    // Get total profit, use result from the returned object
     const profitResponse = await getProfit(id_shelter);
-    let totalProfit = profitResponse.result || 0; // Extract the result
+    let totalProfit = profitResponse.result || 0;
 
-    // Get total loss, use result from the returned object
     const lossResponse = await getLoss(id_shelter);
-    let totalLoss = lossResponse.result || 0; // Extract the result
+    let totalLoss = lossResponse.result || 0;
 
-    // Calculate balance (can be negative)
     const newBalance = totalProfit - totalLoss;
 
-    console.log("New Balance:", newBalance);
-
-    // Update balance in database or elsewhere
     const result = await updateBalance(
       newBalance,
       finance.data[0].id_finance,

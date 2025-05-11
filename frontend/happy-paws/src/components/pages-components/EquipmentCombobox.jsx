@@ -10,7 +10,11 @@ const types = [
   { value: "Donasi", label: "Donasi" },
 ];
 
-export default function EquipmentTypeCombobox({ value, onChange }) {
+export default function EquipmentTypeCombobox({
+  value,
+  onChange,
+  disabled = false,
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -22,6 +26,7 @@ export default function EquipmentTypeCombobox({ value, onChange }) {
               variant="combobox"
               className="w-full justify-between text-left"
               onClick={() => setOpen(!open)}
+              disabled={disabled}
             >
               {value || "Select Type"}
               <ChevronDown />

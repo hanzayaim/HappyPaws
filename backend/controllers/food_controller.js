@@ -111,7 +111,27 @@ const updateFood = async (
       id_shelter,
       id_food
     );
-
+    if (cost != 0) {
+      const result2 = await insertExpenses(
+        id_shelter,
+        id_food,
+        (id_medical = null),
+        (id_equipment = null),
+        (id_salary = null),
+        created_by
+      );
+      return {
+        error: false,
+        message: "Food data created successfully",
+        data: { result1, result2 },
+      };
+    } else {
+      return {
+        error: false,
+        message: "Food data created successfully",
+        data: result1,
+      };
+    }
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {

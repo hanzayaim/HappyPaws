@@ -63,7 +63,7 @@ export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
 
       if (data.AdopterProfile_img && data.AdopterProfile_img[0]) {
         const file = data.AdopterProfile_img[0];
-        profileImgBase64 = await convertFileToBase64(file); // helper function below
+        profileImgBase64 = await convertFileToBase64(file);
       }
       const response = await axios.post(
         "http://localhost:3000/api/adopters/insertAdopterData",

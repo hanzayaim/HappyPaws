@@ -1,6 +1,5 @@
 const pool = require("../config/db");
 
-// get data
 async function getAnimalDataById(id_shelter, id_animal) {
   try {
     const { rows } = await pool.query(
@@ -96,7 +95,6 @@ async function getAnimalDataConvert(id_shelter, month, year) {
   }
 }
 
-// insert data
 async function insertAnimalData(
   id_shelter,
   id_animal,
@@ -152,10 +150,15 @@ async function updateAnimalData(
   id_animal
 ) {
   try {
-    const cleanBase64String = animal_img.replace(
-      /^data:image\/[a-zA-Z]+;base64,/,
-      ""
-    );
+    let cleanBase64String = null;
+    if (animal_img === null || animal_img === undefined || animal_img === "") {
+      animal_img = null;
+    } else {
+      cleanBase64String = animal_img.replace(
+        /^data:image\/[a-zA-Z]+;base64,/,
+        ""
+      );
+    }
     const profileImgBuffer = cleanBase64String
       ? Buffer.from(cleanBase64String, "base64")
       : null;

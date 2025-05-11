@@ -1,6 +1,5 @@
 const pool = require("../config/db.js");
 
-// get data
 async function getEmployeeDataById(id_shelter, id_employee) {
   try {
     const { rows } = await pool.query(
@@ -114,7 +113,6 @@ async function getEmployeeData(id_shelter) {
   }
 }
 
-// insert data
 async function insertEmployeeData(
   id_shelter,
   id_employee,

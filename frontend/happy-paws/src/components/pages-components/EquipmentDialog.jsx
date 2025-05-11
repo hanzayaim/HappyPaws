@@ -68,7 +68,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
         {
           name: data.equipmentName,
           type: data.equipmentType,
-          date: data.equipmentDate.toISOString().split("T")[0],
+          date: data.equipmentDate.toLocaleDateString("en-CA"),
           cost: data.equipmentCost,
           note: data.equipmentNote,
           created_by: User.owner_name ? User.owner_name : User.name,
@@ -251,7 +251,7 @@ export function EditEquipmentDialog({
         {
           name: data.equipmentName,
           type: data.equipmentType,
-          date: data.equipmentDate.toISOString().split("T")[0],
+          date: data.equipmentDate.toLocaleDateString("en-CA"),
           cost: data.equipmentType === "Donasi" ? 0 : data.equipmentCost,
           note: data.equipmentNote,
           updated_by: User.owner_name ? User.owner_name : User.name,
@@ -315,6 +315,7 @@ export function EditEquipmentDialog({
                   className="w-full"
                   value={equipmentType}
                   onChange={handleEquipmentTypeChange}
+                  disabled={true}
                 />
                 {errors.equipmentType && (
                   <p className="text-destructive text-sm">

@@ -3,12 +3,6 @@ const {
   deleteIncomeData,
   updateIncomeData,
 } = require("../models/income_models.js");
-// const {
-//   getFinance,
-//   increaseBalance,
-//   decreaseBalance,
-//   updateBalance,
-// } = require("../models/finance_models.js");
 const {
   updateTotalBalance,
   updateProfit,
@@ -36,7 +30,6 @@ const insertIncome = async (
       note,
       created_by
     );
-    // update total balance
     await updateTotalBalance(id_shelter);
     return {
       error: false,

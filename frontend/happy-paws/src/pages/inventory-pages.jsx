@@ -42,202 +42,14 @@ import {
   MonthFilterSelect,
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
+import { useNavigate } from "react-router-dom";
 
-// const foods = [
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e761",
-//     name: "Whiskas1",
-//     quantity: 20,
-//     category: "Dry Food",
-//     type: "Donation",
-//     exp_date: "2025-04-15T00:00:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e772",
-//     name: "Whiskas2",
-//     quantity: 20,
-//     category: "Wet Food",
-//     type: "Purchase",
-//     exp_date: "2025-04-10T07:30:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e773",
-//     name: "Whiskas3",
-//     quantity: 20,
-//     category: "Dry Food",
-//     type: "Donation",
-//     exp_date: "2025-04-10T07:30:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e774",
-//     name: "Whiskas4",
-//     quantity: 20,
-//     category: "Wet Food",
-//     type: "Purchase",
-//     exp_date: "2025-04-10T07:30:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e775",
-//     name: "Whiskas5",
-//     quantity: 20,
-//     category: "Dry Food",
-//     type: "Donation",
-//     exp_date: "2025-04-10T07:30:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_food: "FOOD-1c4a8f21-a18d-486e-8988-3f229de51e776",
-//     name: "Whiskas6",
-//     quantity: 20,
-//     category: "Wet Food",
-//     type: "Purchase",
-//     exp_date: "2025-04-10T07:30:00.000Z",
-//     cost: 150000,
-//     date: "2025-04-10T07:30:00.000Z",
-//     note: "Dikasih orang",
-//     created_at: "2025-04-22T07:37:09.232Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-22T07:37:09.232Z",
-//     updated_by: "Bima",
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-// ];
-
-// const equipments = [
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03861",
-//     name: "Pagar1",
-//     type: "Purchase",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03862",
-//     name: "Pagar2",
-//     type: "Donation",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03863",
-//     name: "Pagar3",
-//     type: "Purchase",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03864",
-//     name: "Pagar4",
-//     type: "Donation",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03865",
-//     name: "Pagar5",
-//     type: "Purchase",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-//   {
-//     id_equipment: "EQUIPMENT-77091e2d-3d4a-4f4b-ba16-0dbcbf3d03866",
-//     name: "Pagar6",
-//     type: "Donation",
-//     date: "2025-04-10T07:30:00.000Z",
-//     cost: 50000,
-//     note: "Beli untuk kandang baru",
-//     created_at: "2025-04-24T07:16:33.591Z",
-//     created_by: "Bima",
-//     updated_at: "2025-04-24T07:16:33.591Z",
-//     updated_by: null,
-//     id_shelter: "SHELTER-7aeb025a-bdfb-4ec7-a0c1-79065df2f6f8",
-//   },
-// ];
-
-// const user = {
-//   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-//   owner_name: "Dimas",
-//   email: "shelter001@gmail.com",
-//   shelter_name: "Happy Paws Shelter",
-//   role: "Owner",
-//   phone_number: "081238697341",
-//   address: "jln jalan",
-// };
 export default function InventoryPages() {
   const itemsPerPage = 5;
   const [foods, setFoods] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const [userData, setUserData] = useState(null);
-
+  const navigate = useNavigate();
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
 
@@ -369,14 +181,15 @@ export default function InventoryPages() {
   };
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
 
@@ -552,7 +365,9 @@ export default function InventoryPages() {
                 <TableHead className="text-center">Type</TableHead>
                 <TableHead className="text-center">Expired Date</TableHead>
                 <TableHead className="text-center">Cost</TableHead>
-                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">
+                  Purchase / Donation Date
+                </TableHead>
                 <TableHead className="text-center">Note</TableHead>
                 <TableHead className="text-center">Action</TableHead>
               </TableRow>
@@ -707,7 +522,9 @@ export default function InventoryPages() {
                 <TableHead className="text-center">No.</TableHead>
                 <TableHead className="text-center">Name</TableHead>
                 <TableHead className="text-center">Type</TableHead>
-                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">
+                  Purchase / Donation Date
+                </TableHead>
                 <TableHead className="text-center">Cost</TableHead>
                 <TableHead className="text-center">Note</TableHead>
                 <TableHead className="text-center">Action</TableHead>
@@ -728,7 +545,7 @@ export default function InventoryPages() {
                   <TableCell className="text-center">
                     {new Date(equipment.date).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-left">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",

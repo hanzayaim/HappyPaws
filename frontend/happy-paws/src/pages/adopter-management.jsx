@@ -28,19 +28,10 @@ import { Input } from "../components/ui/input";
 
 import axios from "axios";
 import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
-
-// const user = {
-//   id_shelter: "SHELTER-79618107-fc06-4adf-bb8a-0e08c95a7f1f",
-//   owner_name: "Dimas",
-//   email: "shelter001@gmail.com",
-//   shelter_name: "Happy Paws Shelter",
-//   phone_number: "081238697341",
-//   role: "Owner",
-//   address: "jln jalan",
-// };
+import { useNavigate } from "react-router-dom";
 export default function AdopterManagement() {
   const itemsPerPage = 5;
-
+  const navigate = useNavigate();
   const [adopter, setAdopter] = useState([]);
   const [animals, setAnimals] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -98,15 +89,16 @@ export default function AdopterManagement() {
   };
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserType(response.data.userType);
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
   useEffect(() => {

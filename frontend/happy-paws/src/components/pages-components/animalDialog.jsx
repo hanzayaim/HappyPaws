@@ -83,7 +83,7 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
         animal_type: data.animalType,
         animal_age: data.animalAge,
         rescue_location: data.animalRescueLoc,
-        date: data.animalDate.toISOString().split("T")[0],
+        date: data.animalDate.toLocaleDateString("en-CA"),
         note: data.animalNote,
         created_by: userName,
       });
@@ -484,19 +484,19 @@ export function AnimalEditDialog({
       let profileImgBase64 = null;
       let userName = User.owner_name ? User.owner_name : User.name;
 
-      if (data.animalImg && data.animalImg[0]) {
+      if (data.animalImg && data.animalImg[0] instanceof File) {
         const file = data.animalImg[0];
         profileImgBase64 = await convertFileToBase64(file);
       }
 
       const response = await axios.post("/api/animals/updateAnimalData", {
         animal_name: data.animalName,
-        animal_img: profileImgBase64,
+        animal_img: profileImgBase64 ?? data.animalImg,
         animal_gender: data.animalGender,
         animal_type: data.animalType,
         animal_age: data.animalAge,
         rescue_location: data.animalRescueLoc,
-        date: data.animalDate.toISOString().split("T")[0],
+        date: data.animalDate.toLocaleDateString("en-CA"),
         note: data.animalNote,
         updated_by: userName,
         id_shelter: User.id_shelter,

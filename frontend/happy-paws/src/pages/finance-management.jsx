@@ -49,14 +49,15 @@ import {
   MonthFilterSelect,
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
-// import { useNavigate } from "react-router-dom";
 import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:3000";
 axios.defaults.baseURL = API_BASE_URL;
 export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;
+  const navigate = useNavigate();
   const [Incomes, setIncomes] = useState([]);
   const [Expenses, setExpenses] = useState([]);
   const [Salaries, setSalaries] = useState([]);
@@ -66,6 +67,7 @@ export default function FinancePage() {
   const [Employees, setEmployees] = useState([]);
   const [Foods, setFoods] = useState([]);
   const [medicals, setMedicals] = useState([]);
+  const [animals, setAnimals] = useState([]);
   const [Equipments, setEquipments] = useState([]);
   const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -210,18 +212,32 @@ export default function FinancePage() {
   const fetchMedicalsData = async () => {
     try {
       const response = await axios.get(
-        `/api/food/getFoodData/${userData.id_shelter}`
+        `/api/medical/getMedicalData/${userData.id_shelter}`
       );
 
       const medicalsData = response.data;
-
       if (medicalsData.error) {
-        throw new Error(medicalsData.message || "Failed to fetch foods");
+        throw new Error(medicalsData.message || "Failed to fetch Medical");
       }
 
       setMedicals(medicalsData.data || []);
     } catch (error) {
-      console.error("Error fetching food data", error);
+      console.error("Error fetching Medical data", error);
+    }
+  };
+  const fetchAnimalsData = async () => {
+    try {
+      const response = await axios.get(
+        `/api/animals/getAnimalData/${userData.id_shelter}`
+      );
+      const animalData = response.data;
+      console.log(animalData);
+      if (animalData.error) {
+        throw new Error(animalData.message || "Failed to fetch Animal");
+      }
+      setAnimals(animalData.data || []);
+    } catch (error) {
+      console.error("Error fetching Animal data", error);
     }
   };
   const fetchFoodsData = async () => {
@@ -273,15 +289,16 @@ export default function FinancePage() {
   };
   const currentUser = async () => {
     try {
-      const storedUserType = localStorage.getItem("userType");
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserType && storedUserData) {
-        setUserType(storedUserType);
-        setUserData(JSON.parse(storedUserData));
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+      });
+      if (response) {
+        setUserType(response.data.userType);
+        setUserData(response.data.profile);
       }
     } catch (error) {
       console.error("Error user data", error);
+      navigate("/login");
     }
   };
   const fetchFinanceData = async () => {
@@ -331,6 +348,7 @@ export default function FinancePage() {
         fetchEquipmentsData();
         fetchFoodsData();
         fetchMedicalsData();
+        fetchAnimalsData();
       } else {
         setOpenAlertUser(true);
       }
@@ -650,7 +668,7 @@ export default function FinancePage() {
                   if (food) {
                     name = food.name ?? "-";
                     cost = food.cost ?? "-";
-                    type = food.type ?? "-";
+                    type = food.category ?? "-";
                     date = food.date
                       ? new Date(food.date).toLocaleDateString()
                       : "-";
@@ -663,7 +681,7 @@ export default function FinancePage() {
                   if (equipment) {
                     name = equipment.name ?? "-";
                     cost = equipment.cost ?? "-";
-                    type = equipment.type ?? "-";
+                    type = "Equipment";
                     date = equipment.date
                       ? new Date(equipment.date).toLocaleDateString()
                       : "-";
@@ -673,10 +691,19 @@ export default function FinancePage() {
                   const medical = medicals.find(
                     (m) => m.id_medical === exp.id_medical
                   );
+                  const animal = animals.find(
+                    (a) => a.id_animal === medical.id_animal
+                  );
+                  {
+                    console.log(animals);
+                  }
+                  {
+                    console.log(medical);
+                  }
                   if (medical) {
-                    name = "MEDICAL";
+                    name = "Medical - " + animal.animal_name;
                     cost = medical.medical_cost ?? "-";
-                    type = medical.medical_status ?? "-";
+                    type = "Medical";
                     date = medical.medical_date_out
                       ? new Date(medical.medical_date_out).toLocaleDateString()
                       : "-";
