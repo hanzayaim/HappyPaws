@@ -160,7 +160,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Cost</Label>
+                <Label>Total Cost</Label>
                 <Input
                   disabled={equipmentType === "Donasi"}
                   type="number"
@@ -324,7 +324,7 @@ export function EditEquipmentDialog({
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Cost</Label>
+                <Label>Total Cost</Label>
                 <Input
                   disabled={equipmentType === "Donasi"}
                   type="number"

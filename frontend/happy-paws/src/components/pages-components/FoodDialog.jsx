@@ -207,7 +207,7 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Cost</Label>
+                <Label>Total Cost</Label>
                 <Input
                   disabled={foodType === "Donasi"}
                   type="number"
@@ -436,7 +436,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Cost</Label>
+                <Label>Total Cost</Label>
                 <Input
                   disabled={foodType === "Donasi"}
                   type="number"
