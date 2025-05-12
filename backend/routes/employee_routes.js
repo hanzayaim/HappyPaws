@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const pool = require("../config/db.js");
+const bcrypt = require("bcrypt");
+
 const {
   getEmployeeDataById,
   getEmployeeData,
@@ -219,6 +222,32 @@ router.post("/deleteEmployeeData", async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: true, message: "failed to delete data" });
+  }
+});
+
+router.post("/updatePassword", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const { rows } = await pool.query(
+      "UPDATE employee_shelter SET password = $1 WHERE email = $2 RETURNING *",
+      [hashedPassword, email]
+    );
+
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ error: true, message: "Employee not found" });
+    }
+
+    res.status(200).json({
+      error: false,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: true, message: "Failed to update password" });
   }
 });
 

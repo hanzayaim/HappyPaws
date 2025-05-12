@@ -13,6 +13,26 @@ const createTransporter = () => {
   });
 };
 
+const createEmailTemplate = (
+  greeting,
+  message,
+  callToAction = "",
+  footer = ""
+) => {
+  return `
+Dear User,
+
+${greeting}
+
+${message}
+
+${callToAction ? `${callToAction}\n\n` : ""}Thank you for choosing HappyPaws!
+${footer ? `${footer}\n\n` : ""}
+Best regards,
+The HappyPaws Team
+`;
+};
+
 const sendEmail = async (to, subject, text) => {
   const transporter = createTransporter();
 
@@ -26,77 +46,95 @@ const sendEmail = async (to, subject, text) => {
   return transporter.sendMail(mailOptions);
 };
 
-const sendApprovalEmail = async (email) => {
-  return sendEmail(
-    email,
-    "HappyPaws Shelter Approval",
-    `Your shelter registration has been approved! You can now log in to your account.
-
-- The HappyPaws Team`
-  );
-};
-
-const sendRejectionEmail = async (email) => {
-  return sendEmail(
-    email,
-    "HappyPaws Shelter Registration Status",
-    `We regret to inform you that your shelter registration has been rejected.
-    
-If you have any questions, please contact our support team.
-
-- The HappyPaws Team`
-  );
-};
-
-const sendActivationEmail = async (email) => {
-  return sendEmail(
-    email,
-    "HappyPaws Shelter Account Activated",
-    `Good news! Your shelter account has been activated. You can now log in and access all features.
-
-- The HappyPaws Team`
-  );
-};
-
-const sendDeactivationEmail = async (email) => {
-  return sendEmail(
-    email,
-    "HappyPaws Shelter Account Deactivated",
-    `Your shelter account has been deactivated. 
-    
-If you have any questions, please contact our support team.
-
-- The HappyPaws Team`
-  );
-};
-
 const sendShelterRegistrationEmail = async (email) => {
-  return sendEmail(
-    email,
-    "HappyPaws Account Registration Received",
-    `Thank you for registering with HappyPaws!
-
-Your account registration has been received and is currently under review by our admin team. You will receive a confirmation email once your account has been approved.
-
-Thank you for your patience!
-- The HappyPaws Team`
+  const body = createEmailTemplate(
+    "Thank you for registering with HappyPaws!",
+    "Your account registration has been received and is currently under review by our admin team. You will receive a confirmation email once your account has been approved.",
+    "We appreciate your patience during this process."
   );
+
+  return sendEmail(email, "HappyPaws Account Registration Received", body);
 };
 
 const sendEmployeeRegistrationEmail = async (email) => {
+  const body = createEmailTemplate(
+    "Important Notice:",
+    "A new employee account has been successfully registered and is awaiting approval.",
+    "Please visit the User Management menu to review and approve the account."
+  );
+
   return sendEmail(
     email,
     "New Employee Approval Confirmation - HappyPaws Account",
-    `A new employee account has been successfully registered and is awaiting approval. Please visit the User Management menu to review and approve the account.
-
-Thank you for your attention.
-- The HappyPaws Team`
+    body
   );
+};
+
+const sendResetLinkEmail = async (email, resetLink) => {
+  const body = createEmailTemplate(
+    "You have requested to reset your HappyPaws account password.",
+    `Please click on the following link to reset your password:\n${resetLink}`,
+    "If you did not request this password reset, please ignore this email or contact support if you have concerns."
+  );
+
+  return sendEmail(email, "HappyPaws Reset Password Request", body);
+};
+
+const sendSuccessResetPassword = async (email) => {
+  const body = createEmailTemplate(
+    "Your password has been successfully reset!",
+    "You can now log in to your account with your new password.",
+    "If you did not make this change, please contact our support team immediately."
+  );
+
+  return sendEmail(email, "HappyPaws Password Reset Successful", body);
+};
+
+const sendApprovalEmail = async (email) => {
+  const body = createEmailTemplate(
+    "Great news!",
+    "Your shelter registration has been approved!",
+    "You can now log in to your account and start using our platform."
+  );
+
+  return sendEmail(email, "HappyPaws Shelter Approval", body);
+};
+
+const sendRejectionEmail = async (email) => {
+  const body = createEmailTemplate(
+    "We have reviewed your application.",
+    "We regret to inform you that your shelter registration has been rejected.",
+    "If you have any questions or would like to know more about our requirements, please contact our support team."
+  );
+
+  return sendEmail(email, "HappyPaws Shelter Rejection", body);
+};
+
+const sendActivationEmail = async (email) => {
+  const body = createEmailTemplate(
+    "Good news!",
+    "Your shelter account has been activated.",
+    "You can now log in and access all features of our platform."
+  );
+
+  return sendEmail(email, "HappyPaws Shelter Account Activated", body);
+};
+
+const sendDeactivationEmail = async (email) => {
+  const body = createEmailTemplate(
+    "Account Status Update:",
+    "Your shelter account has been deactivated.",
+    "If you have any questions or believe this was done in error, please contact our support team."
+  );
+
+  return sendEmail(email, "HappyPaws Shelter Account Deactivated", body);
 };
 
 module.exports = {
   sendShelterRegistrationEmail,
   sendEmployeeRegistrationEmail,
+  sendResetLinkEmail,
+  sendSuccessResetPassword,
   sendApprovalEmail,
   sendRejectionEmail,
   sendActivationEmail,
