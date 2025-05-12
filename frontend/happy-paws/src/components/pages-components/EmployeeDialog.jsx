@@ -140,7 +140,12 @@ export function RejectEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
   );
 }
 
-export function ActivateEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
+export function ActivateEmployeeDialog({
+  open,
+  onOpenChange,
+  user,
+  onConfirm,
+}) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {

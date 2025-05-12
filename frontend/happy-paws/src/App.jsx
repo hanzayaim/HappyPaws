@@ -55,7 +55,7 @@ function App() {
         <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/finance-management" element={<FinancePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/forgot-password-link" element={<ForgotPasswordLink />} />
+        <Route path="/forgot-password-link/:email" element={<ForgotPasswordLink />} />
         <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
