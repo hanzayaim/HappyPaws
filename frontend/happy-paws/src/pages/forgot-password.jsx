@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import crypto from "crypto-js";
+import axios from "axios";
 
 const SECRET_KEY = "H4ppYP4W5S3ss1OnS3Cr3t2025";
 const EXPIRY_TIME = 15 * 60 * 1000;
@@ -52,19 +53,10 @@ export default function ForgotPassword() {
     try {
       const resetLink = generateResetLink(data.email);
 
-      const response = await fetch(
-        "http://localhost:3000/api/email/email_reset_password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: data.email,
-            resetLink: resetLink,
-          }),
-        }
-      );
+      const response = await axios.post("/api/email/email_reset_password", {
+        email: data.email,
+        resetLink: resetLink,
+      });
 
       const result = await response.json();
 

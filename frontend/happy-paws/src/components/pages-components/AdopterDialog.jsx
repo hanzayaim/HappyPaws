@@ -66,7 +66,7 @@ export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
         profileImgBase64 = await convertFileToBase64(file);
       }
       const response = await axios.post(
-        "http://localhost:3000/api/adopters/insertAdopterData",
+        "/api/adopters/insertAdopterData",
         {
           id_shelter: User.id_shelter,
           adopter_name: data.AdopterName,
@@ -276,7 +276,7 @@ export function EditAdopterDialog({
         profileImgBase64 = await convertFileToBase64(file);
       }
       const response = await axios.post(
-        "http://localhost:3000/api/adopters/updateAdopterData",
+        "/api/adopters/updateAdopterData",
         {
           adopter_name: data.AdopterName,
           profile_img: profileImgBase64 ?? AdopterData.profile_img,
@@ -446,7 +446,7 @@ export function DeleteAdopterDialog({
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/adopters/DeleteAdopterData",
+        "/api/adopters/DeleteAdopterData",
         {
           id_shelter: AdopterData.id_shelter,
           id_adopter: AdopterData.id_adopter,

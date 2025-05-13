@@ -49,7 +49,7 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/income/insertIncomeData",
+        "/api/income/insertIncomeData",
         {
           id_shelter: User.id_shelter,
           name: data.incomeName,
@@ -219,7 +219,7 @@ export function EditIncomeDialog({
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/income/updateIncomeData",
+        "/api/income/updateIncomeData",
         {
           id_income: incomeData.id_income,
           id_shelter: User.id_shelter,
@@ -344,7 +344,7 @@ export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/income/deleteIncomeData",
+        "/api/income/deleteIncomeData",
         {
           id_shelter: income.id_shelter,
           id_income: income.id_income,
