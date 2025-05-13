@@ -27,11 +27,12 @@ import {
 import { Trash, ToggleRight, ToggleLeft, Check, X } from "lucide-react";
 import Layout from "../app/layout";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 axios.defaults.withCredentials = true;
 
 export default function EmployeeManagementPages() {
   const itemsPerPage = 50;
-
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,6 +64,8 @@ export default function EmployeeManagementPages() {
       } catch (error) {
         console.error("Error fetching user session:", error);
         setError("Failed to authenticate. Please log in again.");
+
+        navigate("/login");
       }
     };
 
