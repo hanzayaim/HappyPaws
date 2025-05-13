@@ -64,7 +64,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/equipment/insertEquipmentData",
+        "/api/equipment/insertEquipmentData",
         {
           name: data.equipmentName,
           type: data.equipmentType,
@@ -247,7 +247,7 @@ export function EditEquipmentDialog({
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/equipment/updateEquipmentData",
+        "/api/equipment/updateEquipmentData",
         {
           name: data.equipmentName,
           type: data.equipmentType,
@@ -391,7 +391,7 @@ export function DeleteEquipmentDialog({
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/equipment/deleteEquipmentData/",
+        "/api/equipment/deleteEquipmentData/",
         {
           id_shelter: equipment.id_shelter,
           id_equipment: equipment.id_equipment,

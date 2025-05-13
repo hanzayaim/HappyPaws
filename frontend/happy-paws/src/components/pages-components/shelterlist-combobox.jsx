@@ -20,7 +20,7 @@ export default function ShelterCombobox({ value, onChange }) {
   const fetchSheltersData = async () => {
     try {
       const shelterRes = await axios.get(
-        `http://localhost:3000/api/shelters/getShelterData`
+        `/api/shelters/getShelterData`
       );
 
       const rawData = shelterRes.data;
