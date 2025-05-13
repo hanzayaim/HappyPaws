@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Card,
@@ -13,9 +13,10 @@ import logo from "../assets/logo-hp.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import crypto from "crypto-js";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = "http://localhost:3000";
+const SECRET_KEY = "H4ppYP4W5S3ss1OnS3Cr3t2025";
 
 const forgotPasswordLinkSchema = z
   .object({
@@ -28,12 +29,14 @@ const forgotPasswordLinkSchema = z
   });
 
 export default function ForgotPasswordLink() {
-  const { email } = useParams();
+  const { email, expiry, signature } = useParams();
   const decodedEmail = decodeURIComponent(email);
+  const decodedSignature = decodeURIComponent(signature);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
-  const [emailValid, setEmailValid] = useState(true);
+  const [linkValid, setLinkValid] = useState(false);
+  const [linkChecked, setLinkChecked] = useState(false);
 
   const {
     register,
@@ -43,7 +46,52 @@ export default function ForgotPasswordLink() {
     resolver: zodResolver(forgotPasswordLinkSchema),
   });
 
+  useEffect(() => {
+    validateResetLink();
+  }, []);
+
+  const validateResetLink = () => {
+    try {
+      if (!email || !expiry || !signature) {
+        setLinkValid(false);
+        setLinkChecked(true);
+        return;
+      }
+
+      const expiryTime = parseInt(expiry);
+      if (isNaN(expiryTime) || Date.now() > expiryTime) {
+        setLinkValid(false);
+        setLinkChecked(true);
+        return;
+      }
+
+      const dataToSign = `${decodedEmail}:${expiry}`;
+      const expectedSignature = crypto
+        .HmacSHA256(dataToSign, SECRET_KEY)
+        .toString();
+
+      if (decodedSignature === expectedSignature) {
+        setLinkValid(true);
+      } else {
+        setLinkValid(false);
+      }
+    } catch (error) {
+      console.error("Error validating reset link:", error);
+      setLinkValid(false);
+    }
+
+    setLinkChecked(true);
+  };
+
   const onSubmit = async (data) => {
+    if (!linkValid) {
+      setSubmitStatus({
+        type: "error",
+        message: "Invalid or expired password reset link",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
 
@@ -120,13 +168,12 @@ export default function ForgotPasswordLink() {
             );
           }
         } else {
-          setEmailValid(false);
           throw new Error("Email not found in any account");
         }
       }
 
       const emailResponse = await fetch(
-        "/api/emails/email_reset_password_success",
+        `${API_BASE_URL}/api/emails/email_reset_password_success`,
         {
           method: "POST",
           headers: {
@@ -183,7 +230,9 @@ export default function ForgotPasswordLink() {
                 </Alert>
               )}
 
-              {emailValid ? (
+              {!linkChecked ? (
+                <div className="text-center py-4">Validating reset link...</div>
+              ) : linkValid ? (
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="flex flex-col gap-2">
                     <div className="grid gap-2">
@@ -227,7 +276,8 @@ export default function ForgotPasswordLink() {
               ) : (
                 <Alert className="mb-4 bg-red-50 text-red-700 border-red-200">
                   <AlertDescription>
-                    Invalid password reset link. Please request a new one.
+                    Invalid or expired password reset link. Please request a new
+                    one.
                   </AlertDescription>
                 </Alert>
               )}
