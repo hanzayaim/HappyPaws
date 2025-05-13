@@ -13,6 +13,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
+import crypto from "crypto-js";
+
+const SECRET_KEY = "H4ppYP4W5S3ss1OnS3Cr3t2025";
+const EXPIRY_TIME = 15 * 60 * 1000;
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -30,14 +34,23 @@ export default function ForgotPassword() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  const generateResetLink = (email) => {
+    const timestamp = Date.now();
+    const expiry = timestamp + EXPIRY_TIME;
+    const dataToSign = `${email}:${expiry}`;
+    const signature = crypto.HmacSHA256(dataToSign, SECRET_KEY).toString();
+
+    return `http://localhost:5173/forgot-password-link/${encodeURIComponent(
+      email
+    )}/${expiry}/${encodeURIComponent(signature)}`;
+  };
+
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
 
     try {
-      const resetLink = `http://localhost:5173/forgot-password-link/${encodeURIComponent(
-        data.email
-      )}`;
+      const resetLink = generateResetLink(data.email);
 
       const response = await fetch(
         "http://localhost:3000/api/email/email_reset_password",
