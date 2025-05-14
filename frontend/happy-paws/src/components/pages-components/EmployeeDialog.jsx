@@ -52,7 +52,7 @@ export function ApproveEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/shelters/updateShelterStatus", {
+      const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
         status: "Active",
         email: user.email,
@@ -98,7 +98,7 @@ export function RejectEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/shelters/updateShelterStatus", {
+      const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
         status: "Inactive",
         email: user.email,
@@ -149,7 +149,7 @@ export function ActivateEmployeeDialog({
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/shelters/updateShelterStatus", {
+      const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
         status: "Active",
         email: user.email,
@@ -200,7 +200,7 @@ export function DeactivateEmployeeDialog({
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/shelters/updateShelterStatus", {
+      const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
         status: "Inactive",
         email: user.email,
