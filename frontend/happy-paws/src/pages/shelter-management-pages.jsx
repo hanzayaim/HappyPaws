@@ -73,21 +73,28 @@ export default function ShelterManagementPages() {
 
       try {
         setLoading(true);
+        setError(null);
 
         if (userSession.userType === "superuser") {
           const response = await axios.get("/api/shelters/getShelterData");
+          
           if (!response.data.error) {
-            const sortedData = sortSheltersByStatus(response.data.data || []);
+            const shelterData = response.data.data || [];
+            const sortedData = sortSheltersByStatus(shelterData);
             setUsers(sortedData);
+            
+            if (shelterData.length === 0) {
+              console.log("No shelter data available");
+            }
           } else {
-            setError(response.data.message);
+            setError(response.data.message || "Failed to fetch shelter data");
           }
         } else {
           setError("Access level not supported for this view");
         }
       } catch (error) {
         console.error("Error fetching shelter data:", error);
-        setError("Failed to load shelter data");
+        setError("Failed to load shelter data. Please try again later.");
       } finally {
         setLoading(false);
       }

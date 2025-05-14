@@ -73,6 +73,7 @@ export default function EmployeeManagementPages() {
 
       try {
         setLoading(true);
+        setError(null);
 
         if (
           userSession.userType === "shelter" &&
@@ -88,7 +89,8 @@ export default function EmployeeManagementPages() {
           }
 
           if (!response.data.error) {
-            const sortedData = sortEmployeesByStatus(response.data.data || []);
+            const employeeData = response.data.data || [];
+            const sortedData = sortEmployeesByStatus(employeeData);
             setUsers(sortedData);
           } else {
             setError(response.data.message);
@@ -197,28 +199,38 @@ export default function EmployeeManagementPages() {
       setErrorMessage("");
 
       if (id_salary) {
-        const salaryResponse = await axios.post("/api/salary/deleteSalaryData", {
-          id_shelter: selectedUser.id_shelter,
-          id_salary: id_salary,
-        });
-        
+        const salaryResponse = await axios.post(
+          "/api/salary/deleteSalaryData",
+          {
+            id_shelter: selectedUser.id_shelter,
+            id_salary: id_salary,
+          }
+        );
+
         if (salaryResponse.data.error) {
-          setErrorMessage(salaryResponse.data.message || "Failed to delete salary data");
+          setErrorMessage(
+            salaryResponse.data.message || "Failed to delete salary data"
+          );
           return false;
         }
       }
 
-      const employeeResponse = await axios.post("/api/employees/deleteEmployeeData", {
-        id_shelter: selectedUser.id_shelter,
-        id_employee: id_employee,
-      });
+      const employeeResponse = await axios.post(
+        "/api/employees/deleteEmployeeData",
+        {
+          id_shelter: selectedUser.id_shelter,
+          id_employee: id_employee,
+        }
+      );
 
       if (!employeeResponse.data.error) {
         setUsers(users.filter((user) => user.id_employee !== id_employee));
         setSuccessMessage("Employee deleted successfully!");
         return true;
       } else {
-        setErrorMessage(employeeResponse.data.message || "Failed to delete employee");
+        setErrorMessage(
+          employeeResponse.data.message || "Failed to delete employee"
+        );
         return false;
       }
     } catch (error) {
@@ -291,7 +303,10 @@ export default function EmployeeManagementPages() {
           user={selectedUser}
           onConfirm={async () => {
             if (selectedUser) {
-              const success = await deleteEmployee(selectedUser.id_employee, selectedUser.id_salary);
+              const success = await deleteEmployee(
+                selectedUser.id_employee,
+                selectedUser.id_salary
+              );
               if (success) {
                 setSuccessMessage("Employee deleted successfully!");
               } else {
