@@ -11,12 +11,17 @@ const isProduction = true;
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-app.use(
-  cors({
-    origin: ["https://happypawsshelter.netlify.app"],
-    credentials: true,
-  })
-);
+cors({
+  origin: function (origin, callback) {
+    const allowedOrigins = ["https://happypawsshelter.netlify.app"];
+    if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+});
 
 app.set("trust proxy", 1);
 
