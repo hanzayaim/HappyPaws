@@ -93,14 +93,18 @@ export default function EmployeeManagementPages() {
             const sortedData = sortEmployeesByStatus(employeeData);
             setUsers(sortedData);
           } else {
-            setError(response.data.message);
+            if (response.data.message !== "no data found") {
+              setError(response.data.message);
+            }
           }
         } else {
           setError("Access level not supported for this view");
         }
       } catch (error) {
         console.error("Error fetching employee data:", error);
-        setError("Failed to load employee data");
+        if (!error.response || error.response.status !== 404) {
+          setError("Failed to load employee data");
+        }
       } finally {
         setLoading(false);
       }
