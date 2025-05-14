@@ -151,7 +151,7 @@ export default function ForgotPasswordLink() {
       }
 
       const emailResponse = await axios.post(
-        `/api/emails/email_reset_password_success`,
+        `/api/email/email_reset_password_success`,
         {
           email: decodedEmail,
         }
