@@ -914,7 +914,7 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentIncome.length === 0 ? (
-                    <TableRow className="justify-center items-center">
+                    <TableRow className="w-full justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
