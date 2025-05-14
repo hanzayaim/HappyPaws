@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  BrowserRouter,
+  Navigate,
 } from "react-router-dom";
 import RegisterOwner from "./pages/register-owner";
 import RegisterPage from "./pages/register-page";
@@ -25,6 +25,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register/register-owner" element={<RegisterOwner />} />
@@ -47,16 +49,14 @@ function App() {
           element={<AnimalDetail />}
         />
         <Route path="/inventory-management" element={<InventoryPages />} />
-        <Route
-          path="/employee-management"
-          element={<EmployeeManagementPages />}
-        />
         <Route path="/medical-management" element={<MedicalManagement />} />
         <Route path="/data-convert" element={<DataConvert />} />
         <Route path="/finance-management" element={<FinancePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/forgot-password-link/:email/:expiry/:signature" element={<ForgotPasswordLink />} />
-        <Route path="/data-convert" element={<DataConvert />} />
+        <Route
+          path="/forgot-password-link/:email/:expiry/:signature"
+          element={<ForgotPasswordLink />}
+        />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
