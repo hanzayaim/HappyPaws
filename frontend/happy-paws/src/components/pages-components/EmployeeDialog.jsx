@@ -17,7 +17,7 @@ export function DeleteEmployeeDialog({ open, onOpenChange, onConfirm }) {
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting shelter:", error);
+      console.error("Error deleting employee:", error);
     }
   };
 
@@ -26,11 +26,11 @@ export function DeleteEmployeeDialog({ open, onOpenChange, onConfirm }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Delete Shelter</DialogTitle>
+          <DialogTitle>Delete Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="grid gap-2 py-2">
           <DialogDescription>
-            Are you sure want to delete this shelter?
+            Are you sure want to delete this employee?
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
@@ -54,6 +54,7 @@ export function ApproveEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
     try {
       const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
+        id_employee: user.id_employee,
         status: "Active",
         email: user.email,
       });
@@ -62,7 +63,7 @@ export function ApproveEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
         onConfirm();
       }
     } catch (error) {
-      console.error("Error approving shelter:", error);
+      console.error("Error approving employee:", error);
     }
     onOpenChange(false);
   };
@@ -72,11 +73,11 @@ export function ApproveEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Approve Shelter</DialogTitle>
+          <DialogTitle>Approve Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="grid gap-2 py-2">
           <DialogDescription>
-            Are you sure want to approve this shelter?
+            Are you sure want to approve this employee?
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
@@ -100,6 +101,7 @@ export function RejectEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
     try {
       const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
+        id_employee: user.id_employee,
         status: "Inactive",
         email: user.email,
       });
@@ -108,7 +110,7 @@ export function RejectEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
         onConfirm();
       }
     } catch (error) {
-      console.error("Error rejecting shelter:", error);
+      console.error("Error rejecting employee:", error);
     }
     onOpenChange(false);
   };
@@ -118,11 +120,11 @@ export function RejectEmployeeDialog({ open, onOpenChange, user, onConfirm }) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Reject Shelter</DialogTitle>
+          <DialogTitle>Reject Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="grid gap-2 py-2">
           <DialogDescription>
-            Are you sure want to reject this shelter?
+            Are you sure want to reject this employee?
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
@@ -151,6 +153,7 @@ export function ActivateEmployeeDialog({
     try {
       const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
+        id_employee: user.id_employee,
         status: "Active",
         email: user.email,
       });
@@ -159,7 +162,7 @@ export function ActivateEmployeeDialog({
         onConfirm();
       }
     } catch (error) {
-      console.error("Error activating shelter:", error);
+      console.error("Error activating employee:", error);
     }
     onOpenChange(false);
   };
@@ -169,11 +172,11 @@ export function ActivateEmployeeDialog({
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Activate Shelter</DialogTitle>
+          <DialogTitle>Activate Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="grid gap-2 py-2">
           <DialogDescription>
-            Are you sure want to activate this shelter?
+            Are you sure want to activate this employee?
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
@@ -202,6 +205,7 @@ export function DeactivateEmployeeDialog({
     try {
       const response = await axios.post("/api/employees/updateEmployeeStatus", {
         id_shelter: user.id_shelter,
+        id_employee: user.id_employee,
         status: "Inactive",
         email: user.email,
       });
@@ -210,7 +214,7 @@ export function DeactivateEmployeeDialog({
         onConfirm();
       }
     } catch (error) {
-      console.error("Error deactivating shelter:", error);
+      console.error("Error deactivating employee:", error);
     }
     onOpenChange(false);
   };
@@ -220,11 +224,11 @@ export function DeactivateEmployeeDialog({
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Deactivate Shelter</DialogTitle>
+          <DialogTitle>Deactivate Employee</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="grid gap-2 py-2">
           <DialogDescription>
-            Are you sure want to deactivate this shelter?
+            Are you sure want to deactivate this employee?
           </DialogDescription>
           <DialogFooter>
             <DialogClose asChild>
