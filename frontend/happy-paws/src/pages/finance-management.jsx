@@ -166,7 +166,6 @@ export default function FinancePage() {
       const incomesData = incomesRes.data;
 
       if (incomesData.error) {
-        setIncomes([]);
         throw new Error(incomesData.message || "Failed to fetch incomes");
       }
       setIncomes(incomesData.data || []);
@@ -182,7 +181,6 @@ export default function FinancePage() {
       const expensesData = expensesRes.data;
 
       if (expensesData.error) {
-        setExpenses([]);
         throw new Error(expensesData.message || "Failed to fetch incomes");
       }
       setExpenses(expensesData.data || []);
@@ -195,14 +193,16 @@ export default function FinancePage() {
       const SalaryRes = await axios.get(
         `/api/salary/getSalary/${userData.id_shelter}`
       );
-
+      if (SalaryRes.status === 404) {
+        setSalaries(null);
+        return;
+      }
       const SalaryData = SalaryRes.data;
       if (SalaryData.error) {
-        setSalaries([]);
         throw new Error(SalaryData.message || "Failed to fetch Salary");
       }
 
-      setSalaries(SalaryData.data || []);
+      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
     } catch (error) {
       console.error("Error fetching salary data:", error);
     }
@@ -215,7 +215,6 @@ export default function FinancePage() {
 
       const medicalsData = response.data;
       if (medicalsData.error) {
-        setMedicals([]);
         throw new Error(medicalsData.message || "Failed to fetch Medical");
       }
 
@@ -230,8 +229,8 @@ export default function FinancePage() {
         `/api/animals/getAnimalData/${userData.id_shelter}`
       );
       const animalData = response.data;
+      console.log(animalData);
       if (animalData.error) {
-        setAnimals([]);
         throw new Error(animalData.message || "Failed to fetch Animal");
       }
       setAnimals(animalData.data || []);
@@ -248,7 +247,6 @@ export default function FinancePage() {
       const foodsData = response.data;
 
       if (foodsData.error) {
-        setFoods([]);
         throw new Error(foodsData.message || "Failed to fetch foods");
       }
 
@@ -265,7 +263,6 @@ export default function FinancePage() {
       const equipmentData = equipmentRes.data;
 
       if (equipmentData.error) {
-        setEquipments([]);
         throw new Error(equipmentData.message || "Failed to fetch incomes");
       }
       setEquipments(equipmentData.data || []);
@@ -281,7 +278,6 @@ export default function FinancePage() {
       const employeeData = EmployeeRes.data;
 
       if (employeeData.error) {
-        setEmployees([]);
         throw new Error(employeeData.message || "Failed to fetch incomes");
       }
       setEmployees(employeeData.data || []);
@@ -696,6 +692,12 @@ export default function FinancePage() {
                   const animal = animals.find(
                     (a) => a.id_animal === medical.id_animal
                   );
+                  {
+                    console.log(animals);
+                  }
+                  {
+                    console.log(medical);
+                  }
                   if (medical) {
                     name = "Medical - " + animal.animal_name;
                     cost = medical.medical_cost ?? "-";

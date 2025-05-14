@@ -224,10 +224,12 @@ export function DeleteSalaryDialog({
       }
 
       data.preventDefault();
+      console.log("Delete Salary with ID: ", SalaryData?.id_salary);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting Salary:", error.message);
     }
+
     fetchData();
   };
 
