@@ -6,6 +6,8 @@ const routes = require("./routes");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
+const isProduction = true;
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
@@ -16,6 +18,8 @@ app.use(
   })
 );
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -23,9 +27,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "lax",
     },
   })
 );
@@ -33,5 +37,5 @@ app.use(
 app.use("/api", routes);
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });
