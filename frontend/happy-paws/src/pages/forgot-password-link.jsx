@@ -98,12 +98,10 @@ export default function ForgotPasswordLink() {
     try {
       const shelterCheck = await axios.post(
         `/api/shelters/getShelterPassByEmail`,
-        {
-          email: decodedEmail,
-        }
+        { email: decodedEmail }
       );
 
-      const shelterResult = await shelterCheck.json();
+      const shelterResult = shelterCheck.data;
 
       if (!shelterResult.error) {
         const updateResponse = await axios.post(
@@ -114,9 +112,9 @@ export default function ForgotPasswordLink() {
           }
         );
 
-        const updateResult = await updateResponse.json();
+        const updateResult = updateResponse.data;
 
-        if (!updateResponse.ok) {
+        if (updateResponse.status !== 200 || updateResult.error) {
           throw new Error(
             updateResult.error || "Failed to update shelter password"
           );
@@ -129,7 +127,7 @@ export default function ForgotPasswordLink() {
           }
         );
 
-        const employeeResult = await employeeCheck.json();
+        const employeeResult = employeeCheck.data;
 
         if (!employeeResult.error) {
           const updateResponse = await axios.post(
@@ -140,9 +138,9 @@ export default function ForgotPasswordLink() {
             }
           );
 
-          const updateResult = await updateResponse.json();
+          const updateResult = updateResponse.data;
 
-          if (!updateResponse.ok) {
+          if (updateResponse.status !== 200 || updateResult.error) {
             throw new Error(
               updateResult.error || "Failed to update employee password"
             );
@@ -159,7 +157,7 @@ export default function ForgotPasswordLink() {
         }
       );
 
-      if (!emailResponse.ok) {
+      if (emailResponse.status !== 200) {
         console.error("Failed to send success email, but password was reset");
       }
 
