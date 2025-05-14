@@ -195,16 +195,14 @@ export default function FinancePage() {
       const SalaryRes = await axios.get(
         `/api/salary/getSalary/${userData.id_shelter}`
       );
-      if (SalaryRes.status === 404) {
-        setSalaries(null);
-        return;
-      }
+
       const SalaryData = SalaryRes.data;
       if (SalaryData.error) {
+        setSalaries([]);
         throw new Error(SalaryData.message || "Failed to fetch Salary");
       }
 
-      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
+      setSalaries(SalaryData.data || []);
     } catch (error) {
       console.error("Error fetching salary data:", error);
     }

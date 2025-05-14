@@ -29,7 +29,7 @@ const SalarySchema = z.object({
     })
     .nullable(),
 
-  SalaryAmount: z.coerce.number().min(0, "Amount must be 0 or more"), // Adjusted validation
+  SalaryAmount: z.coerce.number().min(0, "Amount must be 0 or more"),
   SalaryDate: z.date({ required_error: "Date is required" }),
   SalaryNote: z.string().optional(),
 });
