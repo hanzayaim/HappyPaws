@@ -265,7 +265,6 @@ export default function AdopterManagement() {
                         <Button
                           className="text-sm"
                           variant="alert"
-                          disabled={adoptedAnimals.length > 0}
                           onClick={() => {
                             if (adoptedAnimals.length > 0) {
                               setErrorMassage(true);
