@@ -65,18 +65,15 @@ export function InsertAdopterDialog({ open, onOpenChange, User, fetchData }) {
         const file = data.AdopterProfile_img[0];
         profileImgBase64 = await convertFileToBase64(file);
       }
-      const response = await axios.post(
-        "/api/adopters/insertAdopterData",
-        {
-          id_shelter: User.id_shelter,
-          adopter_name: data.AdopterName,
-          profile_img: profileImgBase64,
-          gender: data.AdopterGender,
-          phone_number: data.AdopterPhoneNumber,
-          address: data.AdopterAddress || "",
-          createdby: User.owner_name ? User.owner_name : User.name,
-        }
-      );
+      const response = await axios.post("/api/adopters/insertAdopterData", {
+        id_shelter: User.id_shelter,
+        adopter_name: data.AdopterName,
+        profile_img: profileImgBase64,
+        gender: data.AdopterGender,
+        phone_number: data.AdopterPhoneNumber,
+        address: data.AdopterAddress || "",
+        createdby: User.owner_name ? User.owner_name : User.name,
+      });
 
       const result = response.data;
 
@@ -275,19 +272,16 @@ export function EditAdopterDialog({
         const file = data.AdopterProfile_img[0];
         profileImgBase64 = await convertFileToBase64(file);
       }
-      const response = await axios.post(
-        "/api/adopters/updateAdopterData",
-        {
-          adopter_name: data.AdopterName,
-          profile_img: profileImgBase64 ?? AdopterData.profile_img,
-          gender: data.AdopterGender,
-          phone_number: data.AdopterPhoneNumber,
-          address: data.AdopterAddress || "",
-          updated_by: User.owner_name ? User.owner_name : User.name,
-          id_shelter: User.id_shelter,
-          id_adopter: AdopterData.id_adopter,
-        }
-      );
+      const response = await axios.post("/api/adopters/updateAdopterData", {
+        adopter_name: data.AdopterName,
+        profile_img: profileImgBase64 ?? AdopterData.profile_img,
+        gender: data.AdopterGender,
+        phone_number: data.AdopterPhoneNumber,
+        address: data.AdopterAddress || "",
+        updated_by: User.owner_name ? User.owner_name : User.name,
+        id_shelter: User.id_shelter,
+        id_adopter: AdopterData.id_adopter,
+      });
 
       const result = response.data;
 
@@ -445,13 +439,10 @@ export function DeleteAdopterDialog({
   const [deleteAdopterName, setDeleteAdopterName] = useState("");
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/adopters/DeleteAdopterData",
-        {
-          id_shelter: AdopterData.id_shelter,
-          id_adopter: AdopterData.id_adopter,
-        }
-      );
+      const response = await axios.post("/api/adopters/DeleteAdopterData", {
+        id_shelter: AdopterData.id_shelter,
+        id_adopter: AdopterData.id_adopter,
+      });
 
       const result = response.data;
 
@@ -460,7 +451,6 @@ export function DeleteAdopterDialog({
       }
 
       data.preventDefault();
-      console.log("Delete Adopter with ID: ", AdopterData?.id_adopter);
 
       setDeleteAdopterName(data.AdopterName);
       setShowSuccessDialog(true);

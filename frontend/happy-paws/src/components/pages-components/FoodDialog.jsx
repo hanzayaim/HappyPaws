@@ -77,21 +77,18 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/food/insertFoodData",
-        {
-          name: data.foodName,
-          quantity: data.foodQuantity,
-          category: data.foodCategory,
-          type: data.foodType,
-          exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
-          cost: data.foodCost,
-          date: data.foodDate,
-          note: data.foodNote,
-          created_by: User.owner_name ? User.owner_name : User.name,
-          id_shelter: User.id_shelter,
-        }
-      );
+      const response = await axios.post("/api/food/insertFoodData", {
+        name: data.foodName,
+        quantity: data.foodQuantity,
+        category: data.foodCategory,
+        type: data.foodType,
+        exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
+        cost: data.foodCost,
+        date: data.foodDate,
+        note: data.foodNote,
+        created_by: User.owner_name ? User.owner_name : User.name,
+        id_shelter: User.id_shelter,
+      });
       const result = response.data;
       if (result.error) {
         throw new Error(result.message || "Failed to insert Food data");
@@ -310,22 +307,19 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/food/updateFoodData",
-        {
-          name: data.foodName,
-          quantity: data.foodQuantity,
-          category: data.foodCategory,
-          type: data.foodType,
-          exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
-          cost: data.foodType === "Donasi" ? 0 : data.foodCost,
-          date: data.foodDate,
-          note: data.foodNote,
-          updated_by: User.owner_name ? User.owner_name : User.name,
-          id_shelter: User.id_shelter,
-          id_food: food.id_food,
-        }
-      );
+      const response = await axios.post("/api/food/updateFoodData", {
+        name: data.foodName,
+        quantity: data.foodQuantity,
+        category: data.foodCategory,
+        type: data.foodType,
+        exp_date: data.foodExpiredDate.toLocaleDateString("en-CA"),
+        cost: data.foodType === "Donasi" ? 0 : data.foodCost,
+        date: data.foodDate,
+        note: data.foodNote,
+        updated_by: User.owner_name ? User.owner_name : User.name,
+        id_shelter: User.id_shelter,
+        id_food: food.id_food,
+      });
 
       const result = response.data;
 
@@ -496,13 +490,10 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
   const [deleteFoodName, setDeleteFoodName] = useState("");
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/food/deleteFoodData/",
-        {
-          id_shelter: food.id_shelter,
-          id_food: food.id_food,
-        }
-      );
+      const response = await axios.post("/api/food/deleteFoodData/", {
+        id_shelter: food.id_shelter,
+        id_food: food.id_food,
+      });
 
       const result = response.data;
 
@@ -511,7 +502,6 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
       }
 
       data.preventDefault();
-      console.log("Delete Food with ID: ", food?.id_food);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting Food:", error.message);

@@ -229,7 +229,6 @@ export default function FinancePage() {
         `/api/animals/getAnimalData/${userData.id_shelter}`
       );
       const animalData = response.data;
-      console.log(animalData);
       if (animalData.error) {
         throw new Error(animalData.message || "Failed to fetch Animal");
       }
@@ -692,12 +691,6 @@ export default function FinancePage() {
                   const animal = animals.find(
                     (a) => a.id_animal === medical.id_animal
                   );
-                  {
-                    console.log(animals);
-                  }
-                  {
-                    console.log(medical);
-                  }
                   if (medical) {
                     name = "Medical - " + animal.animal_name;
                     cost = medical.medical_cost ?? "-";

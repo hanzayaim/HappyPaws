@@ -58,8 +58,6 @@ export default function EmployeeManagementPages() {
           withCredentials: true,
         });
         setUserSession(response.data);
-
-        console.log("User session:", response.data);
       } catch (error) {
         console.error("Error fetching user session:", error);
         setError("Failed to authenticate. Please log in again.");

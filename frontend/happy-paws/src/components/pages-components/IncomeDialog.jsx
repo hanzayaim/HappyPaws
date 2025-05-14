@@ -48,18 +48,15 @@ export function InsertIncomeDialog({ open, onOpenChange, User, fetchData }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/income/insertIncomeData",
-        {
-          id_shelter: User.id_shelter,
-          name: data.incomeName,
-          amount: data.incomeAmount,
-          date: data.incomeDate.toLocaleDateString("en-CA"),
-          type: data.incomeType,
-          note: data.incomeNote || "",
-          created_by: User.owner_name ? User.owner_name : User.name,
-        }
-      );
+      const response = await axios.post("/api/income/insertIncomeData", {
+        id_shelter: User.id_shelter,
+        name: data.incomeName,
+        amount: data.incomeAmount,
+        date: data.incomeDate.toLocaleDateString("en-CA"),
+        type: data.incomeType,
+        note: data.incomeNote || "",
+        created_by: User.owner_name ? User.owner_name : User.name,
+      });
       const result = response.data;
       if (result.error) {
         throw new Error(result.message || "Failed to insert income data");
@@ -218,19 +215,16 @@ export function EditIncomeDialog({
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/income/updateIncomeData",
-        {
-          id_income: incomeData.id_income,
-          id_shelter: User.id_shelter,
-          name: data.incomeName,
-          amount: data.incomeAmount,
-          date: data.incomeDate.toLocaleDateString("en-CA"),
-          type: data.incomeType,
-          note: data.incomeNote,
-          update_by: User.owner_name ? User.owner_name : User.name,
-        }
-      );
+      const response = await axios.post("/api/income/updateIncomeData", {
+        id_income: incomeData.id_income,
+        id_shelter: User.id_shelter,
+        name: data.incomeName,
+        amount: data.incomeAmount,
+        date: data.incomeDate.toLocaleDateString("en-CA"),
+        type: data.incomeType,
+        note: data.incomeNote,
+        update_by: User.owner_name ? User.owner_name : User.name,
+      });
 
       const result = response.data;
 
@@ -343,13 +337,10 @@ export function EditIncomeDialog({
 export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/income/deleteIncomeData",
-        {
-          id_shelter: income.id_shelter,
-          id_income: income.id_income,
-        }
-      );
+      const response = await axios.post("/api/income/deleteIncomeData", {
+        id_shelter: income.id_shelter,
+        id_income: income.id_income,
+      });
 
       const result = response.data;
 
@@ -358,7 +349,6 @@ export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
       }
 
       data.preventDefault();
-      console.log("Delete Income with ID: ", income?.id_income);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting Income:", error.message);

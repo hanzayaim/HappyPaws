@@ -66,18 +66,15 @@ export function InsertSalaryDialog({
     }
 
     try {
-      const response = await axios.post(
-        "/api/salary/insertSalaryData",
-        {
-          id_shelter: User.id_shelter,
-          id_employee: data.SalaryName.id_employee,
-          name: `Salary Month - ${data.SalaryName.name}`,
-          cost: data.SalaryAmount,
-          date: data.SalaryDate.toLocaleDateString("en-CA"),
-          note: data.SalaryNote || "",
-          created_by: User.owner_name ? User.owner_name : User.name,
-        }
-      );
+      const response = await axios.post("/api/salary/insertSalaryData", {
+        id_shelter: User.id_shelter,
+        id_employee: data.SalaryName.id_employee,
+        name: `Salary Month - ${data.SalaryName.name}`,
+        cost: data.SalaryAmount,
+        date: data.SalaryDate.toLocaleDateString("en-CA"),
+        note: data.SalaryNote || "",
+        created_by: User.owner_name ? User.owner_name : User.name,
+      });
 
       const result = response.data;
 
@@ -121,9 +118,7 @@ export function InsertSalaryDialog({
                   control={control}
                   name="SalaryName"
                   render={({ field }) => {
-                    // console.log(field.value);
                     const handleChange = (value) => {
-                      console.log("Selected Employee:", value);
                       field.onChange(value);
                     };
                     return (
@@ -217,13 +212,10 @@ export function DeleteSalaryDialog({
 }) {
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/salary/deleteSalaryData",
-        {
-          id_shelter: SalaryData.id_shelter,
-          id_salary: SalaryData.id_salary,
-        }
-      );
+      const response = await axios.post("/api/salary/deleteSalaryData", {
+        id_shelter: SalaryData.id_shelter,
+        id_salary: SalaryData.id_salary,
+      });
 
       const result = response.data;
 

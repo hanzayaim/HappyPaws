@@ -63,18 +63,15 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/equipment/insertEquipmentData",
-        {
-          name: data.equipmentName,
-          type: data.equipmentType,
-          date: data.equipmentDate.toLocaleDateString("en-CA"),
-          cost: data.equipmentCost,
-          note: data.equipmentNote,
-          created_by: User.owner_name ? User.owner_name : User.name,
-          id_shelter: User.id_shelter,
-        }
-      );
+      const response = await axios.post("/api/equipment/insertEquipmentData", {
+        name: data.equipmentName,
+        type: data.equipmentType,
+        date: data.equipmentDate.toLocaleDateString("en-CA"),
+        cost: data.equipmentCost,
+        note: data.equipmentNote,
+        created_by: User.owner_name ? User.owner_name : User.name,
+        id_shelter: User.id_shelter,
+      });
       const result = response.data;
       if (result.error) {
         throw new Error(result.message || "Failed to insert Equipment data");
@@ -246,19 +243,16 @@ export function EditEquipmentDialog({
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/equipment/updateEquipmentData",
-        {
-          name: data.equipmentName,
-          type: data.equipmentType,
-          date: data.equipmentDate.toLocaleDateString("en-CA"),
-          cost: data.equipmentType === "Donasi" ? 0 : data.equipmentCost,
-          note: data.equipmentNote,
-          updated_by: User.owner_name ? User.owner_name : User.name,
-          id_shelter: User.id_shelter,
-          id_equipment: equipment.id_equipment,
-        }
-      );
+      const response = await axios.post("/api/equipment/updateEquipmentData", {
+        name: data.equipmentName,
+        type: data.equipmentType,
+        date: data.equipmentDate.toLocaleDateString("en-CA"),
+        cost: data.equipmentType === "Donasi" ? 0 : data.equipmentCost,
+        note: data.equipmentNote,
+        updated_by: User.owner_name ? User.owner_name : User.name,
+        id_shelter: User.id_shelter,
+        id_equipment: equipment.id_equipment,
+      });
 
       const result = response.data;
 
@@ -390,13 +384,10 @@ export function DeleteEquipmentDialog({
 }) {
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "/api/equipment/deleteEquipmentData/",
-        {
-          id_shelter: equipment.id_shelter,
-          id_equipment: equipment.id_equipment,
-        }
-      );
+      const response = await axios.post("/api/equipment/deleteEquipmentData/", {
+        id_shelter: equipment.id_shelter,
+        id_equipment: equipment.id_equipment,
+      });
 
       const result = response.data;
 
@@ -405,7 +396,6 @@ export function DeleteEquipmentDialog({
       }
 
       data.preventDefault();
-      console.log("Delete equipment with ID: ", equipment?.id_equipment);
       onOpenChange(false);
     } catch (error) {
       console.error("Error deleting equipment:", error.message);

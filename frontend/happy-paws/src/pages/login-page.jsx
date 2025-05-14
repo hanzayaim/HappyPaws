@@ -49,8 +49,6 @@ export default function LoginPage() {
         withCredentials: true,
       });
 
-      console.log("Login successful: ", response.data);
-
       localStorage.setItem("userType", response.data.userType);
       localStorage.setItem("userData", JSON.stringify(response.data.userData));
 

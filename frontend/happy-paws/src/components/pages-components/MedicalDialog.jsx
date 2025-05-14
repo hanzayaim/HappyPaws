@@ -83,7 +83,6 @@ export function InsertMedicalDialog({
   const onSubmit = async (data) => {
     try {
       let userName = User.owner_name ? User.owner_name : User.name;
-      console.log("Submitted data:", data);
       const response = await axios.post("/api/medical/insertMedicalData", {
         medical_status: medicalStatus,
         vaccin_status: vaccineStatus,

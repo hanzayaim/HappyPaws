@@ -505,10 +505,6 @@ export function AnimalEditDialog({
 
       const result = response.data;
 
-      if (result.error) {
-        console.log(response.data);
-      }
-
       reset();
       onOpenChange(false);
       setEditAnimalName(data.animalName);
