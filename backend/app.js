@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(
   cors({
-    origin: true,
+    origin: ["https://papaya-rolypoly-ade1e7.netlify.app"],
     credentials: true,
   })
 );
