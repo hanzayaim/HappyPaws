@@ -58,15 +58,13 @@ export default function ForgotPassword() {
         resetLink: resetLink,
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         setSubmitStatus({
           type: "success",
           message: "Password reset link has been sent to your email address.",
         });
       } else {
-        throw new Error(result.error || "Failed to send reset link");
+        throw new Error(response.data?.error || "Failed to send reset link");
       }
     } catch (error) {
       console.error("Error sending reset link:", error);
