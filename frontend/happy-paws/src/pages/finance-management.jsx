@@ -195,7 +195,6 @@ export default function FinancePage() {
       const SalaryRes = await axios.get(
         `/api/salary/getSalary/${userData.id_shelter}`
       );
-
       const SalaryData = SalaryRes.data;
       if (SalaryData.error) {
         setSalaries([]);
