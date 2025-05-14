@@ -485,12 +485,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentMedical.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Medical data available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -604,12 +604,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentAnimal.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Animal data available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -710,7 +710,7 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentSalary.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
@@ -819,12 +819,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentExpenses.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Expenses data available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -914,12 +914,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentIncome.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Income data available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -1032,12 +1032,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentEquipment.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Equipment data available
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -1155,12 +1155,12 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentFood.length === 0 ? (
-                    <TableRow className="justify-center">
+                    <TableRow className="justify-center items-center">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        No salary data available
+                        No Food data available
                       </TableCell>
                     </TableRow>
                   ) : (
