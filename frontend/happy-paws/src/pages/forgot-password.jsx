@@ -41,7 +41,7 @@ export default function ForgotPassword() {
     const dataToSign = `${email}:${expiry}`;
     const signature = crypto.HmacSHA256(dataToSign, SECRET_KEY).toString();
 
-    return `http://localhost:5173/forgot-password-link/${encodeURIComponent(
+    return `http://happypawsshelter.netlify.app/forgot-password-link/${encodeURIComponent(
       email
     )}/${expiry}/${encodeURIComponent(signature)}`;
   };
