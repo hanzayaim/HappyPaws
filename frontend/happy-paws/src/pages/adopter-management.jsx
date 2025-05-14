@@ -135,7 +135,7 @@ export default function AdopterManagement() {
     setSelectedAdopter(Adopter);
     setDeleteAdopterDialogOpen(true);
   };
-
+  const [errorMassage, setErrorMassage] = useState(false);
   return (
     <Layout>
       <div className="flex flex-col gap-6 min-h-svh w-full p-6 bg-gray-50">
@@ -149,6 +149,11 @@ export default function AdopterManagement() {
           open={openAlertUser}
           onOpenChange={setOpenAlertUser}
         />
+        {errorMassage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            Delete failed: this adopter has adopted animals.
+          </div>
+        )}
         <div className="flex justify-between gap-2 lg:gap-0 items-center w-full">
           <Input
             type="text"
@@ -260,7 +265,15 @@ export default function AdopterManagement() {
                         <Button
                           className="text-sm"
                           variant="alert"
-                          onClick={() => handleDeleteAdopterClick(Adopter)}
+                          disabled={adoptedAnimals.length > 0}
+                          onClick={() => {
+                            if (adoptedAnimals.length > 0) {
+                              setErrorMassage(true);
+                              setTimeout(() => setErrorMassage(false), 3000);
+                            } else {
+                              handleDeleteAdopterClick(Adopter);
+                            }
+                          }}
                         >
                           <Trash className="size-4" />
                           Delete
