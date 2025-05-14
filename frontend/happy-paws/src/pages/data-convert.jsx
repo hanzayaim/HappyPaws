@@ -912,7 +912,7 @@ export default function DataConvert() {
                     <TableHead className="text-center">Updated By</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="flex">
+                <TableBody>
                   {currentIncome.length === 0 ? (
                     <TableRow className="w-full justify-center items-center">
                       <TableCell
