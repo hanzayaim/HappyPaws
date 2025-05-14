@@ -268,55 +268,70 @@ export default function MedicalManagement() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentMedical.map((medical, index) => (
-                <TableRow key={medical.id_medical}>
-                  <TableCell className="text-center">
-                    {medicalStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {getAnimalName(medical.id_animal, medical.id_shelter)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_status}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.vaccin_status}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_date_in
-                      ? new Date(medical.medical_date_in).toLocaleDateString()
-                      : "No Date"}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {medical.medical_date_out
-                      ? new Date(medical.medical_date_out).toLocaleDateString()
-                      : "No Date"}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(medical.medical_cost)}
-                  </TableCell>
-                  <TableCell className="text-center">{medical.note}</TableCell>
-                  <TableCell className="flex justify-center gap-2">
-                    <Button
-                      variant="success"
-                      className="text-sm"
-                      onClick={() => handleEditMedicalClick(medical)}
-                    >
-                      <Pencil className="size-4" /> Edit
-                    </Button>
-                    <Button
-                      variant="alert"
-                      className="text-sm"
-                      onClick={() => handleDeleteMedicalClick(medical)}
-                    >
-                      <Trash className="size-4" /> Delete
-                    </Button>
+              {currentMedical.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Medical data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentMedical.map((medical, index) => (
+                  <TableRow key={medical.id_medical}>
+                    <TableCell className="text-center">
+                      {medicalStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {getAnimalName(medical.id_animal, medical.id_shelter)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_status}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.vaccin_status}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_date_in
+                        ? new Date(medical.medical_date_in).toLocaleDateString()
+                        : "No Date"}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.medical_date_out
+                        ? new Date(
+                            medical.medical_date_out
+                          ).toLocaleDateString()
+                        : "No Date"}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(medical.medical_cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {medical.note}
+                    </TableCell>
+                    <TableCell className="flex justify-center gap-2">
+                      <Button
+                        variant="success"
+                        className="text-sm"
+                        onClick={() => handleEditMedicalClick(medical)}
+                      >
+                        <Pencil className="size-4" /> Edit
+                      </Button>
+                      <Button
+                        variant="alert"
+                        className="text-sm"
+                        onClick={() => handleDeleteMedicalClick(medical)}
+                      >
+                        <Trash className="size-4" /> Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
 

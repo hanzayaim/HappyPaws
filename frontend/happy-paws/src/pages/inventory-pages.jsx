@@ -373,48 +373,63 @@ export default function InventoryPages() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentFoods.map((food, index) => (
-                <TableRow key={food.id_food}>
-                  <TableCell className="text-center">
-                    {foodStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">{food.name}</TableCell>
-                  <TableCell className="text-center">{food.quantity}</TableCell>
-                  <TableCell className="text-center">{food.category}</TableCell>
-                  <TableCell className="text-center">{food.type}</TableCell>
-                  <TableCell className="text-center">
-                    {new Date(food.exp_date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(food.cost)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(food.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-center">{food.note}</TableCell>
-                  <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleEditFoodClick(food)}
-                    >
-                      <Pencil className="size-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteFoodClick(food)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+              {currentFoods.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Foods data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentFoods.map((food, index) => (
+                  <TableRow key={food.id_food}>
+                    <TableCell className="text-center">
+                      {foodStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">{food.name}</TableCell>
+                    <TableCell className="text-center">
+                      {food.quantity}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {food.category}
+                    </TableCell>
+                    <TableCell className="text-center">{food.type}</TableCell>
+                    <TableCell className="text-center">
+                      {new Date(food.exp_date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(food.cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Date(food.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-center">{food.note}</TableCell>
+                    <TableCell className="flex gap-1 justify-center">
+                      <Button
+                        className="text-sm"
+                        variant="success"
+                        onClick={() => handleEditFoodClick(food)}
+                      >
+                        <Pencil className="size-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        className="text-sm"
+                        variant="alert"
+                        onClick={() => handleDeleteFoodClick(food)}
+                      >
+                        <Trash className="size-4" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">
@@ -531,49 +546,60 @@ export default function InventoryPages() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentEquipments.map((equipment, index) => (
-                <TableRow key={equipment.id_equipment}>
-                  <TableCell className="text-center">
-                    {equipmentStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {equipment.name}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {equipment.type}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {new Date(equipment.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-left">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(equipment.cost)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {equipment.note}
-                  </TableCell>
-                  <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleEditEquipmentClick(equipment)}
-                    >
-                      <Pencil className="size-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteEquipmentClick(equipment)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+              {currentEquipments.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Equipments data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentEquipments.map((equipment, index) => (
+                  <TableRow key={equipment.id_equipment}>
+                    <TableCell className="text-center">
+                      {equipmentStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {equipment.name}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {equipment.type}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {new Date(equipment.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-left">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(equipment.cost)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {equipment.note}
+                    </TableCell>
+                    <TableCell className="flex gap-1 justify-center">
+                      <Button
+                        className="text-sm"
+                        variant="success"
+                        onClick={() => handleEditEquipmentClick(equipment)}
+                      >
+                        <Pencil className="size-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        className="text-sm"
+                        variant="alert"
+                        onClick={() => handleDeleteEquipmentClick(equipment)}
+                      >
+                        <Trash className="size-4" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">

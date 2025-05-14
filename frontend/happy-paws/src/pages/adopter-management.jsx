@@ -206,82 +206,93 @@ export default function AdopterManagement() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentAdopters.map((Adopter, index) => {
-                const adoptedAnimals = animals.filter(
-                  (item) => item.id_adopter === Adopter.id_adopter
-                );
-                return (
-                  <TableRow key={Adopter.id_adopter}>
-                    <TableCell className="text-center">
-                      {AdopterStartIndex + index + 1}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Adopter.name}
-                    </TableCell>
-                    <TableCell className="items-center flex justify-center">
-                      <div className="w-24 h-24 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
-                        {Adopter.profile_img ? (
-                          <img
-                            src={`data:image/jpeg;base64,${Adopter.profile_img}`}
-                            alt="Adopter Profile"
-                            className="lg:max-w-24 lg:max-h-24 object-cover"
-                          />
-                        ) : (
-                          <CircleUser
-                            color="#b0b0b0"
-                            className="w-16 h-16"
-                            strokeWidth={1}
-                          />
-                        )}
-                      </div>
-                    </TableCell>
+              {currentAdopters.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Adopters data available
+                  </TableCell>
+                </TableRow>
+              ) : (
+                currentAdopters.map((Adopter, index) => {
+                  const adoptedAnimals = animals.filter(
+                    (item) => item.id_adopter === Adopter.id_adopter
+                  );
+                  return (
+                    <TableRow key={Adopter.id_adopter}>
+                      <TableCell className="text-center">
+                        {AdopterStartIndex + index + 1}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {Adopter.name}
+                      </TableCell>
+                      <TableCell className="items-center flex justify-center">
+                        <div className="w-24 h-24 border rounded shadow-sm bg-white flex items-center justify-center overflow-hidden">
+                          {Adopter.profile_img ? (
+                            <img
+                              src={`data:image/jpeg;base64,${Adopter.profile_img}`}
+                              alt="Adopter Profile"
+                              className="lg:max-w-24 lg:max-h-24 object-cover"
+                            />
+                          ) : (
+                            <CircleUser
+                              color="#b0b0b0"
+                              className="w-16 h-16"
+                              strokeWidth={1}
+                            />
+                          )}
+                        </div>
+                      </TableCell>
 
-                    <TableCell className="text-center">
-                      {Adopter.phone_number}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Adopter.gender}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {Adopter.address}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {adoptedAnimals.length > 0
-                        ? adoptedAnimals.map((a, i) => (
-                            <div key={i}>{a.animal_name}</div>
-                          ))
-                        : "No Animal Adopted"}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex-row gap-1 flex">
-                        <Button
-                          className="text-sm"
-                          variant="success"
-                          onClick={() => handleEditAdopterClick(Adopter)}
-                        >
-                          <Pencil className="size-4" />
-                          Edit
-                        </Button>
-                        <Button
-                          className="text-sm"
-                          variant="alert"
-                          onClick={() => {
-                            if (adoptedAnimals.length > 0) {
-                              setErrorMassage(true);
-                              setTimeout(() => setErrorMassage(false), 3000);
-                            } else {
-                              handleDeleteAdopterClick(Adopter);
-                            }
-                          }}
-                        >
-                          <Trash className="size-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      <TableCell className="text-center">
+                        {Adopter.phone_number}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {Adopter.gender}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {Adopter.address}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {adoptedAnimals.length > 0
+                          ? adoptedAnimals.map((a, i) => (
+                              <div key={i}>{a.animal_name}</div>
+                            ))
+                          : "No Animal Adopted"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex-row gap-1 flex">
+                          <Button
+                            className="text-sm"
+                            variant="success"
+                            onClick={() => handleEditAdopterClick(Adopter)}
+                          >
+                            <Pencil className="size-4" />
+                            Edit
+                          </Button>
+                          <Button
+                            className="text-sm"
+                            variant="alert"
+                            onClick={() => {
+                              if (adoptedAnimals.length > 0) {
+                                setErrorMassage(true);
+                                setTimeout(() => setErrorMassage(false), 3000);
+                              } else {
+                                handleDeleteAdopterClick(Adopter);
+                              }
+                            }}
+                          >
+                            <Trash className="size-4" />
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">

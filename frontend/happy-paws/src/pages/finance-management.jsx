@@ -541,44 +541,55 @@ export default function FinancePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentIncomes.map((income, index) => (
-                <TableRow key={income.id_income}>
-                  <TableCell className="text-center">
-                    {incomeStartIndex + index + 1}
-                  </TableCell>
-                  <TableCell className="text-center">{income.name}</TableCell>
-                  <TableCell className="text-right">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(income.amount)}
-                  </TableCell>
-                  <TableCell className="text-center">{income.type}</TableCell>
-                  <TableCell className="text-center">
-                    {new Date(income.date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-center">{income.note}</TableCell>
-
-                  <TableCell className="flex gap-1 justify-center">
-                    <Button
-                      className="text-sm"
-                      variant="success"
-                      onClick={() => handleEditIncomeClick(income)}
-                    >
-                      <Pencil className="size-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      className="text-sm"
-                      variant="alert"
-                      onClick={() => handleDeleteIncomeClick(income)}
-                    >
-                      <Trash className="size-4" />
-                      Delete
-                    </Button>
+              {currentIncomes.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Income data available
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                currentIncomes.map((income, index) => (
+                  <TableRow key={income.id_income}>
+                    <TableCell className="text-center">
+                      {incomeStartIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="text-center">{income.name}</TableCell>
+                    <TableCell className="text-right">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(income.amount)}
+                    </TableCell>
+                    <TableCell className="text-center">{income.type}</TableCell>
+                    <TableCell className="text-center">
+                      {new Date(income.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-center">{income.note}</TableCell>
+
+                    <TableCell className="flex gap-1 justify-center">
+                      <Button
+                        className="text-sm"
+                        variant="success"
+                        onClick={() => handleEditIncomeClick(income)}
+                      >
+                        <Pencil className="size-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        className="text-sm"
+                        variant="alert"
+                        onClick={() => handleDeleteIncomeClick(income)}
+                      >
+                        <Trash className="size-4" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="w-full flex justify-start mt-4">
@@ -641,94 +652,107 @@ export default function FinancePage() {
             </TableHeader>
 
             <TableBody>
-              {currentExpenses.map((exp, index) => {
-                let name = "-";
-                let cost = "-";
-                let type = "-";
-                let date = "-";
-                let note = "-";
+              {currentExpenses.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center text-muted-foreground"
+                  >
+                    No Expenses data available
+                  </TableCell>
+                </TableRow>
+              ) : (
+                currentExpenses.map((exp, index) => {
+                  let name = "-";
+                  let cost = "-";
+                  let type = "-";
+                  let date = "-";
+                  let note = "-";
 
-                if (exp.id_salary && Array.isArray(Salaries)) {
-                  const salary = Salaries.find(
-                    (s) => s.id_salary === exp.id_salary
-                  );
-                  if (salary) {
-                    name = salary.name ?? "-";
-                    cost = salary.cost ?? "-";
-                    type = "Salary Month";
-                    date = salary.date
-                      ? new Date(salary.date).toLocaleDateString()
-                      : "-";
-                    note = salary.note ?? "-";
+                  if (exp.id_salary && Array.isArray(Salaries)) {
+                    const salary = Salaries.find(
+                      (s) => s.id_salary === exp.id_salary
+                    );
+                    if (salary) {
+                      name = salary.name ?? "-";
+                      cost = salary.cost ?? "-";
+                      type = "Salary Month";
+                      date = salary.date
+                        ? new Date(salary.date).toLocaleDateString()
+                        : "-";
+                      note = salary.note ?? "-";
+                    }
+                  } else if (exp.id_food) {
+                    const food = Foods.find((f) => f.id_food === exp.id_food);
+                    if (food) {
+                      name = food.name ?? "-";
+                      cost = food.cost ?? "-";
+                      type = food.category ?? "-";
+                      date = food.date
+                        ? new Date(food.date).toLocaleDateString()
+                        : "-";
+                      note = food.note ?? "-";
+                    }
+                  } else if (exp.id_equipment) {
+                    const equipment = Equipments.find(
+                      (e) => e.id_equipment === exp.id_equipment
+                    );
+                    if (equipment) {
+                      name = equipment.name ?? "-";
+                      cost = equipment.cost ?? "-";
+                      type = "Equipment";
+                      date = equipment.date
+                        ? new Date(equipment.date).toLocaleDateString()
+                        : "-";
+                      note = equipment.note ?? "-";
+                    }
+                  } else if (exp.id_medical) {
+                    const medical = medicals.find(
+                      (m) => m.id_medical === exp.id_medical
+                    );
+                    const animal = animals.find(
+                      (a) => a.id_animal === medical.id_animal
+                    );
+                    {
+                      console.log(animals);
+                    }
+                    {
+                      console.log(medical);
+                    }
+                    if (medical) {
+                      name = "Medical - " + animal.animal_name;
+                      cost = medical.medical_cost ?? "-";
+                      type = "Medical";
+                      date = medical.medical_date_out
+                        ? new Date(
+                            medical.medical_date_out
+                          ).toLocaleDateString()
+                        : "-";
+                      note = medical.note ?? "-";
+                    }
                   }
-                } else if (exp.id_food) {
-                  const food = Foods.find((f) => f.id_food === exp.id_food);
-                  if (food) {
-                    name = food.name ?? "-";
-                    cost = food.cost ?? "-";
-                    type = food.category ?? "-";
-                    date = food.date
-                      ? new Date(food.date).toLocaleDateString()
-                      : "-";
-                    note = food.note ?? "-";
-                  }
-                } else if (exp.id_equipment) {
-                  const equipment = Equipments.find(
-                    (e) => e.id_equipment === exp.id_equipment
-                  );
-                  if (equipment) {
-                    name = equipment.name ?? "-";
-                    cost = equipment.cost ?? "-";
-                    type = "Equipment";
-                    date = equipment.date
-                      ? new Date(equipment.date).toLocaleDateString()
-                      : "-";
-                    note = equipment.note ?? "-";
-                  }
-                } else if (exp.id_medical) {
-                  const medical = medicals.find(
-                    (m) => m.id_medical === exp.id_medical
-                  );
-                  const animal = animals.find(
-                    (a) => a.id_animal === medical.id_animal
-                  );
-                  {
-                    console.log(animals);
-                  }
-                  {
-                    console.log(medical);
-                  }
-                  if (medical) {
-                    name = "Medical - " + animal.animal_name;
-                    cost = medical.medical_cost ?? "-";
-                    type = "Medical";
-                    date = medical.medical_date_out
-                      ? new Date(medical.medical_date_out).toLocaleDateString()
-                      : "-";
-                    note = medical.note ?? "-";
-                  }
-                }
 
-                return (
-                  <TableRow key={exp.id_expenses}>
-                    <TableCell className="text-center">
-                      {expensesStartIndex + index + 1}
-                    </TableCell>
-                    <TableCell className="text-center">{name}</TableCell>
-                    <TableCell className="text-center">
-                      {typeof cost === "number"
-                        ? new Intl.NumberFormat("id-ID", {
-                            style: "currency",
-                            currency: "IDR",
-                          }).format(cost)
-                        : cost}
-                    </TableCell>
-                    <TableCell className="text-center">{type}</TableCell>
-                    <TableCell className="text-center">{date}</TableCell>
-                    <TableCell className="text-center">{note}</TableCell>
-                  </TableRow>
-                );
-              })}
+                  return (
+                    <TableRow key={exp.id_expenses}>
+                      <TableCell className="text-center">
+                        {expensesStartIndex + index + 1}
+                      </TableCell>
+                      <TableCell className="text-center">{name}</TableCell>
+                      <TableCell className="text-center">
+                        {typeof cost === "number"
+                          ? new Intl.NumberFormat("id-ID", {
+                              style: "currency",
+                              currency: "IDR",
+                            }).format(cost)
+                          : cost}
+                      </TableCell>
+                      <TableCell className="text-center">{type}</TableCell>
+                      <TableCell className="text-center">{date}</TableCell>
+                      <TableCell className="text-center">{note}</TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
 
