@@ -210,7 +210,8 @@ export function DeleteSalaryDialog({
   SalaryData,
   fetchData,
 }) {
-  const onSubmit = async (data) => {
+  const onSubmit = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post("/api/salary/deleteSalaryData", {
         id_shelter: SalaryData.id_shelter,
@@ -222,8 +223,6 @@ export function DeleteSalaryDialog({
       if (result.error) {
         throw new Error(result.message || "Failed to delete Salary data");
       }
-
-      data.preventDefault();
       console.log("Delete Salary with ID: ", SalaryData?.id_salary);
       onOpenChange(false);
     } catch (error) {
