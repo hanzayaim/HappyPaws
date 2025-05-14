@@ -87,7 +87,12 @@ async function getEmployeePassByEmail(email) {
 async function getEmployeeData(id_shelter) {
   try {
     const { rows } = await pool.query(
-      "SELECT * FROM employee_shelter where id_shelter = $1",
+      `
+      SELECT es.*, s.id_salary
+      FROM employee_shelter es
+      LEFT JOIN salary s ON es.id_shelter = s.id_shelter
+      WHERE es.id_shelter = $1
+      `,
       [id_shelter]
     );
 
