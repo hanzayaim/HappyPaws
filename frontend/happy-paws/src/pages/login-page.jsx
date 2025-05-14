@@ -18,6 +18,7 @@ import { TriangleAlert } from "lucide-react";
 
 const API_BASE_URL = "https://happypaws-production.up.railway.app";
 axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.withCredentials = true;
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
