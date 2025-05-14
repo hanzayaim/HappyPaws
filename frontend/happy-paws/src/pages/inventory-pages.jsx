@@ -150,7 +150,7 @@ export default function InventoryPages() {
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/food/getFoodData/${userData.id_shelter}`
+        `/api/food/getFoodData/${userData.id_shelter}`
       );
 
       const foodsData = response.data;
@@ -167,7 +167,7 @@ export default function InventoryPages() {
   const fetchEquipmentsData = async () => {
     try {
       const equipmentRes = await axios.get(
-        `http://localhost:3000/api/equipment/getEquipmentData/${userData.id_shelter}`
+        `/api/equipment/getEquipmentData/${userData.id_shelter}`
       );
       const equipmentData = equipmentRes.data;
 

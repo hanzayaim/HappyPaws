@@ -45,7 +45,7 @@ export default function Dashboard() {
   const currentUser = async () => {
     try {
       const response = await axios.get("/api/auth/profile", {
-        withCredentials: true,
+        // withCredentials: true,
       });
       if (response) {
         setUserData(response.data.profile);
@@ -250,7 +250,7 @@ export default function Dashboard() {
   const fetchFoodsData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/food/getFoodData/${userData.id_shelter}`
+        `/api/food/getFoodData/${userData.id_shelter}`
       );
 
       const foodsData = response.data;
@@ -295,7 +295,7 @@ export default function Dashboard() {
   const fetchEquipmentsData = async () => {
     try {
       const equipmentRes = await axios.get(
-        `http://localhost:3000/api/equipment/getEquipmentData/${userData.id_shelter}`
+        `/api/equipment/getEquipmentData/${userData.id_shelter}`
       );
       const equipmentData = equipmentRes.data;
 

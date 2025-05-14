@@ -4,17 +4,17 @@ const cors = require("cors");
 const session = require("express-session");
 const routes = require("./routes");
 const port = process.env.PORT || 3000;
-
 require("dotenv").config();
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
 app.use(
   cors({
     origin: true,
     credentials: true,
   })
 );
-app.use(express.json());
 
 app.use(
   session({

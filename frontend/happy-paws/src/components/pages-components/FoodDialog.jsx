@@ -78,7 +78,7 @@ export function InsertFoodDialog({ open, onOpenChange, User, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/insertFoodData",
+        "/api/food/insertFoodData",
         {
           name: data.foodName,
           quantity: data.foodQuantity,
@@ -311,7 +311,7 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/updateFoodData",
+        "/api/food/updateFoodData",
         {
           name: data.foodName,
           quantity: data.foodQuantity,
@@ -497,7 +497,7 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/deleteFoodData/",
+        "/api/food/deleteFoodData/",
         {
           id_shelter: food.id_shelter,
           id_food: food.id_food,

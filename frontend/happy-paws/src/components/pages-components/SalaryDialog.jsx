@@ -67,7 +67,7 @@ export function InsertSalaryDialog({
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/salary/insertSalaryData",
+        "/api/salary/insertSalaryData",
         {
           id_shelter: User.id_shelter,
           id_employee: data.SalaryName.id_employee,
@@ -218,7 +218,7 @@ export function DeleteSalaryDialog({
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/salary/deleteSalaryData",
+        "/api/salary/deleteSalaryData",
         {
           id_shelter: SalaryData.id_shelter,
           id_salary: SalaryData.id_salary,

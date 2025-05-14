@@ -52,8 +52,6 @@ import {
 import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "http://localhost:3000";
-axios.defaults.baseURL = API_BASE_URL;
 export default function FinancePage() {
   //#region Variable
   const itemsPerPage = 5;

@@ -14,8 +14,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import crypto from "crypto-js";
+import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000";
 const SECRET_KEY = "H4ppYP4W5S3ss1OnS3Cr3t2025";
 
 const forgotPasswordLinkSchema = z
@@ -96,31 +96,21 @@ export default function ForgotPasswordLink() {
     setSubmitStatus({ type: "", message: "" });
 
     try {
-      const shelterCheck = await fetch(
-        `${API_BASE_URL}/api/shelters/getShelterPassByEmail`,
+      const shelterCheck = await axios.post(
+        `/api/shelters/getShelterPassByEmail`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: decodedEmail }),
+          email: decodedEmail,
         }
       );
 
       const shelterResult = await shelterCheck.json();
 
       if (!shelterResult.error) {
-        const updateResponse = await fetch(
-          `${API_BASE_URL}/api/shelters/updatePassword`,
+        const updateResponse = await axios.post(
+          `/api/shelters/updatePassword`,
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: decodedEmail,
-              newPassword: data.newPassword,
-            }),
+            email: decodedEmail,
+            newPassword: data.newPassword,
           }
         );
 
@@ -132,31 +122,21 @@ export default function ForgotPasswordLink() {
           );
         }
       } else {
-        const employeeCheck = await fetch(
-          `${API_BASE_URL}/api/employees/getEmployeePassByEmail`,
+        const employeeCheck = await axios.post(
+          `/api/employees/getEmployeePassByEmail`,
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: decodedEmail }),
+            email: decodedEmail,
           }
         );
 
         const employeeResult = await employeeCheck.json();
 
         if (!employeeResult.error) {
-          const updateResponse = await fetch(
-            `${API_BASE_URL}/api/employees/updatePassword`,
+          const updateResponse = await axios.post(
+            `/api/employees/updatePassword`,
             {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: decodedEmail,
-                newPassword: data.newPassword,
-              }),
+              email: decodedEmail,
+              newPassword: data.newPassword,
             }
           );
 
@@ -172,14 +152,10 @@ export default function ForgotPasswordLink() {
         }
       }
 
-      const emailResponse = await fetch(
-        `${API_BASE_URL}/api/emails/email_reset_password_success`,
+      const emailResponse = await axios.post(
+        `/api/emails/email_reset_password_success`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: decodedEmail }),
+          email: decodedEmail,
         }
       );
 

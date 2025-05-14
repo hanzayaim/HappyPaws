@@ -1,5 +1,3 @@
 backend/.env
 backend/node_modules
-*.json
 /frontend/happy-paws/node_modules
-frontend/happy-paws/vite.config.js
