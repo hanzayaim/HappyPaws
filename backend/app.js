@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(
   cors({
-    origin: "https://happypawsshelter.netlify.app/",
+    origin: "https://happypawsshelter.netlify.app",
     credentials: true,
   })
 );
