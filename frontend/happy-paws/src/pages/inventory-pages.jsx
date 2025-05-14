@@ -374,7 +374,7 @@ export default function InventoryPages() {
             </TableHeader>
             <TableBody>
               {currentFoods.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"
@@ -547,7 +547,7 @@ export default function InventoryPages() {
             </TableHeader>
             <TableBody>
               {currentEquipments.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"

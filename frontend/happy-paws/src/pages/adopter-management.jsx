@@ -207,7 +207,7 @@ export default function AdopterManagement() {
             </TableHeader>
             <TableBody>
               {currentAdopters.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"

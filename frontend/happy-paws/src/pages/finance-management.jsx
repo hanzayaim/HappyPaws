@@ -542,7 +542,7 @@ export default function FinancePage() {
             </TableHeader>
             <TableBody>
               {currentIncomes.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"
@@ -653,7 +653,7 @@ export default function FinancePage() {
 
             <TableBody>
               {currentExpenses.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"

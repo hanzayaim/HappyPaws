@@ -484,53 +484,64 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentMedical.map((medical, index) => (
-                    <TableRow key={medical.id_medical}>
-                      <TableCell className="text-center">
-                        {medicalStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.animal_name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.medical_status}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.vaccin_status}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.medical_date_in
-                          ? new Date(
-                              medical.medical_date_in
-                            ).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.medical_date_out
-                          ? new Date(
-                              medical.medical_date_out
-                            ).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(medical.medical_cost)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.note}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.created_at
-                          ? new Date(medical.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {medical.created_at ? medical.created_by : "Unkown"}
+                  {currentMedical.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentMedical.map((medical, index) => (
+                      <TableRow key={medical.id_medical}>
+                        <TableCell className="text-center">
+                          {medicalStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.animal_name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.medical_status}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.vaccin_status}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.medical_date_in
+                            ? new Date(
+                                medical.medical_date_in
+                              ).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.medical_date_out
+                            ? new Date(
+                                medical.medical_date_out
+                              ).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(medical.medical_cost)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.created_at
+                            ? new Date(medical.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {medical.created_at ? medical.created_by : "Unkown"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -592,41 +603,52 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentAnimal.map((animal, index) => (
-                    <TableRow key={animal.id_animal}>
-                      <TableCell className="text-center">
-                        {animalStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.animal_name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.animal_gender}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.animal_type}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.rescue_location}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.date
-                          ? new Date(animal.date).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.note}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.created_at
-                          ? new Date(animal.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {animal.created_by ? animal.created_by : "Unkown"}
+                  {currentAnimal.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentAnimal.map((animal, index) => (
+                      <TableRow key={animal.id_animal}>
+                        <TableCell className="text-center">
+                          {animalStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.animal_name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.animal_gender}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.animal_type}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.rescue_location}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.date
+                            ? new Date(animal.date).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.created_at
+                            ? new Date(animal.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {animal.created_by ? animal.created_by : "Unkown"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -687,49 +709,60 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentSalary.map((salary, index) => (
-                    <TableRow key={`${salary.id_salary}-${index}`}>
-                      <TableCell className="text-center">
-                        {salaryStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.s_name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(salary.cost)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.date
-                          ? new Date(salary.date).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.note}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.created_at
-                          ? new Date(salary.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.created_by ? salary.created_by : "Unkown"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.updated_at
-                          ? new Date(salary.updated_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {salary.updated_by ? salary.updated_by : "-"}
+                  {currentSalary.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentSalary.map((salary, index) => (
+                      <TableRow key={`${salary.id_salary}-${index}`}>
+                        <TableCell className="text-center">
+                          {salaryStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.s_name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(salary.cost)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.date
+                            ? new Date(salary.date).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.created_at
+                            ? new Date(salary.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.created_by ? salary.created_by : "Unkown"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.updated_at
+                            ? new Date(salary.updated_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {salary.updated_by ? salary.updated_by : "-"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -785,30 +818,41 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentExpenses.map((expenses, index) => (
-                    <TableRow key={`${expenses.id_expenses}-${index}`}>
-                      <TableCell className="text-center">
-                        {expensesStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {expenses.expenses_name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(expenses.expenses_cost)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {expenses.created_at
-                          ? new Date(expenses.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {expenses.created_by ? expenses.created_by : "Unkown"}
+                  {currentExpenses.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentExpenses.map((expenses, index) => (
+                      <TableRow key={`${expenses.id_expenses}-${index}`}>
+                        <TableCell className="text-center">
+                          {expensesStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {expenses.expenses_name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(expenses.expenses_cost)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {expenses.created_at
+                            ? new Date(expenses.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {expenses.created_by ? expenses.created_by : "Unkown"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -869,49 +913,60 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentIncome.map((income, index) => (
-                    <TableRow key={`${income.id_income}-${index}`}>
-                      <TableCell className="text-center">
-                        {incomeStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(income.amount)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.type}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.date
-                          ? new Date(income.date).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.note}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.created_at
-                          ? new Date(income.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.created_by ? income.created_by : "Unkown"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.update_at
-                          ? new Date(income.update_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {income.update_by ? income.update_by : "-"}
+                  {currentIncome.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentIncome.map((income, index) => (
+                      <TableRow key={`${income.id_income}-${index}`}>
+                        <TableCell className="text-center">
+                          {incomeStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(income.amount)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.type}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.date
+                            ? new Date(income.date).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.created_at
+                            ? new Date(income.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.created_by ? income.created_by : "Unkown"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.update_at
+                            ? new Date(income.update_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {income.update_by ? income.update_by : "-"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -976,51 +1031,66 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentEquipment.map((equipment, index) => (
-                    <TableRow key={`${equipment.id_equipment}-${index}`}>
-                      <TableCell className="text-center">
-                        {equipmentStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(equipment.cost)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.type}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.purchase_or_donation_date
-                          ? new Date(
-                              equipment.purchase_or_donation_date
-                            ).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.note}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.created_at
-                          ? new Date(equipment.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.created_by ? equipment.created_by : "Unkown"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.update_at
-                          ? new Date(equipment.update_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {equipment.update_by ? equipment.update_by : "-"}
+                  {currentEquipment.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentEquipment.map((equipment, index) => (
+                      <TableRow key={`${equipment.id_equipment}-${index}`}>
+                        <TableCell className="text-center">
+                          {equipmentStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(equipment.cost)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.type}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.purchase_or_donation_date
+                            ? new Date(
+                                equipment.purchase_or_donation_date
+                              ).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.created_at
+                            ? new Date(
+                                equipment.created_at
+                              ).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.created_by
+                            ? equipment.created_by
+                            : "Unkown"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.update_at
+                            ? new Date(equipment.update_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {equipment.update_by ? equipment.update_by : "-"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 
@@ -1084,50 +1154,67 @@ export default function DataConvert() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentFood.map((food, index) => (
-                    <TableRow key={`${food.id_food}-${index}`}>
-                      <TableCell className="text-center">
-                        {foodStartIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="text-center">{food.name}</TableCell>
-                      <TableCell className="text-center">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(food.cost)}
-                      </TableCell>
-                      <TableCell className="text-center">{food.type}</TableCell>
-                      <TableCell className="text-center">
-                        {food.purchase_or_donation_date
-                          ? new Date(
-                              food.purchase_or_donation_date
-                            ).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {food.expired_date
-                          ? new Date(food.expired_date).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">{food.note}</TableCell>
-                      <TableCell className="text-center">
-                        {food.created_at
-                          ? new Date(food.created_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {food.created_by ? food.created_by : "Unkown"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {food.update_at
-                          ? new Date(food.update_at).toLocaleDateString()
-                          : "No Date"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {food.update_by ? food.update_by : "-"}
+                  {currentFood.length === 0 ? (
+                    <TableRow className="justify-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center text-muted-foreground"
+                      >
+                        No salary data available
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentFood.map((food, index) => (
+                      <TableRow key={`${food.id_food}-${index}`}>
+                        <TableCell className="text-center">
+                          {foodStartIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                          }).format(food.cost)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.type}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.purchase_or_donation_date
+                            ? new Date(
+                                food.purchase_or_donation_date
+                              ).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.expired_date
+                            ? new Date(food.expired_date).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.note}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.created_at
+                            ? new Date(food.created_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.created_by ? food.created_by : "Unkown"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.update_at
+                            ? new Date(food.update_at).toLocaleDateString()
+                            : "No Date"}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {food.update_by ? food.update_by : "-"}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
 

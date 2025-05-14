@@ -269,7 +269,7 @@ export default function MedicalManagement() {
             </TableHeader>
             <TableBody>
               {currentMedical.length === 0 ? (
-                <TableRow>
+                <TableRow className="justify-center">
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground"
