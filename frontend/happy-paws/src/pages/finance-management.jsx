@@ -708,23 +708,22 @@ export default function FinancePage() {
                     }
                   } else if (exp.id_medical) {
                     const medical = medicals.find(
-                      (m) =>
-                        m.id_medical === exp.id_medical && m.medical_cost !== 0
+                      (m) => m.id_medical === exp.id_medical
                     );
-                    if (medical) {
-                      const animal = animals.find(
-                        (a) => a.id_animal === medical.id_animal
-                      );
-                      name = "Medical - " + animal.animal_name;
-                      cost = medical.medical_cost;
-                      type = "Medical";
-                      date = medical.medical_date_out
-                        ? new Date(
-                            medical.medical_date_out
-                          ).toLocaleDateString()
-                        : "-";
-                      note = medical.note ?? "-";
+                    if (!medical || medical.medical_cost === 0) {
+                      return null;
                     }
+
+                    const animal = animals.find(
+                      (a) => a.id_animal === medical.id_animal
+                    );
+                    name = "Medical - " + (animal?.animal_name ?? "-");
+                    cost = medical.medical_cost;
+                    type = "Medical";
+                    date = medical.medical_date_out
+                      ? new Date(medical.medical_date_out).toLocaleDateString()
+                      : "-";
+                    note = medical.note ?? "-";
                   }
                   return (
                     <TableRow key={exp.id_expenses}>
