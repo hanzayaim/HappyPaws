@@ -26,6 +26,7 @@ const forgotPasswordSchema = z.object({
 export default function ForgotPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
+  const [debugInfo, setDebugInfo] = useState(null);
 
   const {
     register,
@@ -49,20 +50,35 @@ export default function ForgotPassword() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
+    setDebugInfo(null);
 
     try {
+      const debugData = {};
+      
       const shelterCheck = await axios.post(
         `/api/shelters/getShelterPassByEmail`,
         { email: data.email }
       );
+      debugData.shelterResponse = shelterCheck.data;
 
       const employeeCheck = await axios.post(
         `/api/employees/getEmployeePassByEmail`,
         { email: data.email }
       );
-
-      const shelterExists = shelterCheck.data?.found === true;
-      const employeeExists = employeeCheck.data?.found === true;
+      debugData.employeeResponse = employeeCheck.data;
+      
+      setDebugInfo(debugData);
+      
+      console.log("Shelter check response:", shelterCheck.data);
+      console.log("Employee check response:", employeeCheck.data);
+      
+      const shelterExists = shelterCheck.data?.found === true || 
+                           (shelterCheck.data?.data && Object.keys(shelterCheck.data.data).length > 0) ||
+                           (shelterCheck.data?.rows && shelterCheck.data.rows.length > 0);
+                           
+      const employeeExists = employeeCheck.data?.found === true || 
+                            (employeeCheck.data?.data && Object.keys(employeeCheck.data.data).length > 0) ||
+                            (employeeCheck.data?.rows && employeeCheck.data.rows.length > 0);
 
       if (!shelterExists && !employeeExists) {
         setSubmitStatus({
@@ -131,6 +147,14 @@ export default function ForgotPassword() {
                   <AlertDescription>{submitStatus.message}</AlertDescription>
                 </Alert>
               )}
+              
+              {/* Debug Info Display (for development only) */}
+              {debugInfo && (
+                <div className="mb-4 p-2 bg-gray-100 text-xs overflow-auto max-h-40">
+                  <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
                   <div className="grid gap-2">
