@@ -487,7 +487,7 @@ export default function DataConvert() {
                   {currentMedical.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={10}
+                        colspan={10}
                         className="text-center text-muted-foreground"
                       >
                         No Medical data available
@@ -606,7 +606,7 @@ export default function DataConvert() {
                   {currentAnimal.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={9}
+                        colspan={9}
                         className="text-center text-muted-foreground"
                       >
                         No Animal data available
@@ -712,7 +712,7 @@ export default function DataConvert() {
                   {currentSalary.length === 0 ? (
                     <TableRow className="justify-center items-center">
                       <TableCell
-                        colSpan={10}
+                        colspan={10}
                         className="text-center text-muted-foreground"
                       >
                         No salary data available
@@ -821,7 +821,7 @@ export default function DataConvert() {
                   {currentExpenses.length === 0 ? (
                     <TableRow className="justify-center items-center">
                       <TableCell
-                        colSpan={5}
+                        colspan={5}
                         className="text-center text-muted-foreground"
                       >
                         No Expenses data available
@@ -1034,7 +1034,7 @@ export default function DataConvert() {
                   {currentEquipment.length === 0 ? (
                     <TableRow className="justify-center items-center">
                       <TableCell
-                        colSpan={10}
+                        colspan={10}
                         className="text-center text-muted-foreground"
                       >
                         No Equipment data available
@@ -1157,7 +1157,7 @@ export default function DataConvert() {
                   {currentFood.length === 0 ? (
                     <TableRow className="justify-center items-center">
                       <TableCell
-                        colSpan={11}
+                        colspan={11}
                         className="text-center text-muted-foreground"
                       >
                         No Food data available

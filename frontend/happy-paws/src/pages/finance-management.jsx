@@ -544,7 +544,7 @@ export default function FinancePage() {
               {currentIncomes.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={7}
+                    colspan={7}
                     className="text-center text-muted-foreground"
                   >
                     No Income data available
@@ -655,7 +655,7 @@ export default function FinancePage() {
               {currentExpenses.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={6}
+                    colspan={6}
                     className="text-center text-muted-foreground"
                   >
                     No Expenses data available
@@ -857,7 +857,7 @@ export default function FinancePage() {
               {currentSalaries.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colspan={6}
                     className="text-center text-muted-foreground"
                   >
                     No salary data available

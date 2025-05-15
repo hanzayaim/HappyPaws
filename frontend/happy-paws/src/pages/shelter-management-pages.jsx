@@ -449,7 +449,7 @@ export default function ShelterManagementPages() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-4">
+                  <TableCell colspan={8} className="text-center py-4">
                     No shelter data found
                   </TableCell>
                 </TableRow>

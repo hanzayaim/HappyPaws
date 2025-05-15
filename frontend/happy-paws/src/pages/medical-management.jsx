@@ -271,7 +271,7 @@ export default function MedicalManagement() {
               {currentMedical.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={9}
+                    colspan={9}
                     className="text-center text-muted-foreground"
                   >
                     No Medical data available
