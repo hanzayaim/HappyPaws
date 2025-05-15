@@ -45,7 +45,7 @@ export default function Dashboard() {
   const currentUser = async () => {
     try {
       const response = await axios.get("/api/auth/profile", {
-        // withCredentials: true,
+        withCredentials: true,
       });
       if (response) {
         setUserData(response.data.profile);
