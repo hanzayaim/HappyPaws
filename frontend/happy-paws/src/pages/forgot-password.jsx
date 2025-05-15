@@ -58,15 +58,13 @@ export default function ForgotPassword() {
 
       const employeeCheck = await axios.post(
         `/api/employees/getEmployeePassByEmail`,
-        {
-          email: data.email,
-        }
+        { email: data.email }
       );
 
       const shelterExists = shelterCheck.data?.found === true;
       const employeeExists = employeeCheck.data?.found === true;
 
-      if (!shelterExists || !employeeExists) {
+      if (!shelterExists && !employeeExists) {
         setSubmitStatus({
           type: "error",
           message: "Email is not registered. Please check your email address.",
