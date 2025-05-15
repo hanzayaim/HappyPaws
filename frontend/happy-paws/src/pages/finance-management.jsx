@@ -711,6 +711,7 @@ export default function FinancePage() {
                       (m) =>
                         m.id_medical === exp.id_medical && m.medical_cost !== 0
                     );
+                    if (!medical) return null;
                     if (medical) {
                       const animal = animals.find(
                         (a) => a.id_animal === medical.id_animal
