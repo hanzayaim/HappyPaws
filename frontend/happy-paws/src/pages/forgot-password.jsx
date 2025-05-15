@@ -26,7 +26,6 @@ const forgotPasswordSchema = z.object({
 export default function ForgotPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
-  const [debugInfo, setDebugInfo] = useState(null);
 
   const {
     register,
@@ -50,7 +49,6 @@ export default function ForgotPassword() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
-    setDebugInfo(null);
 
     try {
       const debugData = {};
@@ -66,12 +64,7 @@ export default function ForgotPassword() {
         { email: data.email }
       );
       debugData.employeeResponse = employeeCheck.data;
-      
-      setDebugInfo(debugData);
-      
-      console.log("Shelter check response:", shelterCheck.data);
-      console.log("Employee check response:", employeeCheck.data);
-      
+
       const shelterExists = shelterCheck.data?.found === true || 
                            (shelterCheck.data?.data && Object.keys(shelterCheck.data.data).length > 0) ||
                            (shelterCheck.data?.rows && shelterCheck.data.rows.length > 0);
@@ -104,8 +97,6 @@ export default function ForgotPassword() {
         throw new Error(response.data?.error || "Failed to send reset link");
       }
     } catch (error) {
-      console.error("Error sending reset link:", error);
-
       if (error.response?.data?.error === "Email not found") {
         setSubmitStatus({
           type: "error",
@@ -146,13 +137,6 @@ export default function ForgotPassword() {
                 >
                   <AlertDescription>{submitStatus.message}</AlertDescription>
                 </Alert>
-              )}
-              
-              {/* Debug Info Display (for development only) */}
-              {debugInfo && (
-                <div className="mb-4 p-2 bg-gray-100 text-xs overflow-auto max-h-40">
-                  <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-                </div>
               )}
               
               <form onSubmit={handleSubmit(onSubmit)}>
