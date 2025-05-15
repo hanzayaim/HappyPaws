@@ -376,7 +376,7 @@ export default function InventoryPages() {
               {currentFoods.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={6}
+                    colSpan={10}
                     className="text-center text-muted-foreground"
                   >
                     No Foods data available
@@ -549,7 +549,7 @@ export default function InventoryPages() {
               {currentEquipments.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="text-center text-muted-foreground"
                   >
                     No Equipments data available

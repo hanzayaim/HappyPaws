@@ -544,7 +544,7 @@ export default function FinancePage() {
               {currentIncomes.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="text-center text-muted-foreground"
                   >
                     No Income data available
