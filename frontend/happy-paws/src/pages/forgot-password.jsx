@@ -67,7 +67,7 @@ export default function ForgotPassword() {
 
       const employeeResult = employeeCheck.data;
 
-      if (!shelterResult?.found && !employeeResult?.found) {
+      if (!shelterResult?.found || !employeeResult?.found) {
         setSubmitStatus({
           type: "error",
           message: "Email is not registered. Please check your email address.",
