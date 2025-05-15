@@ -51,6 +51,30 @@ export default function ForgotPassword() {
     setSubmitStatus({ type: "", message: "" });
 
     try {
+      const shelterCheck = await axios.post(
+        `/api/shelters/getShelterPassByEmail`,
+        { email: data.email }
+      );
+
+      const shelterResult = shelterCheck.data;
+
+      const employeeCheck = await axios.post(
+        `/api/employees/getEmployeePassByEmail`,
+        {
+          email: data.email,
+        }
+      );
+
+      const employeeResult = employeeCheck.data;
+
+      if (!shelterResult?.found && !employeeResult?.found) {
+        setSubmitStatus({
+          type: "error",
+          message: "Email is not registered. Please check your email address.",
+        });
+        return;
+      }
+
       const resetLink = generateResetLink(data.email);
 
       const response = await axios.post("/api/email/email_reset_password", {
