@@ -4,7 +4,6 @@ const {
   deleteMedicalData,
   updateMedicalData,
 } = require("../models/medical_models");
-const { updateAnimalStatus } = require("../models/animal_models");
 const {
   insertExpenses,
   deleteExpensesById,
@@ -39,16 +38,14 @@ const insertMedical = async (
       id_animal
     );
 
-    if (medical_cost != 0) {
-      resultExpenses = await insertExpenses(
-        id_shelter,
-        (id_food = null),
-        id_medical,
-        (id_equipment = null),
-        (id_salary = null),
-        created_by
-      );
-    }
+    resultExpenses = await insertExpenses(
+      id_shelter,
+      (id_food = null),
+      id_medical,
+      (id_equipment = null),
+      (id_salary = null),
+      created_by
+    );
 
     return { resultMedical, resultExpenses };
   } catch (error) {
