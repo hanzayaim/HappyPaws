@@ -485,7 +485,7 @@ export default function DataConvert() {
                 </TableHeader>
                 <TableBody>
                   {currentMedical.length === 0 ? (
-                    <TableRow className="justify-center items-center">
+                    <TableRow className="w-full">
                       <TableCell
                         colSpan={6}
                         className="text-center text-muted-foreground"
