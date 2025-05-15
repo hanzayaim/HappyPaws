@@ -56,8 +56,6 @@ export default function ForgotPassword() {
         { email: data.email }
       );
 
-      const shelterResult = shelterCheck.data;
-
       const employeeCheck = await axios.post(
         `/api/employees/getEmployeePassByEmail`,
         {
@@ -65,9 +63,10 @@ export default function ForgotPassword() {
         }
       );
 
-      const employeeResult = employeeCheck.data;
+      const shelterExists = shelterCheck.data?.found === true;
+      const employeeExists = employeeCheck.data?.found === true;
 
-      if (!shelterResult?.found || !employeeResult?.found) {
+      if (!shelterExists || !employeeExists) {
         setSubmitStatus({
           type: "error",
           message: "Email is not registered. Please check your email address.",
@@ -92,10 +91,18 @@ export default function ForgotPassword() {
       }
     } catch (error) {
       console.error("Error sending reset link:", error);
-      setSubmitStatus({
-        type: "error",
-        message: "Failed to send reset link. Please try again later.",
-      });
+
+      if (error.response?.data?.error === "Email not found") {
+        setSubmitStatus({
+          type: "error",
+          message: "Email is not registered. Please check your email address.",
+        });
+      } else {
+        setSubmitStatus({
+          type: "error",
+          message: "Failed to send reset link. Please try again later.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
