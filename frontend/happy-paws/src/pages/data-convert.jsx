@@ -916,7 +916,7 @@ export default function DataConvert() {
                   {currentIncome.length === 0 ? (
                     <TableRow className="w-full justify-center items-center">
                       <TableCell
-                        colSpan={10}
+                        colspan={10}
                         className="text-center text-muted-foreground"
                       >
                         No Income data available
