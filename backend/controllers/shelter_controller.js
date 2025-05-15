@@ -1,6 +1,7 @@
 const { insertShelterData } = require("../models/shelter_models");
 const generateId = require("../config/generate_id");
 const bcrypt = require("bcrypt");
+const { insertFinance } = require("./finance_controller");
 
 const insertNewShelter = async (
   owner_name,
@@ -25,6 +26,9 @@ const insertNewShelter = async (
       address,
       status
     );
+
+    insertFinance(id_shelter);
+
     return result;
   } catch (error) {
     throw error;

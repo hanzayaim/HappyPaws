@@ -209,7 +209,7 @@ export default function AdopterManagement() {
               {currentAdopters.length === 0 ? (
                 <TableRow className="justify-center">
                   <TableCell
-                    colSpan={6}
+                    colspan={8}
                     className="text-center text-muted-foreground"
                   >
                     No Adopters data available

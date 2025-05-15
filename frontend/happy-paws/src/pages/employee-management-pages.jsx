@@ -512,7 +512,7 @@ export default function EmployeeManagementPages() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-4">
+                  <TableCell colspan={10} className="text-center py-4">
                     No employee data found
                   </TableCell>
                 </TableRow>
