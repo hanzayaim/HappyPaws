@@ -47,7 +47,7 @@ export default function RegisterOwner() {
   });
 
   const onSubmit = async (data) => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     try {
       const response = await axios.post("/api/shelters/insertShelter", {
         owner_name: data.shelterOwnerName,

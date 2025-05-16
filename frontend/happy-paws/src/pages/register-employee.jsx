@@ -55,8 +55,10 @@ export default function RegisterEmployee() {
   const genderValue = watch("gender");
   const roleValue = watch("role");
   const shelterValue = watch("shelter");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const searchShelterIdRes = await axios.get(
         `/api/shelters/getShelterData`
@@ -135,6 +137,8 @@ export default function RegisterEmployee() {
           message: "Phone Number is already registered.",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -242,8 +246,15 @@ export default function RegisterEmployee() {
                       </p>
                     )}
 
-                    <Button type="submit" className="w-full mt-2">
-                      Register
+                    <Button
+                      type="submit"
+                      className="w-full mt-2 flex items-center justify-center gap-2"
+                      disabled={isLoading}
+                    >
+                      {isLoading && (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      )}
+                      {isLoading ? "Registering..." : "Register"}
                     </Button>
                   </div>
                 </form>
