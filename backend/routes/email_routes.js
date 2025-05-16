@@ -9,7 +9,11 @@ const {
   sendRejectionEmail,
   sendActivationEmail,
   sendDeactivationEmail,
+  sendOwnerRegistrationEmail,
 } = require("./send_email");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 router.post("/email_register_all", async (req, res) => {
   try {
@@ -36,6 +40,18 @@ router.post("/email_register_employee", async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to send employee registration email" });
+  }
+});
+
+router.post("/email_register_owner", async (req, res) => {
+  try {
+    await sendOwnerRegistrationEmail(process.env.HP_EMAIL);
+    res.status(200).json({
+      message: "Owner registration notification sent to admin email",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to send notification email" });
   }
 });
 

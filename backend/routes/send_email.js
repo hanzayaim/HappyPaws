@@ -56,6 +56,16 @@ const sendShelterRegistrationEmail = async (email) => {
   return sendEmail(email, "HappyPaws Account Registration Received", body);
 };
 
+const sendOwnerRegistrationEmail = async (email) => {
+  const body = createEmailTemplate(
+    "Important Notice:",
+    "A new Shelter account has been successfully registered and is awaiting approval.",
+    "Please visit the User Management menu to review and approve the account."
+  );
+
+  return sendEmail(email, "HappyPaws Account Registration Received", body);
+};
+
 const sendEmployeeRegistrationEmail = async (email) => {
   const body = createEmailTemplate(
     "Important Notice:",
@@ -132,6 +142,7 @@ const sendDeactivationEmail = async (email) => {
 
 module.exports = {
   sendShelterRegistrationEmail,
+  sendOwnerRegistrationEmail,
   sendEmployeeRegistrationEmail,
   sendResetLinkEmail,
   sendSuccessResetPassword,

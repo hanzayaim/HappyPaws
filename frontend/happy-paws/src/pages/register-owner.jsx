@@ -62,6 +62,8 @@ export default function RegisterOwner() {
         email: data.email,
       });
 
+      await axios.post("/api/email/email_register_owner");
+
       if (result.error) {
         throw new Error(result.message || "Failed to create account");
       }

@@ -72,6 +72,7 @@ LEFT JOIN animal am ON am.id_animal = md.id_animal
 WHERE e.id_shelter = $1
   AND ($2::int IS NULL OR EXTRACT(MONTH FROM e.created_at) = $2::int)
   AND ($3::int IS NULL OR EXTRACT(YEAR FROM e.created_at) = $3::int)
+  AND COALESCE(f.cost, s.cost, eq.cost, md.medical_cost) != 0
 ORDER BY e.created_at DESC;`,
       [id_shelter, month, year]
     );
