@@ -33,6 +33,7 @@ const ownerSchema = z
 
 export default function RegisterOwner() {
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -46,6 +47,7 @@ export default function RegisterOwner() {
   });
 
   const onSubmit = async (data) => {
+    setIsLoading(true); // Start loading
     try {
       const response = await axios.post("/api/shelters/insertShelter", {
         owner_name: data.shelterOwnerName,
@@ -91,6 +93,8 @@ export default function RegisterOwner() {
           message: "Shelter name is already taken.",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -178,8 +182,15 @@ export default function RegisterOwner() {
                       </p>
                     )}
 
-                    <Button type="submit" className="w-full mt-2">
-                      Register
+                    <Button
+                      type="submit"
+                      className="w-full mt-2 flex items-center justify-center gap-2"
+                      disabled={isLoading}
+                    >
+                      {isLoading && (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      )}
+                      {isLoading ? "Registering..." : "Register"}
                     </Button>
                   </div>
                 </form>
