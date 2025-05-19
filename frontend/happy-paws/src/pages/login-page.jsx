@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
 
-const API_BASE_URL = "https://happypaws-production.up.railway.app";
+const API_BASE_URL = "http://localhost:3000";
 axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.withCredentials = true;
 

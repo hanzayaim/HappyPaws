@@ -6,19 +6,15 @@ const routes = require("./routes");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
-const isProduction = true;
-
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(
   cors({
-    origin: "https://happypawsshelter.netlify.app",
+    origin: true,
     credentials: true,
   })
 );
-
-app.set("trust proxy", 1);
 
 app.use(
   session({
@@ -27,9 +23,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "lax",
     },
   })
 );
