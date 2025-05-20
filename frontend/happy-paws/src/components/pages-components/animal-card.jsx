@@ -52,7 +52,6 @@ const AnimalCard = ({
           <span className="text-lg md:text-sm">
             : {jenis ? jenis : "Unknown"}
           </span>
-
           <Label className="text-lg md:text-sm">Age</Label>
           <span className="text-lg md:text-sm">: {umur ? umur : "No Age"}</span>
         </div>

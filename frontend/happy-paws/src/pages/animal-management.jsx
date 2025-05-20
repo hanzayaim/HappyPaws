@@ -174,7 +174,7 @@ export default function AnimalManagement() {
             fetchData={fetchAnimalData}
           />
         </div>
-        <div className="flex pt-3 lg:px-15 md:px-10 justify-center min-h-svh w-full">
+        <div className="flex pt-3 px-3 justify-center min-h-svh w-full">
           <Carousel opts={{ align: "start" }} className="w-full max-w-7xl">
             <CarouselContent>
               {Array.from({ length: Math.ceil(animalData.length / 2) }).map(
@@ -183,10 +183,7 @@ export default function AnimalManagement() {
                   const animal2 = animalData[i * 2 + 1];
 
                   return (
-                    <CarouselItem
-                      key={i}
-                      className="sm:basis-1 md:basis-1/2 lg:basis-1/4"
-                    >
+                    <CarouselItem key={i} className="basis-full lg:basis-1/4">
                       <div className="grid grid-rows-2 gap-4 p-2">
                         {animal1 && (
                           <AnimalCard

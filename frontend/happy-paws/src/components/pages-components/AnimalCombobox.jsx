@@ -173,7 +173,7 @@ export function AnimalAdopterCombobox({ value, onChange, adopterData }) {
             <Command>
               <CommandInput placeholder="Search Adopter..." className="h-9" />
               <CommandList>
-                <CommandEmpty>No animal found.</CommandEmpty>
+                <CommandEmpty>No adopter found.</CommandEmpty>
                 <CommandGroup>
                   {AdopterData.map((adopter) => (
                     <CommandItem
