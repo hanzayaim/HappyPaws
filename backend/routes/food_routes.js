@@ -155,7 +155,6 @@ router.post("/updateFoodData", async (req, res) => {
     exp_date == null ||
     cost == null ||
     date == null ||
-    note == null ||
     updated_by == null ||
     id_shelter == null ||
     id_food == null
