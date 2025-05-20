@@ -29,23 +29,34 @@ import {
   SuccessUpdateDialog,
 } from "./SuccessDialog";
 
-const medicalSchema = z.object({
-  animalName: z.string().min(1, "Animal is required"),
-  medicalStatus: z.string().min(1, "Medical Status is required"),
-  vaccineStatus: z.string().min(1, "Vaccine Status is required"),
-  medicalDate: z
-    .date({ required_error: "Medical Date In is required" })
-    .nullable()
-    .refine((data) => data !== null, {
-      message: "Medical Date In is required",
-    }),
-  medicalDateOut: z.date().nullable().optional(),
-  medicalCost: z.coerce
-    .number()
-    .min(0, "Cost must be 0 or more")
-    .or(z.literal("").transform(() => 0)),
-  medicalNote: z.string().optional(),
-});
+const medicalSchema = z
+  .object({
+    animalName: z.string().min(1, "Animal is required"),
+    medicalStatus: z.string().min(1, "Medical Status is required"),
+    vaccineStatus: z.string().min(1, "Vaccine Status is required"),
+    medicalDate: z
+      .date({ required_error: "Medical Date In is required" })
+      .nullable()
+      .refine((data) => data !== null, {
+        message: "Medical Date In is required",
+      }),
+    medicalDateOut: z.date().nullable().optional(),
+    medicalCost: z.coerce
+      .number()
+      .min(0, "Cost must be 0 or more")
+      .or(z.literal("").transform(() => 0)),
+    medicalNote: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (!data.medicalDateOut || !data.medicalDate) return true;
+      return data.medicalDateOut >= data.medicalDate;
+    },
+    {
+      message: "Medical Date Out cannot be before Medical Date In",
+      path: ["medicalDateOut"],
+    }
+  );
 
 export function InsertMedicalDialog({
   open,
@@ -215,6 +226,11 @@ export function InsertMedicalDialog({
                     <DatePicker value={field.value} onChange={field.onChange} />
                   )}
                 />
+                {errors.medicalDateOut && (
+                  <p className="text-destructive text-sm">
+                    {errors.medicalDateOut.message}
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <Label>Medical Cost</Label>
