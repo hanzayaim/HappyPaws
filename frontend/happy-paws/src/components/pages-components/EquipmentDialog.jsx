@@ -371,7 +371,7 @@ export function EditEquipmentDialog({
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </DialogContent>
