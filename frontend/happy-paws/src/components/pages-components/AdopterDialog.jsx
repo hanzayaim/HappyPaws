@@ -420,7 +420,7 @@ export function EditAdopterDialog({
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Edit</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </DialogContent>

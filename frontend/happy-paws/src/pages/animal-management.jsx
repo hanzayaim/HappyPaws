@@ -155,7 +155,8 @@ export default function AnimalManagement() {
             open={openAnimalIn}
             onOpenChange={setOpenAnimalIn}
             User={userData}
-            fetchData={fetchAnimalData}
+            fetchData={animalData}
+            fetchAnimalData={fetchAnimalData}
           />
           <Button
             className="w-32"
@@ -183,7 +184,7 @@ export default function AnimalManagement() {
                   const animal2 = animalData[i * 2 + 1];
 
                   return (
-                    <CarouselItem key={i} className="basis-full lg:basis-1/4">
+                    <CarouselItem key={i} className="basis-full lg:basis-1/3">
                       <div className="grid grid-rows-2 gap-4 p-2">
                         {animal1 && (
                           <AnimalCard

@@ -15,7 +15,7 @@ import {
   DialogClose,
 } from "../ui/dialog";
 import { AnimalAdopterCombobox, AnimalOutCombobox } from "./AnimalCombobox";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "@/components/ui/label";
 import DatePicker from "./DatePicker";
 import GenderCombobox from "./gender-combobox";
@@ -27,24 +27,45 @@ import {
   SuccessUpdateDialog,
 } from "./SuccessDialog";
 
-const animalInSchema = z.object({
-  animalName: z
-    .string()
-    .min(1, "Animal name is required")
-    .refine((val) => val.trim().length > 0, {
-      message: "Animal name cannot be empty",
-    }),
-  animalType: z.string().optional(),
-  animalAge: z.coerce.number().optional(),
-  animalRescueLoc: z.string().optional(),
-  animalDate: z.date({ required_error: "Date is required" }),
-  animalGender: z.string().min(1, "Animal gender is required"),
-  animalNote: z.string().optional(),
-  animalImg: z.any().optional(),
-});
-export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
+function createAnimalInSchema(existingNames) {
+  return z.object({
+    animalName: z
+      .string()
+      .min(1, "Animal name is required")
+      .refine((val) => val.trim().length > 0, {
+        message: "Animal name cannot be empty",
+      })
+      .refine(
+        (val) =>
+          !existingNames.some(
+            (name) => name.toLowerCase() === val.toLowerCase()
+          ),
+        {
+          message: "This animal name already used",
+        }
+      ),
+    animalType: z.string().optional(),
+    animalAge: z.coerce.number().optional(),
+    animalRescueLoc: z.string().optional(),
+    animalDate: z.date({ required_error: "Date is required" }),
+    animalGender: z.string().min(1, "Animal gender is required"),
+    animalNote: z.string().optional(),
+    animalImg: z.any().optional(),
+  });
+}
+
+export function AnimalInDialog({
+  open,
+  User,
+  onOpenChange,
+  fetchData,
+  fetchAnimalData,
+}) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [insertedAnimalName, setInsertedAnimalName] = useState("");
+
+  const existingAnimalNames = (fetchData ?? []).map((a) => a.animal_name);
+
   const {
     register,
     handleSubmit,
@@ -52,7 +73,7 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: zodResolver(animalInSchema),
+    resolver: zodResolver(createAnimalInSchema(existingAnimalNames)),
     mode: "onChange",
     defaultValues: {
       animalName: "",
@@ -97,7 +118,7 @@ export function AnimalInDialog({ open, User, onOpenChange, fetchData }) {
       onOpenChange(false);
       setInsertedAnimalName(data.animalName);
       setShowSuccessDialog(true);
-      fetchData();
+      fetchAnimalData();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -418,21 +439,30 @@ export function AnimalOutDialog({
   );
 }
 
-const animalEditSchema = z.object({
-  animalName: z
-    .string()
-    .min(1, "Animal name is required")
-    .refine((val) => val.trim().length > 0, {
-      message: "Animal name cannot be empty",
-    }),
-  animalType: z.string().optional(),
-  animalAge: z.coerce.number().optional(),
-  animalRescueLoc: z.string().optional(),
-  animalDate: z.date({ required_error: "Date is required" }),
-  animalGender: z.string().min(1, "Animal gender is required"),
-  animalNote: z.string().optional(),
-  animalImg: z.any().optional(),
-});
+function createEditAnimalSchema(existingNames, originalName) {
+  const lowerCaseNames = existingNames
+    .filter((name) => name.toLowerCase() !== originalName.toLowerCase())
+    .map((name) => name.toLowerCase());
+
+  return z.object({
+    animalName: z
+      .string()
+      .min(1, "Animal name is required")
+      .refine((val) => val.trim().length > 0, {
+        message: "Animal name cannot be empty",
+      })
+      .refine((val) => !lowerCaseNames.includes(val.toLowerCase()), {
+        message: "This animal name already used",
+      }),
+    animalType: z.string().optional(),
+    animalAge: z.coerce.number().optional(),
+    animalRescueLoc: z.string().optional(),
+    animalDate: z.date({ required_error: "Date is required" }),
+    animalGender: z.string().min(1, "Animal gender is required"),
+    animalNote: z.string().optional(),
+    animalImg: z.any().optional(),
+  });
+}
 
 export function AnimalEditDialog({
   open,
@@ -441,9 +471,13 @@ export function AnimalEditDialog({
   User,
   fetchData,
   id_animal,
+  existingNames,
 }) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [editAnimalName, setEditAnimalName] = useState("");
+  const animalEditSchema = useMemo(() => {
+    return createEditAnimalSchema(existingNames, animalData?.animal_name || "");
+  }, [existingNames, animalData]);
 
   const {
     register,
@@ -675,12 +709,18 @@ export function AnimalEditDialog({
                       alt="Preview"
                       className="w-full h-full object-cover"
                     />
-                  ) : null}
+                  ) : (
+                    <img
+                      src={`data:image/jpeg;base64,${animalData.animal_img}`}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Edit</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </DialogContent>
