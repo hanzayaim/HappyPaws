@@ -49,7 +49,7 @@ const AnimalCard = ({
           </span>
 
           <Label className="text-lg md:text-sm">Type</Label>
-          <span className="text-lg md:text-sm">
+          <span className="text-lg md:text-sm truncate">
             : {jenis ? jenis : "Unknown"}
           </span>
           <Label className="text-lg md:text-sm">Age</Label>
