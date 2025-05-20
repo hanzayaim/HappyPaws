@@ -453,6 +453,11 @@ export function EditMedicalDialog({
                     <DatePicker value={field.value} onChange={field.onChange} />
                   )}
                 />
+                {errors.medicalDateOut && (
+                  <p className="text-destructive text-sm">
+                    {errors.medicalDateOut.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
