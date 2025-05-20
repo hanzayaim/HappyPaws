@@ -156,6 +156,7 @@ export default function InventoryPages() {
       const foodsData = response.data;
 
       if (foodsData.error) {
+        setFoods([]);
         throw new Error(foodsData.message || "Failed to fetch foods");
       }
 
@@ -172,6 +173,7 @@ export default function InventoryPages() {
       const equipmentData = equipmentRes.data;
 
       if (equipmentData.error) {
+        setEquipments([]);
         throw new Error(equipmentData.message || "Failed to fetch equipments");
       }
       setEquipments(equipmentData.data || []);

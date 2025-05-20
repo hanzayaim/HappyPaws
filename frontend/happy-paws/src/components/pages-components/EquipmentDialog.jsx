@@ -19,16 +19,20 @@ import EquipmentTypeCombobox from "./EquipmentCombobox";
 import { Label } from "../ui/label";
 import DatePicker from "./DatePicker";
 import axios from "axios";
-import { SuccessInsertDialog, SuccessUpdateDialog } from "./SuccessDialog";
+import {
+  SuccessDeleteDialog,
+  SuccessInsertDialog,
+  SuccessUpdateDialog,
+} from "./SuccessDialog";
 
 const equipmentSchema = z.object({
   equipmentName: z.string().min(1, "Name is required"),
   equipmentType: z.string().min(1, "Type is required"),
   equipmentDate: z
-    .date({ required_error: "Expired date is required" })
+    .date({ required_error: "Date is required" })
     .nullable()
     .refine((data) => data !== null, {
-      message: "Expired date is required",
+      message: "Date is required",
     }),
   equipmentCost: z.coerce
     .number({ required_error: "Cost is required" })
@@ -382,7 +386,10 @@ export function DeleteEquipmentDialog({
   equipment,
   fetchData,
 }) {
-  const onSubmit = async (data) => {
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [deleteEquipmentName, setDeleteEquipmentName] = useState("");
+  const onSubmit = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post("/api/equipment/deleteEquipmentData/", {
         id_shelter: equipment.id_shelter,
@@ -394,39 +401,45 @@ export function DeleteEquipmentDialog({
       if (result.error) {
         throw new Error(result.message || "Failed to delete equipment data");
       }
-
-      data.preventDefault();
+      setShowSuccessDialog(true);
+      setDeleteEquipmentName(equipment.name);
       onOpenChange(false);
+      fetchData();
     } catch (error) {
       console.error("Error deleting equipment:", error.message);
     }
-
-    fetchData();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild></DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Delete Equipment</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={onSubmit} className="grid gap-2 py-2">
-          <DialogDescription>
-            Are you sure want to delete this equipment item?
-          </DialogDescription>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="cancel">
-                Cancel
+    <>
+      <SuccessDeleteDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+        data_name={deleteEquipmentName}
+      />
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Delete Equipment</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={onSubmit} className="grid gap-2 py-2">
+            <DialogDescription>
+              Are you sure want to delete this equipment item?
+            </DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" variant="alert">
+                Delete
               </Button>
-            </DialogClose>
-            <Button type="submit" variant="alert">
-              Delete
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

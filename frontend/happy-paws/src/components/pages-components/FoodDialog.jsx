@@ -329,10 +329,11 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
 
       reset();
       fetchData();
-      setEditedFoodName(data.AdopterName);
+      setEditedFoodName(data.foodName);
       setShowSuccessDialog(true);
       onOpenChange(false);
     } catch (error) {
+      throw new Error(error.message || "Failed to Update Food data");
     }
   };
 
@@ -487,7 +488,8 @@ export function EditFoodDialog({ open, onOpenChange, food, User, fetchData }) {
 export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [deleteFoodName, setDeleteFoodName] = useState("");
-  const onSubmit = async (data) => {
+  const onSubmit = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post("/api/food/deleteFoodData/", {
         id_shelter: food.id_shelter,
@@ -495,19 +497,16 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
       });
 
       const result = response.data;
-
       if (result.error) {
         throw new Error(result.message || "Failed to delete Food data");
       }
-
-      data.preventDefault();
+      setDeleteFoodName(food.name);
+      setShowSuccessDialog(true);
       onOpenChange(false);
+      fetchData();
     } catch (error) {
       console.error("Error deleting Food:", error.message);
     }
-    fetchData();
-    setDeleteFoodName(data.foodName);
-    setShowSuccessDialog(true);
   };
 
   return (
