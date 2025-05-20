@@ -72,6 +72,21 @@ export default function AnimalDetail() {
     }
   };
 
+  const [existingNames, setExistingNames] = useState([]);
+
+  const fetchAllAnimalNames = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/animals/getAnimalData/${userData.id_shelter}`
+      );
+      const animalList = data.data || [];
+      const names = animalList.map((animal) => animal.animal_name);
+      setExistingNames(names);
+    } catch (error) {
+      console.error("Error fetching existing animal names:", error);
+    }
+  };
+
   useEffect(() => {
     currentUser();
   }, []);
@@ -83,6 +98,7 @@ export default function AnimalDetail() {
       ) {
         fetchAnimalData();
         fetchMedicalData();
+        fetchAllAnimalNames();
       } else {
         setOpenAlertUser(true);
       }
@@ -146,6 +162,7 @@ export default function AnimalDetail() {
           User={userData}
           fetchData={fetchAnimalData}
           id_animal={id_animal}
+          existingNames={existingNames}
         />
         <DeleteAnimalDialog
           open={isAlert}
