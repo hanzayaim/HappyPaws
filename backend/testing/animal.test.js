@@ -1,6 +1,15 @@
 const { insertNewAnimal } = require("../controllers/animal_controller");
+const { insertAnimalData } = require("../models/animal_models");
 
-test("insert failed when id_shelter is empty", async () => {
+jest.mock("../models/animal_models", () => ({
+  insertAnimalData: jest.fn(),
+}));
+
+test("insert animal fails when id_shelter is empty", async () => {
+  insertAnimalData.mockImplementation(() => {
+    throw new Error("id_shelter cannot be empty");
+  });
+
   const animal = {
     id_shelter: "",
     animal_name: "test",
@@ -27,10 +36,12 @@ test("insert failed when id_shelter is empty", async () => {
       animal.note,
       animal.created_by
     )
-  ).rejects.toThrow();
+  ).rejects.toThrow("id_shelter cannot be empty");
 });
 
-test("insert succsess animal data", async () => {
+test("insert animal success", async () => {
+  insertAnimalData.mockResolvedValueOnce({ success: true });
+
   const animal = {
     id_shelter: "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
     animal_name: "test",
@@ -44,18 +55,18 @@ test("insert succsess animal data", async () => {
     created_by: "test",
   };
 
-  await expect(
-    insertNewAnimal(
-      animal.id_shelter,
-      animal.animal_name,
-      animal.animal_img,
-      animal.animal_gender,
-      animal.animal_type,
-      animal.animal_age,
-      animal.rescue_location,
-      animal.date,
-      animal.note,
-      animal.created_by
-    )
-  ).resolves.toBeDefined();
+  const result = await insertNewAnimal(
+    animal.id_shelter,
+    animal.animal_name,
+    animal.animal_img,
+    animal.animal_gender,
+    animal.animal_type,
+    animal.animal_age,
+    animal.rescue_location,
+    animal.date,
+    animal.note,
+    animal.created_by
+  );
+
+  expect(result).toEqual({ success: true });
 });
