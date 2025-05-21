@@ -35,7 +35,7 @@ const insertFood = async (
       id_shelter
     );
     if (cost != 0) {
-      const result2 = await insertExpenses(
+      await insertExpenses(
         id_shelter,
         id_food,
         (id_medical = null),
@@ -43,24 +43,12 @@ const insertFood = async (
         (id_salary = null),
         created_by
       );
-      return {
-        error: false,
-        message: "Food data created successfully",
-        data: { result1, result2 },
-      };
+      return result1;
     } else {
-      return {
-        error: false,
-        message: "Food data created successfully",
-        data: result1,
-      };
+      return result1;
     }
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed create Food Data",
-      data: null,
-    };
+    throw error;
   }
 };
 
@@ -69,17 +57,9 @@ const deleteFood = async (id_shelter, id_food) => {
     await deleteExpensesById(id_shelter, id_food);
     const result = await deleteFoodData(id_shelter, id_food);
     updateTotalBalance(id_shelter);
-    return {
-      error: false,
-      message: "Food data deleted successfully",
-      data: result,
-    };
+    return result;
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed delete Food Data",
-      data: null,
-    };
+    throw error;
   }
 };
 const updateFood = async (
@@ -114,11 +94,7 @@ const updateFood = async (
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed update Food Data",
-      data: null,
-    };
+    throw error;
   }
 };
 
