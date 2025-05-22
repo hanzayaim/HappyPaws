@@ -57,19 +57,6 @@ const insertExpenses = async (
   }
 };
 
-const deleteExpenses = async (id_shelter, id_expenses) => {
-  try {
-    const result = await deleteExpensesData(id_shelter, id_expenses);
-    return result;
-  } catch (error) {
-    return {
-      error: true,
-      message: "Failed to delete Expenses data.",
-      result: null,
-    };
-  }
-};
-
 const deleteExpensesById = async (id_shelter, table_id) => {
   try {
     const expenses = await getExpenses(id_shelter);
@@ -96,6 +83,5 @@ const deleteExpensesById = async (id_shelter, table_id) => {
 
 module.exports = {
   insertExpenses,
-  deleteExpenses,
   deleteExpensesById,
 };
