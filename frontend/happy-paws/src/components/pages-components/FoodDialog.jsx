@@ -489,8 +489,8 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [deleteFoodName, setDeleteFoodName] = useState("");
   const onSubmit = async (event) => {
-    event.preventDefault();
     try {
+      event.preventDefault();
       const response = await axios.post("/api/food/deleteFoodData/", {
         id_shelter: food.id_shelter,
         id_food: food.id_food,
@@ -500,10 +500,10 @@ export function DeleteFoodDialog({ open, onOpenChange, food, fetchData }) {
       if (result.error) {
         throw new Error(result.message || "Failed to delete Food data");
       }
+      onOpenChange(false);
       setDeleteFoodName(food.name);
       setShowSuccessDialog(true);
-      onOpenChange(false);
-      fetchData();
+      await fetchData();
     } catch (error) {
       console.error("Error deleting Food:", error.message);
     }
