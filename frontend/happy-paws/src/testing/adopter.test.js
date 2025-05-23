@@ -2,7 +2,7 @@ import axios from "axios";
 
 jest.mock("axios");
 
-export const fetchAdopterData = async ({ userData }) => {
+const fetchAdopterData = async ({ userData }) => {
   try {
     const adopterRes = await axios.get(
       `/api/adopters/getAdopterData/${userData.id_shelter}`
