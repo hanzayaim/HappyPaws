@@ -134,7 +134,6 @@ async function deleteExpensesData(id_shelter, id_expenses) {
       "DELETE FROM expenses WHERE id_expenses = $1 AND id_shelter = $2",
       [id_expenses, id_shelter]
     );
-
     if (result.rowCount == 0) {
       return {
         error: true,

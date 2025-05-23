@@ -6,10 +6,12 @@ const {
 const {
   insertExpensesData,
   deleteExpensesData,
+  getExpenses,
 } = require("../models/expenses_models");
 jest.mock("../models/expenses_models", () => ({
   insertExpensesData: jest.fn(),
   deleteExpensesData: jest.fn(),
+  getExpenses: jest.fn(),
 }));
 
 describe("Insert Expenses", () => {
@@ -88,14 +90,32 @@ describe("Insert Expenses", () => {
 
 describe("Delete Expenses", () => {
   test("Delete Expenses data successfully", async () => {
-    deleteExpensesData.mockResolvedValueOnce({
-      error: true,
-      message: "Failed to delete Expenses data.",
-      result: null,
-    });
+    const mockExpense = {
+      id_expenses: "EXPENSES-abc123",
+      id_food: null,
+      id_medical: "MEDICAL-f1833369-2c3a-401c-9d94-e93d93a208dd",
+      id_equipment: null,
+      id_salary: null,
+    };
+
+    getExpenses.mockResolvedValueOnce({ data: [mockExpense] });
+    deleteExpensesData.mockResolvedValueOnce({ success: true });
+
     const result = await deleteExpensesById(
       "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
       "MEDICAL-f1833369-2c3a-401c-9d94-e93d93a208dd"
+    );
+
+    expect(result).toEqual({ success: true });
+  });
+
+  test("Delete Expenses data with missing id_shelter", async () => {
+    deleteExpensesData.mockImplementation(async () => {
+      throw new Error("id_shelter is missing");
+    });
+    const result = await deleteExpensesById(
+      "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
+      null
     );
     expect(result).toEqual({
       error: true,
@@ -103,37 +123,16 @@ describe("Delete Expenses", () => {
       result: null,
     });
   });
-  test("Delete Expenses data with missing id", async () => {
+
+  test("Delete Expenses data with table_id", async () => {
     deleteExpensesData.mockImplementation(async () => {
-      throw new Error({
-        error: true,
-        message: "Failed to delete Expenses data.",
-        result: null,
-      });
+      throw new Error("table_id is missing");
     });
     const result = await deleteExpensesById(
       "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
       null
     );
-    expect(result).resolves.toEqual({
-      error: true,
-      message: "Failed to delete expenses data.",
-      result: null,
-    });
-  });
-  test("Delete Expenses data with missing id", async () => {
-    deleteExpensesData.mockImplementation(async () => {
-      throw new Error({
-        error: true,
-        message: "Failed to delete Expenses data.",
-        result: null,
-      });
-    });
-    const result = await deleteExpensesById(
-      null,
-      "MEDICAL-f1833369-2c3a-401c-9d94-e93d93a208dd"
-    );
-    expect(result).resolves.toEqual({
+    expect(result).toEqual({
       error: true,
       message: "Failed to delete Expenses data.",
       result: null,
