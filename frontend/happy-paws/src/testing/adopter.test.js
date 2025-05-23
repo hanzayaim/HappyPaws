@@ -35,7 +35,7 @@ test("fetch adopter data succsessfully", async () => {
   };
 
   axios.get.mockImplementation((url) => {
-    if (url === "/api/adopters/getAdopterData/1") {
+    if (url === `/api/adopters/getAdopterData/${userData.id_shelter}`) {
       return Promise.resolve({ data: adopters });
     } else {
       return Promise.reject(new Error("Invalid URL"));
@@ -50,7 +50,7 @@ test("fetch adopter data failed when userData.id_shelter is null", async () => {
   const userData = { id_shelter: null };
 
   axios.get.mockImplementation((url) => {
-    if (url.includes("null")) {
+    if (url === `/api/adopters/getAdopterData/${userData.id_shelter}`) {
       return Promise.reject(new Error("Failed to fetch adopter data"));
     }
     return Promise.resolve({ data: { data: [] } });

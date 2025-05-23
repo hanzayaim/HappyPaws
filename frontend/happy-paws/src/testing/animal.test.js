@@ -119,8 +119,9 @@ test("fetch animal data succsessfully", () => {
   ];
 
   axios.get.mockImplementation((url) => {
-    if (url.includes("/api/animals")) return Promise.resolve({ data: animals });
-    if (url.includes("/api/medical"))
+    if (url === `/api/animals/getAnimalData/${userData.id_shelter}`)
+      return Promise.resolve({ data: animals });
+    if (url === `/api/medical/getMedicalData/${userData.id_shelter}`)
       return Promise.resolve({ data: medicals });
   });
 
@@ -145,7 +146,7 @@ test("fetch animal data fails when userData.id_shelter is null", async () => {
   };
 
   axios.get.mockImplementation((url) => {
-    if (url.includes("null")) {
+    if (url === `/api/animals/getAnimalData/${userData.id_shelter}`) {
       return Promise.reject(new Error("Failed to fetch animal data"));
     }
     return Promise.resolve({ data: { data: [] } });
