@@ -87,6 +87,7 @@ export default function AdopterManagement() {
       console.error("Error fetching data", error);
     }
   };
+
   const currentUser = async () => {
     try {
       const response = await axios.get("/api/auth/profile", {
