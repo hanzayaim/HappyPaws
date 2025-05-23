@@ -13,6 +13,8 @@ export default [
         ...globals.browser,
         jest: true,
         test: true,
+        describe: true,
+        beforeEach: true,
         expect: true,
       },
       parserOptions: {
