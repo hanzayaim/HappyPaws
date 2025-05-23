@@ -15,9 +15,19 @@ jest.mock("../models/equipment_models", () => ({
   updateEquipmentData: jest.fn(),
 }));
 
+const {
+  insertExpensesData,
+  getExpenses,
+} = require("../models/expenses_models");
+jest.mock("../models/expenses_models", () => ({
+  insertExpensesData: jest.fn(),
+  getExpenses: jest.fn(),
+}));
+
 describe("Insert Equipment", () => {
   test("insert Equipment data successfully", async () => {
     insertEquipmentData.mockResolvedValueOnce({ success: true });
+    insertExpensesData.mockResolvedValueOnce({ success: true });
     const result = await insertEquipment(
       "Cleaning Tools",
       "Beli",
@@ -329,6 +339,7 @@ describe("Update Equipment", () => {
 describe("Delete Equipment", () => {
   test("Delete Equipment data successfully", async () => {
     deleteEquipmentData.mockResolvedValueOnce({ success: true });
+    getExpenses.mockResolvedValueOnce({ success: true });
     const result = await deleteEquipment(
       "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
       "EQUIPMENT-ba1e8963-ba43-4211-85dd-bd23cb143175"
@@ -337,6 +348,7 @@ describe("Delete Equipment", () => {
   });
   test("Delete Equipment with missing id_shelter", async () => {
     deleteEquipmentData.mockImplementation(() => {
+      getExpenses.mockResolvedValueOnce({ success: true });
       throw new Error("id_shelter cannot be empty");
     });
 
@@ -347,6 +359,7 @@ describe("Delete Equipment", () => {
 
   test("Delete Equipment with missing id_equipment", async () => {
     deleteEquipmentData.mockImplementation(() => {
+      getExpenses.mockResolvedValueOnce({ success: true });
       throw new Error("id_equipment cannot be empty");
     });
 

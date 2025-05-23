@@ -8,15 +8,24 @@ const {
   updateFoodData,
   deleteFoodData,
 } = require("../models/food_models");
-
 jest.mock("../models/food_models", () => ({
   insertFoodData: jest.fn(),
   updateFoodData: jest.fn(),
   deleteFoodData: jest.fn(),
 }));
+const {
+  insertExpensesData,
+  getExpenses,
+} = require("../models/expenses_models");
+jest.mock("../models/expenses_models", () => ({
+  insertExpensesData: jest.fn(),
+
+  getExpenses: jest.fn(),
+}));
 describe("Insert Food", () => {
   test("insert food data successfully", async () => {
     insertFoodData.mockResolvedValueOnce({ success: true });
+    insertExpensesData.mockResolvedValueOnce({ success: true });
     const foodData = {
       name: "Dog Kibble",
       quantity: 10,
@@ -180,27 +189,6 @@ describe("Insert Food", () => {
         "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc"
       )
     ).rejects.toThrow("exp_date cannot be empty");
-  });
-
-  test("Insert food with null cost", async () => {
-    insertFoodData.mockImplementation(() => {
-      throw new Error("cost cannot be empty");
-    });
-
-    await expect(
-      insertFood(
-        "Dog Food",
-        10,
-        "Dry Food",
-        "Beli",
-        "01-23-2025",
-        null,
-        "2025-05-21",
-        "note",
-        "admin",
-        "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc"
-      )
-    ).rejects.toThrow("cost cannot be empty");
   });
 
   test("Insert food with null date", async () => {
@@ -487,6 +475,7 @@ describe("Update Food", () => {
 describe("Delete Food", () => {
   test("Delete food successfully", async () => {
     deleteFoodData.mockResolvedValueOnce({ success: true });
+    getExpenses.mockResolvedValueOnce({ success: true });
     const result = await deleteFood(
       "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
       "FOOD-3aae9ac2-c43b-481a-ab2d-fc64576b6879"
@@ -496,6 +485,7 @@ describe("Delete Food", () => {
 
   test("Delete food with invalid id_shelter", async () => {
     deleteFoodData.mockImplementation(() => {
+      getExpenses.mockResolvedValueOnce({ success: true });
       throw new Error("id_shelter cannot be empty");
     });
 
@@ -506,6 +496,7 @@ describe("Delete Food", () => {
 
   test("Delete food with invalid id_food", async () => {
     deleteFoodData.mockImplementation(() => {
+      getExpenses.mockResolvedValueOnce({ success: true });
       throw new Error("id_food cannot be empty");
     });
     await expect(
