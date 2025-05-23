@@ -36,7 +36,7 @@ const fetchAnimalData = async (userData, determineAnimalStatus) => {
   return enriched;
 };
 
-test("should fetch and enrich animal data", () => {
+test("fetch animal data", () => {
   const userData = { id_shelter: 1 };
 
   const animals = {
