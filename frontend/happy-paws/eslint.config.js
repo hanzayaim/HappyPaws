@@ -12,6 +12,8 @@ export default [
       globals: {
         ...globals.browser,
         jest: true,
+        test: true,
+        expect: true,
       },
       parserOptions: {
         ecmaVersion: "latest",
