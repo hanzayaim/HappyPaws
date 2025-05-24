@@ -36,7 +36,7 @@ const sortSheltersByStatus = (shelters) => {
   );
 };
 
-describe("fetchShelterData", () => {
+describe("Fetch Shelter Data", () => {
   const mockSuperuser = { userType: "superuser" };
 
   const mockShelterData = [
