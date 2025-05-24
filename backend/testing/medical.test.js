@@ -3,6 +3,7 @@ const {
   deleteMedical,
   updateMedical,
 } = require("../controllers/medical_controller");
+const { insertExpensesData } = require("../models/expenses_models");
 const {
   insertMedicalData,
   updateMedicalData,
@@ -15,9 +16,14 @@ jest.mock("../models/medical_models", () => ({
   deleteMedicalData: jest.fn(),
 }));
 
+jest.mock("../models/expenses_models", () => ({
+  insertExpensesData: jest.fn(),
+}));
+
 describe("Insert Medical", () => {
   test("insert medical success", async () => {
     insertMedicalData.mockResolvedValueOnce({ success: true });
+    insertExpensesData.mockResolvedValueOnce({ success: true });
 
     const medical = {
       medical_status: "test",
