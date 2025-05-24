@@ -118,12 +118,9 @@ test("fetch animal data succsessfully", () => {
     },
   ];
 
-  axios.get.mockImplementation((url) => {
-    if (url === `/api/animals/getAnimalData/${userData.id_shelter}`)
-      return Promise.resolve({ data: animals });
-    if (url === `/api/medical/getMedicalData/${userData.id_shelter}`)
-      return Promise.resolve({ data: medicals });
-  });
+  axios.get
+    .mockResolvedValueOnce({ data: animals })
+    .mockResolvedValueOnce({ data: medicals });
 
   const determineAnimalStatus = (med, vac, adopter) => {
     if (adopter) return "Adopted";
@@ -144,15 +141,29 @@ test("fetch animal data fails when userData.id_shelter is null", async () => {
     if (med === "Healthy" && vac === "Vaccinated") return "Available";
     return "Not Available";
   };
-
-  axios.get.mockImplementation((url) => {
-    if (url === `/api/animals/getAnimalData/${userData.id_shelter}`) {
-      return Promise.reject(new Error("Failed to fetch animal data"));
-    }
-    return Promise.resolve({ data: { data: [] } });
-  });
+  axios.get.mockRejectedValue(new Error("Failed to fetch animal data"));
 
   await expect(
     fetchAnimalData(userData, determineAnimalStatus)
   ).rejects.toThrow("Failed to fetch animal data");
+});
+
+test("fetch animal with data is null", () => {
+  const userData = { id_shelter: 1 };
+  const animals = {
+    data: [],
+  };
+
+  const expectedResult = [];
+
+  const determineAnimalStatus = (med, vac, adopter) => {
+    if (adopter) return "Adopted";
+    if (med === "Healthy" && vac === "Vaccinated") return "Available";
+    return "Not Available";
+  };
+
+  axios.get.mockResolvedValue({ data: animals });
+  return fetchAnimalData(userData, determineAnimalStatus).then((data) => {
+    expect(data).toEqual(expectedResult);
+  });
 });
