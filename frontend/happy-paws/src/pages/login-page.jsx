@@ -19,8 +19,6 @@ import { TriangleAlert } from "lucide-react";
 const API_BASE_URL = "https://happypaws-production.up.railway.app";
 axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["Accept"] = "application/json";
-axios.defaults.headers.common["Content-Type"] = "application/json";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -49,9 +47,6 @@ export default function LoginPage() {
     try {
       const response = await axios.post("/api/auth/login", data, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       localStorage.setItem("userType", response.data.userType);

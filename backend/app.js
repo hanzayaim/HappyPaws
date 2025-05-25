@@ -34,7 +34,6 @@ app.use(
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
-      domain: isProduction ? ".happypawsshelter.netlify.app" : undefined
     }
   })
 );
