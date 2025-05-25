@@ -66,7 +66,7 @@ async function getEquipmentDataById(id_shelter, id_equipment) {
 async function getEquipmentDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
-      `SELECT name, type, date as purchase_or_donation_date, cost, note, created_at, created_by, updated_at, updated_by
+      `SELECT name, type, TO_CHAR(date, 'YYYY-MM-DD') as purchase_or_donation_date, cost, note, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, created_by, TO_CHAR(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at, updated_by
        FROM equipment 
        WHERE id_shelter = $1
          AND ($2::int IS NULL OR EXTRACT(MONTH FROM created_at) = $2::int)

@@ -70,7 +70,7 @@ async function getAnimalDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
       `SELECT a.animal_name, a.animal_gender, a.animal_type, a.rescue_location, 
-             a.date, a.note, a.created_at, a.created_by
+             TO_CHAR(a.date, 'YYYY-MM-DD') AS date, a.note, TO_CHAR(a.created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at, a.created_by
        FROM animal a
        WHERE a.id_shelter = $1
          AND ($2::int IS NULL OR EXTRACT(MONTH FROM a.created_at) = $2::int)

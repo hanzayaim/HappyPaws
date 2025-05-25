@@ -61,7 +61,7 @@ async function getExpensesDataConvert(id_shelter, month, year) {
       `SELECT 
   COALESCE(f.name, s.name, eq.name, am.animal_name) AS expenses_name,
   COALESCE(f.cost, s.cost, eq.cost, md.medical_cost) AS expenses_cost,
-  e.created_at,
+  TO_CHAR(e.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
   e.created_by
 FROM expenses e
 LEFT JOIN food f ON f.id_food = e.id_food

@@ -35,8 +35,8 @@ async function getMedicalData(id_shelter) {
 async function getMedicalDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
-      `SELECT a.animal_name, m.medical_status, m.vaccin_status, m.medical_date_in, 
-              m.medical_cost, m.note, m.created_at, m.created_by
+      `SELECT a.animal_name, m.medical_status, m.vaccin_status, TO_CHAR(m.medical_date_in, 'YYYY-MM-DD') as medical_date_in, 
+              m.medical_cost, m.note, TO_CHAR(m.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, m.created_by
        FROM medical m 
        LEFT JOIN animal a ON a.id_animal = m.id_animal 
        WHERE m.id_shelter = $1

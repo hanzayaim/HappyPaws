@@ -59,7 +59,7 @@ async function getIncomeById(id_shelter, id_income) {
 async function getIncomeDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
-      `SELECT name, amount, date, type, note, created_at, created_by, update_at, update_by
+      `SELECT name, amount, TO_CHAR(date, 'YYYY-MM-DD') as date, type, note, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, created_by, TO_CHAR(update_at, 'YYYY-MM-DD HH24:MI:SS') as update_at, update_by
        FROM income 
        WHERE id_shelter = $1
          AND ($2::int IS NULL OR EXTRACT(MONTH FROM created_at) = $2::int)
