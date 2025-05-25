@@ -15,6 +15,9 @@ app.use(
   cors({
     origin: "https://happypawsshelter.netlify.app",
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    exposedHeaders: ['set-cookie']
   })
 );
 
@@ -25,12 +28,14 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
-    },
+      domain: isProduction ? ".happypawsshelter.netlify.app" : undefined
+    }
   })
 );
 
