@@ -172,6 +172,9 @@ export default function Dashboard() {
         };
       });
 
+      const totalCountAnimals = enrichedAnimalData.length;
+      setTotalAnimals(totalCountAnimals);
+
       setTotalAnimalsAdopted(
         enrichedAnimalData.filter(
           (animal) => animal.animal_status === "Adopted"
@@ -228,8 +231,6 @@ export default function Dashboard() {
             (medical) => medical.vaccin_status === "Not Vaccinated"
           ).length
       );
-
-      setTotalAnimals(enrichedAnimalData.length);
 
       setTotalMedicalRecords(
         medicalDataFetch.data.filter(
