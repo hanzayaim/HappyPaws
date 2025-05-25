@@ -52,7 +52,7 @@ export default function ForgotPassword() {
 
     try {
       const debugData = {};
-      
+
       const shelterCheck = await axios.post(
         `/api/shelters/getShelterPassByEmail`,
         { email: data.email }
@@ -65,13 +65,17 @@ export default function ForgotPassword() {
       );
       debugData.employeeResponse = employeeCheck.data;
 
-      const shelterExists = shelterCheck.data?.found === true || 
-                           (shelterCheck.data?.data && Object.keys(shelterCheck.data.data).length > 0) ||
-                           (shelterCheck.data?.rows && shelterCheck.data.rows.length > 0);
-                           
-      const employeeExists = employeeCheck.data?.found === true || 
-                            (employeeCheck.data?.data && Object.keys(employeeCheck.data.data).length > 0) ||
-                            (employeeCheck.data?.rows && employeeCheck.data.rows.length > 0);
+      const shelterExists =
+        shelterCheck.data?.found === true ||
+        (shelterCheck.data?.data &&
+          Object.keys(shelterCheck.data.data).length > 0) ||
+        (shelterCheck.data?.rows && shelterCheck.data.rows.length > 0);
+
+      const employeeExists =
+        employeeCheck.data?.found === true ||
+        (employeeCheck.data?.data &&
+          Object.keys(employeeCheck.data.data).length > 0) ||
+        (employeeCheck.data?.rows && employeeCheck.data.rows.length > 0);
 
       if (!shelterExists && !employeeExists) {
         setSubmitStatus({
@@ -138,7 +142,7 @@ export default function ForgotPassword() {
                   <AlertDescription>{submitStatus.message}</AlertDescription>
                 </Alert>
               )}
-              
+
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-2">
                   <div className="grid gap-2">

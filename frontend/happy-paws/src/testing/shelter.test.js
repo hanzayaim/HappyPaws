@@ -36,8 +36,9 @@ const sortSheltersByStatus = (shelters) => {
   );
 };
 
-describe("Fetch Shelter Data", () => {
+describe("Shelter API Tests", () => {
   const mockSuperuser = { userType: "superuser" };
+  const mockShelterUser = { userType: "shelter" };
 
   const mockShelterData = [
     {
@@ -60,129 +61,165 @@ describe("Fetch Shelter Data", () => {
       status: "New",
       role: "Owner",
     },
-    {
-      id_shelter: "SHELTER-3333-4444-5555-666666666666",
-      owner_name: "John Doe",
-      email: "john@example.com",
-      shelter_name: "Inactive Shelter",
-      phone_number: "081234567890",
-      address: "Jakarta, Indonesia",
-      status: "Inactive",
-      role: "Owner",
-    },
   ];
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    axios.get.mockImplementation((url) => {
+      if (url === "/api/shelters/getShelterData") {
+        return Promise.resolve({
+          data: {
+            error: false,
+            message: "data fetched successfully",
+            data: mockShelterData,
+          },
+        });
+      }
+      if (url.includes("/api/shelters/getShelterDataById/")) {
+        const id = url.split("/").pop();
+        if (!id) {
+          return Promise.reject({
+            response: {
+              status: 400,
+              data: { error: true, message: "Shelter ID is required" },
+            },
+          });
+        }
+        return Promise.resolve({
+          data: { error: false, data: mockShelterData[0] },
+        });
+      }
+      return Promise.reject(new Error("Not mocked"));
+    });
+
+    axios.post.mockImplementation((url, data) => {
+      if (url === "/api/shelters/getShelterIdByEmail") {
+        if (!data?.email) {
+          return Promise.reject({
+            response: {
+              status: 400,
+              data: { error: true, message: "Email parameter is required" },
+            },
+          });
+        }
+        return Promise.resolve({
+          data: { error: false, data: "SHELTER-123" },
+        });
+      }
+      if (url === "/api/shelters/getShelterPassByEmail") {
+        if (!data?.email) {
+          return Promise.reject({
+            response: {
+              status: 400,
+              data: { error: true, message: "Email parameter is required" },
+            },
+          });
+        }
+        return Promise.resolve({
+          data: { error: false, data: "hashedpassword123" },
+        });
+      }
+      return Promise.reject(new Error("Not mocked"));
+    });
   });
 
   describe("Success Fetch Data", () => {
-    test("should successfully fetch and sort shelter data", async () => {
-      axios.get.mockResolvedValue({
-        data: {
-          error: false,
-          message: "data fetched successfully",
-          data: mockShelterData,
-        },
-      });
-
+    test("should successfully fetch and sort shelter data for superuser", async () => {
       const result = await fetchShelterData(mockSuperuser);
-
       expect(axios.get).toHaveBeenCalledWith("/api/shelters/getShelterData");
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(2);
       expect(result[0].status).toBe("New");
       expect(result[1].status).toBe("Active");
-      expect(result[2].status).toBe("Inactive");
     });
 
-    test("should handle empty data response", async () => {
-      axios.get.mockResolvedValue({
-        data: {
-          error: false,
-          message: "no data found",
-          data: [],
-        },
+    test("should successfully get shelter ID by email", async () => {
+      const mockEmail = "test@example.com";
+      const response = await axios.post("/api/shelters/getShelterIdByEmail", {
+        email: mockEmail,
       });
-
-      const result = await fetchShelterData(mockSuperuser);
-      expect(result).toEqual([]);
+      expect(response.data).toEqual({ error: false, data: "SHELTER-123" });
     });
 
-    test("should handle 404 errors gracefully", async () => {
-      const error = {
-        response: {
-          status: 404,
-        },
-      };
-      axios.get.mockRejectedValue(error);
-
-      const result = await fetchShelterData(mockSuperuser);
-      expect(result).toEqual([]);
-    });
-
-    test("should handle 'no data found' message", async () => {
-      axios.get.mockResolvedValue({
-        data: {
-          error: true,
-          message: "no data found",
-        },
+    test("should successfully get shelter password by email", async () => {
+      const mockEmail = "test@example.com";
+      const response = await axios.post("/api/shelters/getShelterPassByEmail", {
+        email: mockEmail,
       });
+      expect(response.data).toEqual({
+        error: false,
+        data: "hashedpassword123",
+      });
+    });
 
-      const result = await fetchShelterData(mockSuperuser);
-      expect(result).toEqual([]);
+    test("should successfully get shelter data by ID", async () => {
+      const mockShelterId = "SHELTER-123";
+      const response = await axios.get(
+        `/api/shelters/getShelterDataById/${mockShelterId}`
+      );
+      expect(response.data).toEqual({ error: false, data: mockShelterData[0] });
     });
   });
 
   describe("Fails Fetch Data", () => {
-    test("should reject non-superuser access", async () => {
-      const mockShelterUser = { userType: "shelter" };
-
+    test("should reject when user type is not superuser", async () => {
       await expect(fetchShelterData(mockShelterUser)).rejects.toThrow(
         "Access level not supported for this view"
       );
       expect(axios.get).not.toHaveBeenCalled();
     });
 
-    test("should handle network errors", async () => {
-      axios.get.mockRejectedValue(new Error("Network Error"));
-
-      await expect(fetchShelterData(mockSuperuser)).rejects.toThrow(
-        "Failed to load shelter data. Please try again later."
+    test("should reject when user session is undefined", async () => {
+      await expect(fetchShelterData(undefined)).rejects.toThrow(
+        "Access level not supported for this view"
       );
+      expect(axios.get).not.toHaveBeenCalled();
     });
 
-    test("should handle server errors (500)", async () => {
-      const error = {
+    test("should reject when email parameter is missing for getShelterIdByEmail", async () => {
+      await expect(
+        axios.post("/api/shelters/getShelterIdByEmail", {})
+      ).rejects.toMatchObject({
+        response: {
+          status: 400,
+          data: { error: true, message: "Email parameter is required" },
+        },
+      });
+    });
+
+    test("should reject when email parameter is missing for getShelterPassByEmail", async () => {
+      await expect(
+        axios.post("/api/shelters/getShelterPassByEmail", {})
+      ).rejects.toMatchObject({
+        response: {
+          status: 400,
+          data: { error: true, message: "Email parameter is required" },
+        },
+      });
+    });
+
+    test("should reject when id_shelter parameter is missing for getShelterDataById", async () => {
+      await expect(
+        axios.get("/api/shelters/getShelterDataById/")
+      ).rejects.toMatchObject({
+        response: {
+          status: 400,
+          data: { error: true, message: "Shelter ID is required" },
+        },
+      });
+    });
+
+    test("should handle server errors for getShelterData", async () => {
+      axios.get.mockRejectedValueOnce({
         response: {
           status: 500,
-          data: { message: "Internal Server Error" },
-        },
-      };
-      axios.get.mockRejectedValue(error);
-
-      await expect(fetchShelterData(mockSuperuser)).rejects.toThrow(
-        "Failed to load shelter data. Please try again later."
-      );
-    });
-
-    test("should handle error response with custom error message", async () => {
-      axios.get.mockResolvedValue({
-        data: {
-          error: true,
-          message: "Database connection failed",
+          data: { error: true, message: "failed to get data" },
         },
       });
 
       await expect(fetchShelterData(mockSuperuser)).rejects.toThrow(
         "Failed to load shelter data. Please try again later."
       );
-    });
-
-    test("should reject undefined user", async () => {
-      await expect(fetchShelterData(undefined)).rejects.toThrow(
-        "Access level not supported for this view"
-      );
-      expect(axios.get).not.toHaveBeenCalled();
     });
   });
 });

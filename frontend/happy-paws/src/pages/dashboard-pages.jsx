@@ -352,7 +352,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="flex-row min-h-svh bg-gray-50 w-full p-6 md:p-10">
+      <div className="flex-row min-h-screen bg-gray-50 w-full p-6 md:p-10">
         <div className="flex flex-col">
           <Label className="lg:text-3xl md:text-2xl font-bold text-xl">
             Dashboard
