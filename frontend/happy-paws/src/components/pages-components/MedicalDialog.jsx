@@ -331,14 +331,19 @@ export function EditMedicalDialog({
   const onSubmit = async (data) => {
     try {
       let userName = User.owner_name ? User.owner_name : User.name;
+
       const animal = animalData.find((a) => a.id_animal === data.animalName);
       if (!animal) throw new Error("Animal not found");
+
+      if (data.medicalDateOut != null) {
+        data.medicalDateOut = data.medicalDateOut.toLocaleDateString("en-CA");
+      }
 
       const response = await axios.post("/api/medical/updateMedicalData", {
         medical_status: medicalStatus,
         vaccin_status: vaccineStatus,
         medical_date_in: data.medicalDate.toLocaleDateString("en-CA"),
-        medical_date_out: data.medicalDateOut.toLocaleDateString("en-CA"),
+        medical_date_out: data.medicalDateOut,
         medical_cost: data.medicalCost,
         note: data.medicalNote,
         updated_by: userName,
