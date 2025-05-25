@@ -57,7 +57,7 @@ async function getSalaryById(id_shelter, id_salary) {
 async function getSalaryDataConvert(id_shelter, month, year) {
   try {
     const { rows } = await pool.query(
-      `SELECT es.name, s.name as s_name, s.cost, s.date, s.note, s.created_at, s.created_by, s.updated_at, s.updated_by
+      `SELECT es.name, s.name as s_name, s.cost, TO_CHAR(s.date, 'YYYY-MM-DD') as date, s.note, TO_CHAR(s.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, s.created_by
       FROM salary s
       LEFT JOIN employee_shelter es ON es.id_employee = s.id_employee
       WHERE s.id_shelter = $1
