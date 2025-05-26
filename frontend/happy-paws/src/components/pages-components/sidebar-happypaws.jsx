@@ -118,6 +118,7 @@ export default function AppSidebar() {
     if (userType === "employee" && userData?.role === "Finance") {
       return baseItems.filter((item) =>
         [
+          "Dashboard",
           "Medical Management",
           "Finance Management",
           "Inventory Management",
@@ -129,6 +130,7 @@ export default function AppSidebar() {
     if (userType === "employee" && userData?.role === "Administrator") {
       return baseItems.filter((item) =>
         [
+          "Dashboard",
           "Animal Management",
           "Adopter Management",
           "Inventory Management",
@@ -139,9 +141,12 @@ export default function AppSidebar() {
 
     if (userType === "employee" && userData?.role === "Medical") {
       return baseItems.filter((item) =>
-        ["Medical Management", "Finance Management", "Data Convert"].includes(
-          item.title
-        )
+        [
+          "Dashboard",
+          "Medical Management",
+          "Finance Management",
+          "Data Convert",
+        ].includes(item.title)
       );
     }
 
