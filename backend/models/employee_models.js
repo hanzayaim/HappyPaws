@@ -94,7 +94,7 @@ async function getEmployeeData(id_shelter) {
       FROM employee_shelter es
       LEFT JOIN salary s 
         ON es.id_shelter = s.id_shelter
-      WHERE es.id_shelter = 'SHELTER-03afe779-6097-4909-878e-2c4b91ca92b9'
+      WHERE es.id_shelter = $1
       ORDER BY es.id_employee, s.created_at DESC
       `,
       [id_shelter]
