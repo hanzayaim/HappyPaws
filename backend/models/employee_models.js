@@ -88,10 +88,14 @@ async function getEmployeeData(id_shelter) {
   try {
     const { rows } = await pool.query(
       `
-      SELECT es.*, s.id_salary
+      SELECT DISTINCT ON (es.id_employee) 
+       es.*, 
+       s.id_salary
       FROM employee_shelter es
-      LEFT JOIN salary s ON es.id_shelter = s.id_shelter
+      LEFT JOIN salary s 
+        ON es.id_shelter = s.id_shelter
       WHERE es.id_shelter = $1
+      ORDER BY es.id_employee, s.created_at DESC
       `,
       [id_shelter]
     );
