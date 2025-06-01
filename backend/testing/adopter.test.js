@@ -12,7 +12,7 @@ jest.mock("../models/adopter_models", () => ({
 
 describe("Insert Adopter", () => {
   test("insert adopter successfully", async () => {
-    insertAdopterData.mockResolvedValue({ succsess: true });
+    insertAdopterData.mockResolvedValue({ success: true });
 
     const adopter = {
       id_shelter: "SHELTER-7612f623-6386-4016-9966-9c0ca1debacc",
@@ -34,7 +34,7 @@ describe("Insert Adopter", () => {
       adopter.created_by
     );
 
-    expect(result).toEqual({ succsess: true });
+    expect(result).toEqual({ success: true });
   });
 
   test("insert adopter failed when id_shelter is empty", async () => {
