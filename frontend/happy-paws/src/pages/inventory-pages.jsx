@@ -297,7 +297,7 @@ export default function InventoryPages() {
         </Label>
         <AlertDialogUser
           desc={
-            "This feature just can be access by Owner shelter or Medical Employee"
+            "This feature just can be access by Owner shelter or Administrator Employee"
           }
           open={openAlertUser}
           onOpenChange={setOpenAlertUser}
