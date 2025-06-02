@@ -137,7 +137,7 @@ export default function MedicalManagement() {
   useEffect(() => {
     if (userData && userData.id_shelter) {
       if (
-        (userType === "employee" && userData?.role === "Finance") ||
+        (userType === "employee" && userData?.role === "Medical") ||
         (userType === "shelter" && userData?.role === "Owner")
       ) {
         fetchAnimalData();
@@ -177,7 +177,7 @@ export default function MedicalManagement() {
         </Label>
         <AlertDialogUser
           desc={
-            "This feature just can be access by Owner shelter or Finance Employee"
+            "This feature just can be access by Owner shelter or Medical Employee"
           }
           open={openAlertUser}
           onOpenChange={setOpenAlertUser}
