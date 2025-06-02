@@ -177,7 +177,7 @@ export default function MedicalManagement() {
         </Label>
         <AlertDialogUser
           desc={
-            "This feature just can be access by Owner shelter or Finance Employee"
+            "This feature just can be access by Owner shelter or Medical Employee"
           }
           open={openAlertUser}
           onOpenChange={setOpenAlertUser}
