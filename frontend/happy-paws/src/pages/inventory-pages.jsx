@@ -43,6 +43,7 @@ import {
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
 import { useNavigate } from "react-router-dom";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 
 export default function InventoryPages() {
   const itemsPerPage = 5;
