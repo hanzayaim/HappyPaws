@@ -137,7 +137,7 @@ export default function MedicalManagement() {
   useEffect(() => {
     if (userData && userData.id_shelter) {
       if (
-        (userType === "employee" && userData?.role === "Finance") ||
+        (userType === "employee" && userData?.role === "Medical") ||
         (userType === "shelter" && userData?.role === "Owner")
       ) {
         fetchAnimalData();
