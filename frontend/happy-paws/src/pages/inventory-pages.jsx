@@ -43,15 +43,18 @@ import {
   YearFilterSelect,
 } from "../components/pages-components/Select-Month-Year";
 import { useNavigate } from "react-router-dom";
+import { AlertDialogUser } from "../components/pages-components/AlertDialogUser";
 
 export default function InventoryPages() {
   const itemsPerPage = 5;
   const [foods, setFoods] = useState([]);
   const [equipments, setEquipments] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [userType, setUserType] = useState(null);
   const navigate = useNavigate();
   const [foodCurrentPage, setFoodCurrentPage] = useState(1);
   const [equipmentCurrentPage, setEquipmentCurrentPage] = useState(1);
+  const [openAlertUser, setOpenAlertUser] = useState(false);
 
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
   const [foodCategoryFilter, setFoodCategoryFilter] = useState("");
@@ -187,6 +190,7 @@ export default function InventoryPages() {
         withCredentials: true,
       });
       if (response) {
+        setUserType(response.data.userType);
         setUserData(response.data.profile);
       }
     } catch (error) {
@@ -200,8 +204,15 @@ export default function InventoryPages() {
   }, []);
   useEffect(() => {
     if (userData && userData.id_shelter) {
-      fetchEquipmentsData();
-      fetchFoodsData();
+      if (
+        (userType === "employee" && userData?.role === "Administrator") ||
+        (userType === "shelter" && userData?.role === "Owner")
+      ) {
+        fetchEquipmentsData();
+        fetchFoodsData();
+      } else {
+        setOpenAlertUser(true);
+      }
     }
   }, [userData]);
 
@@ -284,6 +295,13 @@ export default function InventoryPages() {
         <Label className="text-3xl font-bold self-start">
           Inventory Management
         </Label>
+        <AlertDialogUser
+          desc={
+            "This feature just can be access by Owner shelter or Administrator Employee"
+          }
+          open={openAlertUser}
+          onOpenChange={setOpenAlertUser}
+        />
         <Label className="text-2xl font-medium">Food</Label>
         <div className="flex flex-col lg:flex-row md:flex-row gap-2 justify-between items-center w-full mt-4">
           <div className="flex flex-wrap gap-2 items-center">
