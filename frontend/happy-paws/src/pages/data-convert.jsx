@@ -423,7 +423,7 @@ export default function DataConvert() {
                 <SelectItem value="medical">Medical</SelectItem>
               )}
               <SelectItem value="animal">Animal</SelectItem>
-              {["Finance", "Owner"].includes(userData?.role) && (
+              {["Administrator", "Owner"].includes(userData?.role) && (
                 <SelectItem value="salary">Salary</SelectItem>
               )}
               {["Finance", "Owner"].includes(userData?.role) && (
