@@ -305,9 +305,9 @@ export default function FinancePage() {
     }
   };
   const fetchFinanceData = async () => {
-    fetchIncomeData();
-    fetchSalaryData();
-    fetchExpensesData();
+    await fetchIncomeData();
+    await fetchSalaryData();
+    await fetchExpensesData();
     try {
       const FinanceRes = await axios.get(
         `/api/finance/getFinance/${userData.id_shelter}`
@@ -322,12 +322,15 @@ export default function FinancePage() {
       const ProfitData = ProfitRes.data;
       const LossData = LossRes.data;
       if (FinanceData.error) {
+        setFinance([]);
         throw new Error(FinanceData.message || "Failed to fetch Finance");
       }
       if (ProfitData.error) {
+        setLoss([]);
         throw new Error(ProfitData.message || "Failed to fetch Profit");
       }
       if (LossData.error) {
+        setProfit([]);
         throw new Error(LossData.message || "Failed to fetch Loss");
       }
       setFinance(FinanceData.data?.[0] ?? "No data");
