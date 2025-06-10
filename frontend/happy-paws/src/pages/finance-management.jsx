@@ -202,7 +202,7 @@ export default function FinancePage() {
         throw new Error(SalaryData.message || "Failed to fetch Salary");
       }
 
-      setSalaries(SalaryData.data?.length ? SalaryData.data : null);
+      setSalaries(SalaryData.data || []);
     } catch (error) {
       console.error("Error fetching salary data:", error);
     }
