@@ -335,7 +335,8 @@ export function EditIncomeDialog({
 }
 
 export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
-  const onSubmit = async (data) => {
+  const onSubmit = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post("/api/income/deleteIncomeData", {
         id_shelter: income.id_shelter,
@@ -347,14 +348,11 @@ export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
       if (result.error) {
         throw new Error(result.message || "Failed to delete income data");
       }
-
-      data.preventDefault();
       onOpenChange(false);
+      fetchData();
     } catch (error) {
       console.error("Error deleting Income:", error.message);
     }
-
-    fetchData();
   };
 
   return (
