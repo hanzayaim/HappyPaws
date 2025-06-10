@@ -437,7 +437,8 @@ export function DeleteAdopterDialog({
 }) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [deleteAdopterName, setDeleteAdopterName] = useState("");
-  const onSubmit = async (data) => {
+  const onSubmit = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post("/api/adopters/DeleteAdopterData", {
         id_shelter: AdopterData.id_shelter,
@@ -445,21 +446,16 @@ export function DeleteAdopterDialog({
       });
 
       const result = response.data;
-
       if (result.error) {
         throw new Error(result.message || "Failed to delete adopter data");
       }
-
-      data.preventDefault();
-
-      setDeleteAdopterName(data.AdopterName);
+      setDeleteAdopterName(AdopterData.AdopterName);
       setShowSuccessDialog(true);
       onOpenChange(false);
+      fetchData();
     } catch (error) {
       console.error("Error deleting Adopter:", error.message);
     }
-
-    fetchData();
   };
 
   return (
