@@ -452,7 +452,9 @@ export function DeleteAdopterDialog({
       setDeleteAdopterName(AdopterData.AdopterName);
       setShowSuccessDialog(true);
       onOpenChange(false);
-      fetchData();
+      setTimeout(() => {
+        fetchData();
+      }, 300);
     } catch (error) {
       console.error("Error deleting Adopter:", error.message);
     }

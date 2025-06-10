@@ -226,7 +226,9 @@ export function DeleteSalaryDialog({
 
       console.log("Delete Salary with ID: ", SalaryData?.id_salary);
       onOpenChange(false);
-      fetchData();
+      setTimeout(() => {
+        fetchData();
+      }, 300);
     } catch (error) {
       console.error("Error deleting Salary:", error.message);
     }
