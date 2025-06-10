@@ -72,7 +72,6 @@ export default function AdopterManagement() {
   };
 
   const fetchAdopterData = async () => {
-    fetchAnimalData();
     try {
       const adopterRes = await axios.get(
         `/api/adopters/getAdopterData/${userData.id_shelter}`
@@ -80,6 +79,7 @@ export default function AdopterManagement() {
       const adopterData = adopterRes.data;
 
       if (adopterData.error) {
+        setAdopter([]);
         throw new Error(adopterData.message || "Failed to fetch adapter data");
       }
       setAdopter(adopterData.data || []);
@@ -111,6 +111,7 @@ export default function AdopterManagement() {
         (userType === "shelter" && userData?.role === "Owner")
       ) {
         fetchAdopterData();
+        fetchAnimalData();
       } else {
         setOpenAlertUser(true);
       }
