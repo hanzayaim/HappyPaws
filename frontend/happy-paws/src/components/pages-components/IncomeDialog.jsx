@@ -350,10 +350,11 @@ export function DeleteIncomeDialog({ open, onOpenChange, income, fetchData }) {
 
       data.preventDefault();
       onOpenChange(false);
-      fetchData();
     } catch (error) {
       console.error("Error deleting Income:", error.message);
     }
+
+    fetchData();
   };
 
   return (
