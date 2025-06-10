@@ -13,7 +13,7 @@ async function getSalary(id_shelter) {
       };
     } else {
       return {
-        error: true,
+        error: false,
         message: "no data found",
         data: null,
       };
@@ -36,7 +36,7 @@ async function getSalaryById(id_shelter, id_salary) {
       return {
         error: false,
         message: "data fetched successfully",
-        data: rows,
+        data: rows[0],
       };
     } else {
       return {
