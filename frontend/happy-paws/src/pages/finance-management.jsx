@@ -308,6 +308,7 @@ export default function FinancePage() {
     await fetchSalaryData();
     await fetchIncomeData();
     await fetchExpensesData();
+    await fetchEmployeeData();
     try {
       const FinanceRes = await axios.get(
         `/api/finance/getFinance/${userData.id_shelter}`
