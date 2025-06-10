@@ -306,6 +306,7 @@ export default function FinancePage() {
   };
   const fetchFinanceData = async () => {
     await fetchIncomeData();
+    await fetchEmployeeData();
     await fetchSalaryData();
     await fetchExpensesData();
     try {
