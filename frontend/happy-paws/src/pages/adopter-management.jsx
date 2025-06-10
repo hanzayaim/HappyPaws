@@ -72,7 +72,7 @@ export default function AdopterManagement() {
   };
 
   const fetchAdopterData = async () => {
-    fetchAnimalData();
+    await fetchAnimalData();
     try {
       const adopterRes = await axios.get(
         `/api/adopters/getAdopterData/${userData.id_shelter}`
