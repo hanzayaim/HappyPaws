@@ -352,7 +352,19 @@ export default function FinancePage() {
       }
     }
   }, [userData]);
-
+  useEffect(() => {
+    setExpensesCurrentPage(1);
+    setIncomeCurrentPage(1);
+    setSalaryCurrentPage(1);
+  }, [
+    SalarySelectedMonth,
+    SalarySelectedYear,
+    SalarySearchQuery,
+    incomeSelectedMonth,
+    IncomeSelectedYear,
+    IncomeTypeFilter,
+    IncomeSearchQuery,
+  ]);
   const handleIncomeSearchChange = (e) => {
     setIncomeSearchQuery(e.target.value);
     setIncomeCurrentPage(1);
