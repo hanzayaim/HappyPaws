@@ -449,12 +449,12 @@ export function DeleteAdopterDialog({
       if (result.error) {
         throw new Error(result.message || "Failed to delete adopter data");
       }
+
+      await fetchData();
+
       setDeleteAdopterName(AdopterData.AdopterName);
       setShowSuccessDialog(true);
       onOpenChange(false);
-      setTimeout(() => {
-        fetchData();
-      }, 300);
     } catch (error) {
       console.error("Error deleting Adopter:", error.message);
     }
