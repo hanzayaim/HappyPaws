@@ -31,9 +31,17 @@ const insertIncome = async (
       created_by
     );
     await updateTotalBalance(id_shelter);
-    return result;
+    return {
+      error: false,
+      message: "Income data created successfully",
+      data: result,
+    };
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed to insert income data.",
+      result: null,
+    };
   }
 };
 
@@ -43,7 +51,11 @@ const deleteIncome = async (id_shelter, id_income) => {
     await updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed to delete income data.",
+      result: null,
+    };
   }
 };
 
@@ -71,7 +83,11 @@ const updateIncome = async (
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed to update income data.",
+      result: null,
+    };
   }
 };
 

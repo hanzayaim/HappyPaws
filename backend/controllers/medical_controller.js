@@ -22,6 +22,7 @@ const insertMedical = async (
   id_animal
 ) => {
   const id_medical = "MEDICAL-" + generateId();
+  let resultExpenses = null;
 
   try {
     const resultMedical = await insertMedicalData(
@@ -37,7 +38,7 @@ const insertMedical = async (
       id_animal
     );
 
-    await insertExpenses(
+    resultExpenses = await insertExpenses(
       id_shelter,
       (id_food = null),
       id_medical,
@@ -46,9 +47,14 @@ const insertMedical = async (
       created_by
     );
 
-    return resultMedical;
+    return { resultMedical, resultExpenses };
   } catch (error) {
-    throw error;
+    console.error("Error inserting medical:", error);
+    return {
+      error: true,
+      message: "Failed to insert medical.",
+      result: null,
+    };
   }
 };
 
@@ -84,7 +90,11 @@ const updateMedical = async (
 
     return resultMedical;
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed to update medical.",
+      result: null,
+    };
   }
 };
 
@@ -99,9 +109,13 @@ const deleteMedical = async (id_shelter, id_medical, id_animal) => {
 
     updateTotalBalance(id_shelter);
 
-    return resultMedical;
+    return { resultMedical };
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed to delete medical.",
+      result: null,
+    };
   }
 };
 

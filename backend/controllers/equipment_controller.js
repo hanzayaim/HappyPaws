@@ -29,7 +29,7 @@ const insertEquipment = async (
       id_shelter
     );
     if (cost != 0) {
-      await insertExpenses(
+      const result2 = await insertExpenses(
         id_shelter,
         (id_food = null),
         (id_medical = null),
@@ -37,12 +37,24 @@ const insertEquipment = async (
         (id_salary = null),
         created_by
       );
-      return result1;
+      return {
+        error: false,
+        message: "equipment data created successfully",
+        data: { result1, result2 },
+      };
     } else {
-      return result1;
+      return {
+        error: false,
+        message: "equipment data created successfully",
+        data: result1,
+      };
     }
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed create equipment Data",
+      data: null,
+    };
   }
 };
 const deleteEquipment = async (id_shelter, id_equipment) => {
@@ -50,9 +62,17 @@ const deleteEquipment = async (id_shelter, id_equipment) => {
     await deleteExpensesById(id_shelter, id_equipment);
     const result = await deleteEquipmentData(id_shelter, id_equipment);
     updateTotalBalance(id_shelter);
-    return result;
+    return {
+      error: false,
+      message: "equipment data deleted successfully",
+      data: result,
+    };
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed delete equipment Data",
+      data: null,
+    };
   }
 };
 const updateEquipment = async (
@@ -81,7 +101,11 @@ const updateEquipment = async (
     updateTotalBalance(id_shelter);
     return result;
   } catch (error) {
-    throw error;
+    return {
+      error: true,
+      message: "Failed update Food Data",
+      data: null,
+    };
   }
 };
 
