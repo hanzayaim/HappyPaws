@@ -146,7 +146,7 @@ export function InsertEquipmentDialog({ open, onOpenChange, User, fetchData }) {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <Label>Date</Label>
+                <Label>Purchase / Donation Date</Label>
                 <Controller
                   control={control}
                   name="equipmentDate"

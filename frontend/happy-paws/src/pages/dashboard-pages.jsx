@@ -172,8 +172,8 @@ export default function Dashboard() {
         };
       });
 
-      const totalAnimalCount = enrichedAnimalData.length;
-      setTotalAnimals(totalAnimalCount);
+      const totalCountAnimals = enrichedAnimalData.length;
+      setTotalAnimals(totalCountAnimals);
 
       setTotalAnimalsAdopted(
         enrichedAnimalData.filter(

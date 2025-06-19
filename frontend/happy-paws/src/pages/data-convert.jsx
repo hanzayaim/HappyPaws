@@ -415,8 +415,8 @@ export default function DataConvert() {
         <div className="flex flex-col gap-4 w-full sm:w-auto">
           <Label className="text-md font-medium">Select Data</Label>
           <Select onValueChange={(value) => setSelectedDataType(value)}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Choose data type" />
+            <SelectTrigger id="data-type" className="w-[200px]">
+              <SelectValue id="data-type2" placeholder="Choose data type" />
             </SelectTrigger>
             <SelectContent>
               {["Medical", "Owner"].includes(userData?.role) && (

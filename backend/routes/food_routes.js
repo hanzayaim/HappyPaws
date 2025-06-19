@@ -17,7 +17,6 @@ router.get("/getFoodData/:id_shelter", async (req, res) => {
 
   try {
     const result = await getFoodData(id_shelter);
-
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({
