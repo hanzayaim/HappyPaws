@@ -13,9 +13,6 @@ app.use(
   cors({
     origin: true,
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    exposedHeaders: ["set-cookie"],
   })
 );
 
@@ -26,7 +23,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "lax",
