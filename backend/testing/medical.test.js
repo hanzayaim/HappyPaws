@@ -49,10 +49,7 @@ describe("Insert Medical", () => {
       medical.id_animal
     );
 
-    expect(result).toEqual({
-      resultMedical: { success: true },
-      resultExpenses: { success: true },
-    });
+    expect(result).toEqual({ success: true });
   });
 
   test("insert medical failed when id_shelter is empty ", async () => {
@@ -533,8 +530,6 @@ describe("Delete Medical", () => {
       medical.id_medical
     );
 
-    expect(result).toEqual({
-      resultMedical: { success: true },
-    });
+    expect(result).toEqual({ success: true });
   });
 });
