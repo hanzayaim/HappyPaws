@@ -49,12 +49,12 @@ const insertMedical = async (
 
     return { resultMedical, resultExpenses };
   } catch (error) {
-    console.error("Error inserting medical:", error);
-    return {
-      error: true,
-      message: "Failed to insert medical.",
-      result: null,
-    };
+    throw error;
+    // return {
+    //   error: true,
+    //   message: "Failed to insert medical.",
+    //   result: null,
+    // };
   }
 };
 
@@ -90,11 +90,12 @@ const updateMedical = async (
 
     return resultMedical;
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed to update medical.",
-      result: null,
-    };
+    throw error;
+    // return {
+    //   error: true,
+    //   message: "Failed to update medical.",
+    //   result: null,
+    // };
   }
 };
 
@@ -111,11 +112,12 @@ const deleteMedical = async (id_shelter, id_medical, id_animal) => {
 
     return { resultMedical };
   } catch (error) {
-    return {
-      error: true,
-      message: "Failed to delete medical.",
-      result: null,
-    };
+    throw error;
+    // return {
+    //   error: true,
+    //   message: "Failed to delete medical.",
+    //   result: null,
+    // };
   }
 };
 
