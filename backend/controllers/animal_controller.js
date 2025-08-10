@@ -1,3 +1,4 @@
+const { base64ToBuffer } = require("../config/convertImg");
 const generateId = require("../config/generate_id");
 const { insertAnimalData } = require("../models/animal_models");
 
@@ -15,19 +16,8 @@ const insertNewAnimal = async (
 ) => {
   try {
     const id_animal = "ANIMAL-" + generateId();
-    let cleanBase64String = null;
-    if (animal_img === null || animal_img === undefined || animal_img === "") {
-      animal_img = null;
-    } else {
-      cleanBase64String = animal_img.replace(
-        /^data:image\/[a-zA-Z]+;base64,/,
-        ""
-      );
-    }
 
-    const animalImgBuffer = cleanBase64String
-      ? Buffer.from(cleanBase64String, "base64")
-      : null;
+    const animalImgBuffer = base64ToBuffer(animal_img);
 
     const result = await insertAnimalData(
       id_shelter,
