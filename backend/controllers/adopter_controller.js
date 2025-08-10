@@ -1,3 +1,4 @@
+const { base64ToBuffer } = require("../config/convertImg");
 const generateId = require("../config/generate_id");
 const { insertAdopterData } = require("../models/adopter_models");
 
